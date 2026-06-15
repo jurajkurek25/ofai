@@ -111,9 +111,6 @@ export async function webhookRoutes(fastify: FastifyInstance): Promise<void> {
   // Incoming events (POST)
   fastify.post(
     '/webhook',
-    {
-      config: { rawBody: true },
-    },
     async (request: FastifyRequest, reply: FastifyReply) => {
       const signature = request.headers['x-hub-signature-256'] as string | undefined;
       const rawBody = (request as FastifyRequest & { rawBody?: Buffer }).rawBody;

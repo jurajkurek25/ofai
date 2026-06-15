@@ -1,4 +1,4 @@
-import Fastify, { FastifyInstance } from 'fastify';
+import Fastify, { FastifyInstance, FastifyRequest } from 'fastify';
 import fastifyCors from '@fastify/cors';
 import fastifyRateLimit from '@fastify/rate-limit';
 import fastifyStatic from '@fastify/static';
@@ -7,37 +7,32 @@ import { logger } from '../utils/logger';
 import { webhookRoutes } from './routes/webhook';
 import { adminRoutes } from './routes/admin';
 
+// Augment FastifyRequest with rawBody
+declare module 'fastify' {
+  interface FastifyRequest {
+    rawBody?: Buffer;
+  }
+}
+
 export async function buildApp(): Promise<FastifyInstance> {
   const app = Fastify({
     logger: false,
-    // Capture raw body for HMAC verification
-    addContentTypeParser: false,
-    bodyLimit: 1_048_576, // 1 MB
+    bodyLimit: 1_048_576,
   });
 
-  // Store raw body for signature verification
+  // Parse JSON as Buffer so we can do HMAC verification in the webhook route
   app.addContentTypeParser(
     'application/json',
     { parseAs: 'buffer' },
-    function (_req, body, done) {
+    (req: FastifyRequest, body: Buffer, done) => {
+      req.rawBody = body;
       try {
-        const parsed = JSON.parse(body.toString());
-        // Attach raw buffer for later HMAC check
-        (parsed as Record<string, unknown>).__rawBody = body;
-        done(null, parsed);
+        done(null, JSON.parse(body.toString('utf8')));
       } catch (e) {
         done(e as Error, undefined);
       }
     }
   );
-
-  // Re-attach raw body to request for webhook route
-  app.addHook('preHandler', async (request) => {
-    const raw = (request.body as Record<string, unknown> | undefined)?.__rawBody as Buffer | undefined;
-    if (raw) {
-      (request as FastifyRequest & { rawBody?: Buffer }).rawBody = raw;
-    }
-  });
 
   await app.register(fastifyCors, { origin: false });
 
@@ -63,12 +58,4 @@ export async function buildApp(): Promise<FastifyInstance> {
   });
 
   return app;
-}
-
-// Fastify request augmentation – needed for rawBody
-import type { FastifyRequest } from 'fastify';
-declare module 'fastify' {
-  interface FastifyRequest {
-    rawBody?: Buffer;
-  }
 }
