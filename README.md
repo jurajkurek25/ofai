@@ -138,13 +138,13 @@ curl -X GET \
 npm install -g ngrok  # alebo https://ngrok.com/download
 
 # Spusti tunel
-ngrok http 3000
+ngrok http 8888
 # Poznač si HTTPS URL, napr. https://abc123.ngrok.io
 ```
 
 **V Meta Developer Console:**
 1. V tvojej App → **Messenger** → **Webhooks** → **Add Callback URL**
-2. **Callback URL:** `https://abc123.ngrok.io/webhook`
+2. **Callback URL:** `https://mymia.xyz/webhook`  *(produkcia)* alebo ngrok URL pre dev
 3. **Verify Token:** rovnaká hodnota ako `META_VERIFY_TOKEN` v `.env`
 4. Klikni **Verify and Save**
 5. V Subscriptions klikni **Add Subscriptions** pre tvoj Instagram účet
@@ -186,7 +186,7 @@ GROK_API_KEY=         # xai-... kľúč
 GROK_MODEL=grok-3     # alebo grok-3-mini
 
 # App
-PORT=3000
+PORT=8888
 NODE_ENV=production
 ADMIN_SECRET=         # silný náhodný reťazec pre admin API
 
@@ -211,8 +211,8 @@ npm run build
 npm start
 ```
 
-Server beží na `http://localhost:3000`.
-Admin UI: `http://localhost:3000/admin-ui/`
+Server beží na `http://localhost:8888`.
+Admin UI: `http://localhost:8888/admin-ui/`
 
 ---
 
@@ -281,10 +281,10 @@ sudo nano /etc/nginx/sites-available/mia-dm
 ```nginx
 server {
     listen 80;
-    server_name your-domain.com;
+    server_name mymia.xyz www.mymia.xyz;
 
     location / {
-        proxy_pass http://127.0.0.1:3000;
+        proxy_pass http://127.0.0.1:8888;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -306,7 +306,7 @@ sudo systemctl reload nginx
 ### 5. SSL s Certbot
 
 ```bash
-sudo certbot --nginx -d your-domain.com
+sudo certbot --nginx -d mymia.xyz -d www.mymia.xyz
 # Certbot automaticky upraví nginx konfig pre HTTPS
 sudo systemctl reload nginx
 ```
@@ -314,14 +314,14 @@ sudo systemctl reload nginx
 ### 6. Nastav Webhook v Meta
 
 V Meta Developer Console → Webhooks:
-- **Callback URL:** `https://your-domain.com/webhook`
+- **Callback URL:** `https://mymia.xyz/webhook`
 - **Verify Token:** rovnaká hodnota ako v `.env`
 
 ---
 
 ## Admin Dashboard
 
-Prístupný na: `https://your-domain.com/admin-ui/`
+Prístupný na: `https://mymia.xyz/admin-ui/`
 
 Funkcie:
 - **Stats** — celkový počet userov, správy za 24h, aktívni dnes, blokovaní
