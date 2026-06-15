@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mia DM Admin</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f0f13;
+      --surface: #1a1a23;
+      --surface2: #22222e;
+      --accent: #c084fc;
+      --accent2: #818cf8;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --danger: #f87171;
+      --success: #4ade80;
+      --border: #2d2d3d;
+      --radius: 10px;
+    }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
+    header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem; }
+    header h1 { font-size: 1.25rem; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    header span { color: var(--muted); font-size: 0.875rem; }
+    #auth-bar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; max-width: 400px; margin: 4rem auto; }
+    #auth-bar h2 { margin-bottom: 1rem; font-size: 1rem; color: var(--muted); }
+    input { width: 100%; padding: 0.6rem 0.9rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.875rem; outline: none; }
+    input:focus { border-color: var(--accent); }
+    button { cursor: pointer; border: none; border-radius: 6px; padding: 0.6rem 1.2rem; font-size: 0.875rem; transition: opacity 0.15s; }
+    button:hover { opacity: 0.85; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-success { background: var(--success); color: #0f0f13; }
+    .btn-muted { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .layout { display: grid; grid-template-columns: 320px 1fr; height: calc(100vh - 57px); }
+    .sidebar { background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+    .sidebar-header { padding: 1rem; border-bottom: 1px solid var(--border); }
+    .sidebar-header input { margin-top: 0.5rem; }
+    .conv-list { flex: 1; overflow-y: auto; }
+    .conv-item { padding: 0.9rem 1rem; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s; display: flex; flex-direction: column; gap: 2px; }
+    .conv-item:hover, .conv-item.active { background: var(--surface2); }
+    .conv-item .name { font-weight: 600; font-size: 0.9rem; }
+    .conv-item .meta { color: var(--muted); font-size: 0.75rem; display: flex; gap: 0.5rem; }
+    .conv-item.blocked .name { color: var(--danger); }
+    .chat-panel { display: flex; flex-direction: column; overflow: hidden; }
+    .chat-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 1rem; background: var(--surface); }
+    .chat-header .user-info { flex: 1; }
+    .chat-header h2 { font-size: 1rem; }
+    .chat-header p { color: var(--muted); font-size: 0.8rem; }
+    .chat-actions { display: flex; gap: 0.5rem; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
+    .msg { max-width: 70%; padding: 0.6rem 0.9rem; border-radius: 12px; font-size: 0.875rem; line-height: 1.5; }
+    .msg.user { background: var(--surface2); border: 1px solid var(--border); align-self: flex-start; }
+    .msg.assistant { background: linear-gradient(135deg, #4c1d95, #312e81); align-self: flex-end; }
+    .msg .msg-meta { font-size: 0.7rem; color: var(--muted); margin-top: 4px; }
+    .send-bar { padding: 1rem 1.5rem; border-top: 1px solid var(--border); background: var(--surface); display: flex; gap: 0.75rem; }
+    .send-bar textarea { flex: 1; resize: none; padding: 0.6rem 0.9rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.875rem; min-height: 42px; max-height: 120px; outline: none; }
+    .send-bar textarea:focus { border-color: var(--accent); }
+    .stats-bar { display: flex; gap: 1rem; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.75rem 1.25rem; flex: 1; }
+    .stat-card .val { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+    .stat-card .lbl { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+    .empty { color: var(--muted); text-align: center; padding: 3rem; font-size: 0.875rem; }
+    .badge { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 0.7rem; background: var(--danger); color: #fff; }
+    ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<div id="auth-bar">
+  <h2>Admin Login</h2>
+  <input type="password" id="secret-input" placeholder="Admin secret..." />
+  <button class="btn-primary" style="margin-top:0.75rem;width:100%" onclick="login()">Login</button>
+</div>
+
+<div id="main-app" style="display:none">
+  <header>
+    <h1>✨ Mia DM Admin</h1>
+    <span id="header-stats"></span>
+    <button class="btn-muted" style="margin-left:auto" onclick="logout()">Logout</button>
+  </header>
+
+  <div class="stats-bar" id="stats-bar"></div>
+
+  <div class="layout">
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <strong style="font-size:0.875rem">Conversations</strong>
+        <input type="text" id="search-input" placeholder="Search by username / ID..." oninput="filterConvs()" />
+      </div>
+      <div class="conv-list" id="conv-list"></div>
+    </div>
+
+    <div class="chat-panel" id="chat-panel">
+      <div class="empty">← Select a conversation</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let SECRET = '';
+  let conversations = [];
+  let activeUserId = null;
+
+  function login() {
+    SECRET = document.getElementById('secret-input').value.trim();
+    if (!SECRET) return;
+    document.getElementById('auth-bar').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+    loadAll();
+  }
+
+  function logout() {
+    SECRET = '';
+    location.reload();
+  }
+
+  async function api(path, method = 'GET', body) {
+    const res = await fetch(path, {
+      method,
+      headers: { Authorization: `Bearer ${SECRET}`, 'Content-Type': 'application/json' },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+    return res.json();
+  }
+
+  async function loadAll() {
+    await Promise.all([loadStats(), loadConversations()]);
+  }
+
+  async function loadStats() {
+    try {
+      const s = await api('/admin/stats');
+      document.getElementById('stats-bar').innerHTML = `
+        <div class="stat-card"><div class="val">${s.totalUsers}</div><div class="lbl">Total Users</div></div>
+        <div class="stat-card"><div class="val">${s.messagesDay}</div><div class="lbl">Messages (24h)</div></div>
+        <div class="stat-card"><div class="val">${s.activeToday}</div><div class="lbl">Active Today</div></div>
+        <div class="stat-card"><div class="val">${s.blocked}</div><div class="lbl">Blocked</div></div>
+      `;
+    } catch (e) { console.error(e); }
+  }
+
+  async function loadConversations() {
+    try {
+      conversations = await api('/admin/conversations');
+      renderConvList(conversations);
+    } catch (e) { console.error(e); }
+  }
+
+  function renderConvList(list) {
+    const el = document.getElementById('conv-list');
+    if (!list.length) { el.innerHTML = '<div class="empty">No conversations yet</div>'; return; }
+    el.innerHTML = list.map(u => `
+      <div class="conv-item ${u.is_blocked ? 'blocked' : ''} ${u.instagram_user_id === activeUserId ? 'active' : ''}"
+           onclick="openConv('${u.instagram_user_id}', '${u.username || u.instagram_user_id}', ${u.is_blocked})">
+        <div class="name">
+          ${u.username || u.instagram_user_id}
+          ${u.is_blocked ? '<span class="badge">blocked</span>' : ''}
+        </div>
+        <div class="meta">
+          <span>💬 ${u.message_count}</span>
+          <span>${timeAgo(u.last_activity)}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function filterConvs() {
+    const q = document.getElementById('search-input').value.toLowerCase();
+    renderConvList(conversations.filter(u =>
+      (u.username || '').toLowerCase().includes(q) || u.instagram_user_id.includes(q)
+    ));
+  }
+
+  async function openConv(userId, username, isBlocked) {
+    activeUserId = userId;
+    renderConvList(conversations.filter(u => {
+      const q = document.getElementById('search-input').value.toLowerCase();
+      return (u.username || '').toLowerCase().includes(q) || u.instagram_user_id.includes(q);
+    }));
+
+    const messages = await api(`/admin/conversations/${userId}`);
+
+    document.getElementById('chat-panel').innerHTML = `
+      <div class="chat-header">
+        <div class="user-info">
+          <h2>${username}</h2>
+          <p>${userId} ${isBlocked ? '· <span style="color:var(--danger)">BLOCKED</span>' : ''}</p>
+        </div>
+        <div class="chat-actions">
+          ${isBlocked
+            ? `<button class="btn-success" onclick="toggleBlock('${userId}', false)">Unblock</button>`
+            : `<button class="btn-danger" onclick="toggleBlock('${userId}', true)">Block</button>`}
+          <button class="btn-muted" onclick="openConv('${userId}','${username}',${isBlocked})">↻ Refresh</button>
+        </div>
+      </div>
+      <div class="chat-messages" id="chat-messages">
+        ${messages.length === 0 ? '<div class="empty">No messages</div>' :
+          messages.map(m => `
+            <div class="msg ${m.role}">
+              ${escHtml(m.content)}
+              <div class="msg-meta">${m.role === 'user' ? '👤' : '🤖'} ${timeAgo(m.created_at)}</div>
+            </div>
+          `).join('')}
+      </div>
+      <div class="send-bar">
+        <textarea id="manual-msg" placeholder="Type a manual message to send as Mia..." rows="2"></textarea>
+        <div style="display:flex;flex-direction:column;gap:0.5rem">
+          <button class="btn-primary" onclick="sendManual('${userId}')">Send</button>
+          <button class="btn-muted" onclick="queueOverride('${userId}')">Queue</button>
+        </div>
+      </div>
+    `;
+
+    const msgs = document.getElementById('chat-messages');
+    if (msgs) msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  async function toggleBlock(userId, block) {
+    const endpoint = block ? 'block' : 'unblock';
+    await api(`/admin/conversations/${userId}/${endpoint}`, 'POST');
+    await loadConversations();
+    const user = conversations.find(u => u.instagram_user_id === userId);
+    if (user) openConv(userId, user.username || userId, block);
+  }
+
+  async function sendManual(userId) {
+    const msg = document.getElementById('manual-msg').value.trim();
+    if (!msg) return;
+    await api(`/admin/conversations/${userId}/send`, 'POST', { message: msg });
+    document.getElementById('manual-msg').value = '';
+    const user = conversations.find(u => u.instagram_user_id === userId);
+    openConv(userId, user?.username || userId, user?.is_blocked || false);
+    loadAll();
+  }
+
+  async function queueOverride(userId) {
+    const msg = document.getElementById('manual-msg').value.trim();
+    if (!msg) return;
+    await api(`/admin/conversations/${userId}/override`, 'POST', { message: msg });
+    document.getElementById('manual-msg').value = '';
+    alert('Override queued — will be sent on next incoming message from this user.');
+  }
+
+  function timeAgo(unix) {
+    const diff = Math.floor(Date.now() / 1000) - unix;
+    if (diff < 60) return `${diff}s ago`;
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    return `${Math.floor(diff / 86400)}d ago`;
+  }
+
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+</body>
+</html>
