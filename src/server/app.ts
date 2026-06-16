@@ -6,11 +6,17 @@ import path from 'path';
 import { logger } from '../utils/logger';
 import { webhookRoutes } from './routes/webhook';
 import { adminRoutes } from './routes/admin';
+import { authRoutes } from './routes/auth';
+import { personaRoutes } from './routes/personas';
+import { instagramRoutes } from './routes/instagram';
+import { imageRoutes } from './routes/images';
+import { contentRoutes } from './routes/content';
+import { billingRoutes } from './routes/billing';
 
-// Augment FastifyRequest with rawBody
 declare module 'fastify' {
   interface FastifyRequest {
     rawBody?: Buffer;
+    user?: { userId: number; email: string };
   }
 }
 
@@ -20,7 +26,7 @@ export async function buildApp(): Promise<FastifyInstance> {
     bodyLimit: 1_048_576,
   });
 
-  // Parse JSON as Buffer so we can do HMAC verification in the webhook route
+  // Parse JSON as Buffer so we can do HMAC verification in webhook routes
   app.addContentTypeParser(
     'application/json',
     { parseAs: 'buffer' },
@@ -47,8 +53,17 @@ export async function buildApp(): Promise<FastifyInstance> {
     prefix: '/admin-ui/',
   });
 
+  // Legacy routes
   await app.register(webhookRoutes);
   await app.register(adminRoutes);
+
+  // SaaS API routes
+  await app.register(authRoutes);
+  await app.register(personaRoutes);
+  await app.register(instagramRoutes);
+  await app.register(imageRoutes);
+  await app.register(contentRoutes);
+  await app.register(billingRoutes);
 
   app.get('/', async (_req, reply) => reply.redirect('/admin-ui/'));
   app.get('/health', async () => ({ status: 'ok', ts: new Date().toISOString() }));

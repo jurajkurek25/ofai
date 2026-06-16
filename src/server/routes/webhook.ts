@@ -1,11 +1,14 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import crypto from 'crypto';
+import axios from 'axios';
 import { config } from '../../config/config';
 import { logger } from '../../utils/logger';
 import { igClient } from '../../services/instagram';
 import { grokClient } from '../../services/grok';
 import { conversationService } from '../../services/conversation';
 import { isSpam, containsSensitiveRequest, sanitizeForLog } from '../../utils/spam';
+import { db } from '../../db/database';
+import { getPersonaById, getProductsByPersonaId, buildSystemPrompt } from '../../services/personaService';
 
 interface WebhookVerifyQuery {
   'hub.mode': string;
@@ -34,6 +37,16 @@ interface WebhookBody {
   }>;
 }
 
+interface IGConnection {
+  id: number;
+  user_id: number;
+  ig_account_id: string;
+  ig_username: string | null;
+  access_token: string;
+  persona_id: number | null;
+  connected_at: number;
+}
+
 function verifySignature(rawBody: Buffer, signature: string): boolean {
   const expected = `sha256=${crypto
     .createHmac('sha256', config.meta.appSecret)
@@ -46,7 +59,30 @@ function verifySignature(rawBody: Buffer, signature: string): boolean {
   }
 }
 
-async function handleIncomingMessage(senderId: string, messageId: string, text: string): Promise<void> {
+async function sendMessageWithToken(
+  recipientId: string,
+  message: string,
+  accessToken: string,
+  apiVersion: string
+): Promise<void> {
+  const base = `https://graph.facebook.com/${apiVersion}`;
+  await axios.post(
+    `${base}/me/messages`,
+    {
+      recipient: { id: recipientId },
+      message: { text: message },
+      messaging_type: 'RESPONSE',
+    },
+    { params: { access_token: accessToken }, timeout: 15_000 }
+  );
+}
+
+async function handleIncomingMessage(
+  senderId: string,
+  messageId: string,
+  text: string,
+  recipientAccountId: string
+): Promise<void> {
   // Dedup
   if (conversationService.isMessageProcessed(messageId)) return;
   conversationService.markMessageProcessed(messageId);
@@ -68,12 +104,16 @@ async function handleIncomingMessage(senderId: string, messageId: string, text: 
     return;
   }
 
-  // Record inbound message
   conversationService.addMessage(senderId, 'user', text, messageId);
 
-  let reply: string;
+  // Look up which SaaS user owns this IG account and which persona/token to use
+  const connection = db
+    .prepare('SELECT * FROM instagram_connections WHERE ig_account_id = ?')
+    .get(recipientAccountId) as IGConnection | undefined;
 
-  // Check for manual override first
+  let reply: string;
+  let accessToken = config.meta.accessToken;
+
   const override = conversationService.getPendingOverride(senderId);
   if (override) {
     reply = override;
@@ -82,12 +122,59 @@ async function handleIncomingMessage(senderId: string, messageId: string, text: 
     reply = "hey, i appreciate the message but that's not something i can help with 🙏 feel free to ask about my content though!";
   } else {
     const history = conversationService.getHistory(senderId);
-    reply = await grokClient.generateReply(history, text);
+
+    if (connection?.persona_id) {
+      // Use per-tenant persona and access token
+      const persona = getPersonaById(connection.persona_id);
+      if (persona) {
+        const products = getProductsByPersonaId(persona.id);
+        const systemPrompt = buildSystemPrompt(persona, products);
+        accessToken = connection.access_token;
+
+        const messages = [
+          { role: 'system' as const, content: systemPrompt },
+          ...history,
+          { role: 'user' as const, content: text },
+        ];
+
+        const http = axios.create({
+          baseURL: config.grok.baseUrl,
+          headers: {
+            Authorization: `Bearer ${config.grok.apiKey}`,
+            'Content-Type': 'application/json',
+          },
+          timeout: 30_000,
+        });
+
+        const response = await http.post<{ choices: Array<{ message: { content: string } }> }>(
+          '/chat/completions',
+          {
+            model: config.grok.model,
+            messages,
+            temperature: 0.85,
+            max_tokens: 300,
+            top_p: 0.95,
+          }
+        );
+
+        reply = response.data.choices[0]?.message?.content?.trim() ?? '';
+        if (!reply) throw new Error('Empty response from Grok API');
+      } else {
+        reply = await grokClient.generateReply(history, text);
+      }
+    } else {
+      reply = await grokClient.generateReply(history, text);
+    }
   }
 
-  await igClient.sendMessage(senderId, reply);
-  conversationService.addMessage(senderId, 'assistant', reply);
+  // Send using the per-connection access token if available
+  if (connection?.access_token) {
+    await sendMessageWithToken(senderId, reply, connection.access_token, config.meta.apiVersion);
+  } else {
+    await igClient.sendMessage(senderId, reply);
+  }
 
+  conversationService.addMessage(senderId, 'assistant', reply);
   logger.info({ senderId, replyLength: reply.length }, 'Reply sent');
 }
 
@@ -129,6 +216,7 @@ export async function webhookRoutes(fastify: FastifyInstance): Promise<void> {
       for (const entry of body.entry ?? []) {
         for (const event of entry.messaging ?? []) {
           const senderId = event.sender.id;
+          const recipientId = event.recipient.id;
           const text = event.message?.text;
           const mid = event.message?.mid;
 
@@ -136,7 +224,7 @@ export async function webhookRoutes(fastify: FastifyInstance): Promise<void> {
           if (senderId === config.meta.instagramAccountId) continue;
           if (!text || !mid) continue;
 
-          handleIncomingMessage(senderId, mid, text).catch((err) => {
+          handleIncomingMessage(senderId, mid, text, recipientId).catch((err) => {
             logger.error({ err, senderId }, 'Error handling incoming message');
           });
         }

@@ -1,687 +1,1247 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mia — Admin Panel</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OfAI — AI Persona Platform</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0c0c10;
-      --surface: #16161f;
-      --surface2: #1e1e2a;
-      --surface3: #252535;
-      --accent: #c084fc;
-      --accent2: #818cf8;
-      --accentg: linear-gradient(135deg,#c084fc,#818cf8);
-      --text: #e2e8f0;
-      --muted: #64748b;
-      --muted2: #94a3b8;
-      --danger: #f87171;
-      --warn: #fbbf24;
-      --success: #4ade80;
-      --border: #252535;
-      --radius: 12px;
-      --sidebar: 240px;
+      --bg: #0d0d0f;
+      --bg2: #16161a;
+      --bg3: #1e1e24;
+      --border: #2a2a32;
+      --text: #e8e8f0;
+      --text2: #9090a8;
+      --accent: #7c6af7;
+      --accent2: #a08fff;
+      --success: #4caf7d;
+      --danger: #e05252;
+      --warning: #e09a30;
+      --sidebar-w: 220px;
+      --radius: 10px;
     }
-    body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; min-height:100vh; font-size:14px; }
-
-    /* ── Login ── */
-    #login-screen {
-      min-height:100vh; display:flex; align-items:center; justify-content:center;
-      background: radial-gradient(ellipse at 50% 0%, rgba(192,132,252,.12) 0%, transparent 70%);
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
+    a { color: var(--accent2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    button { cursor: pointer; font-family: inherit; font-size: 14px; border: none; border-radius: var(--radius); transition: opacity 0.15s, background 0.15s; }
+    button:hover { opacity: 0.85; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    input, textarea, select {
+      font-family: inherit; font-size: 14px; background: var(--bg);
+      color: var(--text); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 10px 14px; width: 100%; outline: none; transition: border-color 0.15s;
     }
-    .login-box { width:360px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:2.5rem; }
-    .login-logo { font-size:2rem; text-align:center; margin-bottom:.25rem; }
-    .login-box h1 { text-align:center; font-size:1.25rem; background:var(--accentg); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:.25rem; }
-    .login-box p { text-align:center; color:var(--muted2); font-size:.8rem; margin-bottom:1.5rem; }
-    .field { margin-bottom:1rem; }
-    .field label { display:block; font-size:.75rem; color:var(--muted2); margin-bottom:.4rem; text-transform:uppercase; letter-spacing:.05em; }
-    input, textarea, select { width:100%; padding:.6rem .85rem; background:var(--surface2); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:.875rem; outline:none; font-family:inherit; transition:border .15s; }
-    input:focus, textarea:focus { border-color:var(--accent); }
-    .btn { cursor:pointer; border:none; border-radius:8px; padding:.65rem 1.25rem; font-size:.875rem; font-weight:500; font-family:inherit; transition:opacity .15s,transform .1s; display:inline-flex; align-items:center; gap:.4rem; }
-    .btn:hover { opacity:.88; } .btn:active { transform:scale(.97); }
-    .btn-primary { background:var(--accentg); color:#fff; }
-    .btn-danger  { background:var(--danger); color:#fff; }
-    .btn-success { background:var(--success); color:#0c0c10; }
-    .btn-ghost   { background:transparent; color:var(--muted2); border:1px solid var(--border); }
-    .btn-full { width:100%; justify-content:center; }
-    .hint { font-size:.75rem; color:var(--muted); margin-top:.4rem; }
+    input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+    textarea { resize: vertical; min-height: 80px; }
+    label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 6px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+    .field { margin-bottom: 18px; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: var(--radius); font-weight: 600; transition: all 0.15s; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-secondary { background: var(--bg3); color: var(--text); border: 1px solid var(--border); }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+    .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .badge-free { background: var(--bg3); color: var(--text2); }
+    .badge-creator { background: #2d2460; color: var(--accent2); }
+    .badge-pro { background: #2a1e10; color: var(--warning); }
+    .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+    .toast { padding: 12px 18px; border-radius: var(--radius); color: #fff; font-weight: 500; animation: slideIn 0.2s; max-width: 320px; }
+    .toast-success { background: var(--success); }
+    .toast-error { background: var(--danger); }
+    .toast-info { background: var(--accent); }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
 
-    /* ── App shell ── */
-    #app { display:none; height:100vh; overflow:hidden; }
-    .shell { display:grid; grid-template-columns:var(--sidebar) 1fr; height:100%; }
+    /* AUTH */
+    .auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .auth-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 40px; width: 100%; max-width: 420px; }
+    .auth-logo { text-align: center; margin-bottom: 32px; }
+    .auth-logo h1 { font-size: 28px; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .auth-logo p { color: var(--text2); margin-top: 6px; }
+    .auth-footer { text-align: center; margin-top: 24px; color: var(--text2); }
 
-    /* ── Sidebar ── */
-    .sidebar { background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; overflow:hidden; }
-    .sidebar-brand { padding:1.25rem 1rem; border-bottom:1px solid var(--border); }
-    .sidebar-brand h2 { font-size:.95rem; background:var(--accentg); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-weight:700; }
-    .sidebar-brand p { font-size:.7rem; color:var(--muted); margin-top:1px; }
-    nav { flex:1; padding:.75rem .5rem; display:flex; flex-direction:column; gap:2px; overflow-y:auto; }
-    .nav-item { display:flex; align-items:center; gap:.6rem; padding:.6rem .85rem; border-radius:8px; cursor:pointer; color:var(--muted2); font-size:.85rem; transition:background .15s,color .15s; }
-    .nav-item:hover { background:var(--surface2); color:var(--text); }
-    .nav-item.active { background:var(--surface3); color:var(--accent); font-weight:600; }
-    .nav-item .icon { width:16px; text-align:center; font-style:normal; }
-    .nav-sep { height:1px; background:var(--border); margin:.4rem .5rem; }
-    .sidebar-footer { padding:.75rem 1rem; border-top:1px solid var(--border); }
-    .status-dot { width:8px; height:8px; border-radius:50%; display:inline-block; }
-    .dot-ok { background:var(--success); }
-    .dot-err { background:var(--danger); }
-    .dot-warn { background:var(--warn); }
+    /* LANDING */
+    .landing { min-height: 100vh; }
+    .landing-nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 60px; border-bottom: 1px solid var(--border); }
+    .landing-logo { font-size: 22px; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .landing-nav-links { display: flex; gap: 12px; }
+    .hero { text-align: center; padding: 100px 20px 60px; max-width: 800px; margin: 0 auto; }
+    .hero h1 { font-size: 52px; font-weight: 900; line-height: 1.1; margin-bottom: 24px; background: linear-gradient(135deg, #fff 40%, var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p { font-size: 20px; color: var(--text2); margin-bottom: 40px; line-height: 1.6; }
+    .hero-cta { display: flex; gap: 16px; justify-content: center; }
+    .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1100px; margin: 0 auto 80px; padding: 0 40px; }
+    .feature-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 28px; }
+    .feature-icon { font-size: 32px; margin-bottom: 16px; }
+    .feature-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+    .feature-card p { color: var(--text2); line-height: 1.6; }
+    .pricing-section { max-width: 1100px; margin: 0 auto 80px; padding: 0 40px; }
+    .pricing-section h2 { text-align: center; font-size: 36px; font-weight: 800; margin-bottom: 48px; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .plan-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 32px; position: relative; }
+    .plan-card.popular { border-color: var(--accent); }
+    .popular-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .plan-name { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .plan-price { font-size: 40px; font-weight: 900; margin-bottom: 4px; }
+    .plan-price span { font-size: 16px; font-weight: 400; color: var(--text2); }
+    .plan-features { list-style: none; margin: 24px 0; display: flex; flex-direction: column; gap: 10px; }
+    .plan-features li { color: var(--text2); display: flex; gap: 10px; }
+    .plan-features li::before { content: "✓"; color: var(--success); flex-shrink: 0; }
 
-    /* ── Main content ── */
-    main { display:flex; flex-direction:column; overflow:hidden; }
-    .page { flex:1; overflow-y:auto; padding:1.75rem 2rem; display:none; }
-    .page.active { display:block; }
+    /* APP LAYOUT */
+    .app-layout { display: flex; min-height: 100vh; }
+    .sidebar { width: var(--sidebar-w); background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
+    .sidebar-logo { padding: 24px 20px 20px; font-size: 20px; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .sidebar-nav { flex: 1; padding: 8px 12px; display: flex; flex-direction: column; gap: 2px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; color: var(--text2); font-weight: 500; cursor: pointer; transition: all 0.15s; border: none; background: transparent; width: 100%; text-align: left; font-size: 14px; }
+    .nav-item:hover { background: var(--bg3); color: var(--text); }
+    .nav-item.active { background: rgba(124, 106, 247, 0.15); color: var(--accent2); }
+    .sidebar-footer { padding: 16px 12px; border-top: 1px solid var(--border); }
+    .user-info { padding: 10px 12px; margin-bottom: 8px; }
+    .user-email { font-size: 12px; color: var(--text2); margin-top: 4px; }
+    .user-name { font-size: 14px; font-weight: 600; }
+    .main { margin-left: var(--sidebar-w); flex: 1; padding: 32px; max-width: calc(100vw - var(--sidebar-w)); }
+    .page-header { margin-bottom: 32px; }
+    .page-header h1 { font-size: 26px; font-weight: 800; }
+    .page-header p { color: var(--text2); margin-top: 6px; }
 
-    /* ── Page header ── */
-    .page-header { margin-bottom:1.5rem; }
-    .page-header h2 { font-size:1.15rem; font-weight:700; }
-    .page-header p { color:var(--muted2); font-size:.82rem; margin-top:.25rem; }
+    /* DASHBOARD */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+    .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+    .stat-label { font-size: 12px; color: var(--text2); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
+    .stat-value { font-size: 32px; font-weight: 800; }
 
-    /* ── Cards ── */
-    .cards { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:1.5rem; }
-    .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.1rem 1.25rem; }
-    .card .val { font-size:1.75rem; font-weight:700; color:var(--accent); line-height:1; }
-    .card .lbl { font-size:.75rem; color:var(--muted2); margin-top:.35rem; }
-    .card .sub  { font-size:.7rem; color:var(--muted); margin-top:2px; }
+    /* PERSONAS */
+    .personas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .persona-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; cursor: pointer; transition: border-color 0.15s; }
+    .persona-card:hover { border-color: var(--accent); }
+    .persona-avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #f06f9a); display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 14px; }
+    .persona-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .persona-meta { font-size: 12px; color: var(--text2); margin-bottom: 14px; }
 
-    /* ── Status cards ── */
-    .status-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1.5rem; }
-    .status-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1rem 1.25rem; display:flex; align-items:flex-start; gap:.75rem; }
-    .status-card .sc-icon { font-size:1.4rem; line-height:1; padding-top:.1rem; }
-    .status-card .sc-body { flex:1; min-width:0; }
-    .status-card .sc-title { font-weight:600; font-size:.875rem; }
-    .status-card .sc-detail { font-size:.75rem; color:var(--muted2); margin-top:.2rem; word-break:break-word; }
-    .status-card.ok  { border-color:rgba(74,222,128,.25); }
-    .status-card.err { border-color:rgba(248,113,113,.25); }
-    .status-card.loading { opacity:.6; }
+    /* TABS */
+    .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+    .tab { padding: 10px 16px; border-radius: 8px 8px 0 0; cursor: pointer; color: var(--text2); font-weight: 500; border: none; background: transparent; font-size: 14px; transition: all 0.15s; border-bottom: 2px solid transparent; }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--accent2); border-bottom-color: var(--accent); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
 
-    /* ── Info box ── */
-    .info-box { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem 1.5rem; margin-bottom:1.25rem; }
-    .info-box h3 { font-size:.875rem; font-weight:600; margin-bottom:.6rem; display:flex; align-items:center; gap:.5rem; }
-    .info-box p, .info-box li { font-size:.82rem; color:var(--muted2); line-height:1.65; }
-    .info-box ol, .info-box ul { padding-left:1.25rem; margin-top:.4rem; }
-    .info-box li { margin-bottom:.2rem; }
-    .info-box code { background:var(--surface3); border-radius:4px; padding:1px 5px; font-size:.78rem; color:var(--accent); font-family:monospace; }
-    .info-box a { color:var(--accent2); }
+    /* PRODUCTS */
+    .product-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+    .product-item { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .product-info { flex: 1; }
+    .product-name { font-weight: 600; margin-bottom: 2px; }
+    .product-meta { font-size: 12px; color: var(--text2); }
+    .product-actions { display: flex; gap: 8px; flex-shrink: 0; }
 
-    /* ── Conversations ── */
-    .conv-layout { display:grid; grid-template-columns:280px 1fr; height:calc(100vh - 57px); gap:0; overflow:hidden; }
-    .conv-sidebar { background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; overflow:hidden; }
-    .conv-sidebar-head { padding:.85rem 1rem; border-bottom:1px solid var(--border); }
-    .conv-sidebar-head input { margin-top:.5rem; font-size:.8rem; }
-    .conv-list { flex:1; overflow-y:auto; }
-    .conv-item { padding:.85rem 1rem; border-bottom:1px solid var(--border); cursor:pointer; transition:background .1s; }
-    .conv-item:hover, .conv-item.active { background:var(--surface2); }
-    .conv-item .ci-name { font-weight:600; font-size:.875rem; display:flex; align-items:center; gap:.4rem; }
-    .conv-item .ci-meta { color:var(--muted); font-size:.72rem; margin-top:2px; display:flex; gap:.5rem; }
-    .badge { display:inline-block; padding:1px 6px; border-radius:4px; font-size:.68rem; font-weight:600; }
-    .badge-danger { background:rgba(248,113,113,.2); color:var(--danger); }
-    .badge-muted  { background:var(--surface3); color:var(--muted2); }
+    /* IMAGES */
+    .image-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    .image-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .image-card img { width: 100%; height: 200px; object-fit: cover; display: block; }
+    .image-card-info { padding: 10px 12px; }
+    .image-card-style { font-size: 12px; color: var(--text2); }
+    .image-card-actions { padding: 8px 12px; display: flex; gap: 8px; border-top: 1px solid var(--border); }
 
-    .conv-main { display:flex; flex-direction:column; overflow:hidden; }
-    .conv-head { padding:.85rem 1.25rem; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:.75rem; background:var(--surface); }
-    .conv-head-info { flex:1; min-width:0; }
-    .conv-head-info h3 { font-size:.9rem; font-weight:600; }
-    .conv-head-info p  { font-size:.72rem; color:var(--muted); margin-top:1px; }
-    .conv-head-actions { display:flex; gap:.5rem; }
-    .conv-messages { flex:1; overflow-y:auto; padding:1.25rem; display:flex; flex-direction:column; gap:.6rem; }
-    .msg { max-width:72%; }
-    .msg-bubble { padding:.6rem .9rem; border-radius:12px; font-size:.84rem; line-height:1.55; }
-    .msg.user { align-self:flex-start; }
-    .msg.user .msg-bubble { background:var(--surface2); border:1px solid var(--border); }
-    .msg.assistant { align-self:flex-end; }
-    .msg.assistant .msg-bubble { background:linear-gradient(135deg,rgba(76,29,149,.7),rgba(49,46,129,.7)); border:1px solid rgba(192,132,252,.2); }
-    .msg-time { font-size:.68rem; color:var(--muted); margin-top:3px; }
-    .msg.assistant .msg-time { text-align:right; }
+    /* CONTENT */
+    .content-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
+    .content-caption { margin-bottom: 12px; line-height: 1.6; }
+    .content-hashtags { font-size: 12px; color: var(--accent2); line-height: 1.8; }
+    .content-meta { font-size: 11px; color: var(--text2); margin-top: 10px; display: flex; gap: 16px; }
+    .trend-card { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
+    .trend-title { font-weight: 700; margin-bottom: 8px; }
+    .trend-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .trend-list li { color: var(--text2); font-size: 13px; display: flex; gap: 8px; }
+    .trend-list li::before { content: "→"; color: var(--accent); flex-shrink: 0; }
 
-    .conv-send { padding:.85rem 1.25rem; border-top:1px solid var(--border); background:var(--surface); }
-    .send-tabs { display:flex; gap:.35rem; margin-bottom:.6rem; }
-    .send-tab { padding:.3rem .75rem; border-radius:6px; font-size:.75rem; cursor:pointer; background:var(--surface2); color:var(--muted2); border:1px solid var(--border); transition:.15s; }
-    .send-tab.active { background:var(--surface3); color:var(--text); border-color:var(--accent); }
-    .send-row { display:flex; gap:.6rem; }
-    .send-row textarea { flex:1; resize:none; min-height:40px; max-height:100px; font-size:.84rem; }
-    .send-hint { font-size:.72rem; color:var(--muted); margin-top:.4rem; }
-    .empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:.75rem; color:var(--muted); }
-    .empty-state .es-icon { font-size:2.5rem; }
-    .empty-state p { font-size:.84rem; }
+    /* BILLING */
+    .current-plan-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 32px; display: flex; align-items: center; justify-content: space-between; }
+    .current-plan-info h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .current-plan-info p { color: var(--text2); }
 
-    /* ── Settings ── */
-    .settings-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; }
-    .setting-section { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem 1.5rem; }
-    .setting-section h3 { font-size:.875rem; font-weight:600; margin-bottom:1rem; display:flex; align-items:center; gap:.5rem; }
-    .setting-row { display:flex; justify-content:space-between; align-items:flex-start; padding:.55rem 0; border-bottom:1px solid var(--border); gap:1rem; }
-    .setting-row:last-child { border-bottom:none; padding-bottom:0; }
-    .sr-label { font-size:.8rem; color:var(--muted2); }
-    .sr-label small { display:block; font-size:.7rem; color:var(--muted); margin-top:1px; }
-    .sr-value { font-size:.8rem; font-weight:500; text-align:right; }
-    .sr-value.ok { color:var(--success); }
-    .sr-value.err { color:var(--danger); }
-    .sr-value.warn { color:var(--warn); }
-
-    /* ── Help ── */
-    .help-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; }
-    .help-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem 1.5rem; }
-    .help-card h3 { font-size:.875rem; font-weight:600; margin-bottom:.75rem; display:flex; align-items:center; gap:.5rem; }
-    .help-card p { font-size:.8rem; color:var(--muted2); line-height:1.65; }
-    .help-card ol, .help-card ul { padding-left:1.25rem; margin-top:.5rem; }
-    .help-card li { font-size:.8rem; color:var(--muted2); line-height:1.65; margin-bottom:.25rem; }
-    .help-card code { background:var(--surface3); border-radius:4px; padding:1px 5px; font-size:.75rem; color:var(--accent); font-family:monospace; }
-    .help-card a { color:var(--accent2); text-decoration:none; }
-    .help-card a:hover { text-decoration:underline; }
-    .flow-steps { display:flex; flex-direction:column; gap:.6rem; margin-top:.5rem; }
-    .flow-step { display:flex; align-items:flex-start; gap:.75rem; }
-    .flow-step .step-num { width:22px; height:22px; border-radius:50%; background:var(--accentg); color:#fff; font-size:.7rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-    .flow-step p { font-size:.8rem; color:var(--muted2); line-height:1.55; padding-top:2px; }
-
-    /* ── Toast ── */
-    #toast { position:fixed; bottom:1.5rem; right:1.5rem; background:var(--surface3); border:1px solid var(--border); border-radius:10px; padding:.7rem 1.1rem; font-size:.82rem; opacity:0; pointer-events:none; transition:opacity .25s; z-index:999; max-width:300px; }
-    #toast.show { opacity:1; }
-    #toast.ok  { border-color:var(--success); color:var(--success); }
-    #toast.err { border-color:var(--danger);  color:var(--danger); }
-
-    ::-webkit-scrollbar { width:5px; height:5px; }
-    ::-webkit-scrollbar-track { background:transparent; }
-    ::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+    /* MISC */
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .section-title { font-size: 18px; font-weight: 700; }
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--text2); }
+    .empty-state .empty-icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state h3 { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .row { display: flex; gap: 12px; align-items: flex-start; }
+    .row .field { flex: 1; }
+    .chip { display: inline-block; background: var(--bg3); border: 1px solid var(--border); border-radius: 20px; padding: 4px 10px; font-size: 12px; margin: 2px; cursor: pointer; }
+    .chip:hover { border-color: var(--accent); }
+    .toggle { position: relative; width: 44px; height: 24px; background: var(--bg3); border-radius: 12px; cursor: pointer; transition: background 0.2s; border: 1px solid var(--border); display: inline-block; flex-shrink: 0; }
+    .toggle.on { background: var(--accent); border-color: var(--accent); }
+    .toggle::after { content: ""; position: absolute; width: 18px; height: 18px; background: #fff; border-radius: 50%; top: 2px; left: 2px; transition: transform 0.2s; }
+    .toggle.on::after { transform: translateX(20px); }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .prompt-preview { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 16px; font-size: 13px; line-height: 1.7; color: var(--text2); white-space: pre-wrap; font-family: monospace; max-height: 300px; overflow-y: auto; }
+    .style-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .style-option { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 14px; cursor: pointer; text-align: center; transition: all 0.15s; }
+    .style-option:hover { border-color: var(--accent); }
+    .style-option.selected { border-color: var(--accent); background: rgba(124,106,247,0.1); }
+    .style-option .style-icon { font-size: 24px; margin-bottom: 6px; }
+    .style-option .style-name { font-size: 12px; font-weight: 600; }
+    .connection-status { display: flex; align-items: center; gap: 8px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .dot-green { background: var(--success); }
+    .dot-red { background: var(--danger); }
+    hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .modal { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 28px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .modal-title { font-size: 18px; font-weight: 700; }
+    .modal-close { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); width: 32px; height: 32px; border-radius: 50%; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
   </style>
 </head>
 <body>
 
-<!-- ═══════════════ LOGIN ═══════════════ -->
-<div id="login-screen">
-  <div class="login-box">
-    <div class="login-logo">✨</div>
-    <h1>Mia Admin Panel</h1>
-    <p>Správa Instagram DM automatizácie</p>
-    <div class="field">
-      <label>Admin heslo</label>
-      <input type="password" id="secret-input" placeholder="Zadaj ADMIN_SECRET z .env..." onkeydown="if(event.key==='Enter')login()" autofocus />
-      <p class="hint">Nájdeš ho v súbore <code>.env</code> na serveri — položka <code>ADMIN_SECRET</code></p>
-    </div>
-    <button class="btn btn-primary btn-full" onclick="login()">Prihlásiť sa</button>
-    <p id="login-err" style="color:var(--danger);font-size:.78rem;margin-top:.75rem;text-align:center;display:none">Nesprávne heslo alebo server nedostupný.</p>
-  </div>
-</div>
-
-<!-- ═══════════════ APP ═══════════════ -->
-<div id="app">
-  <div class="shell">
-
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <div class="sidebar-brand">
-        <h2>✨ Mia DM Bot</h2>
-        <p id="sb-account">Načítavam...</p>
-      </div>
-      <nav>
-        <div class="nav-item active" onclick="showPage('overview')" id="nav-overview">
-          <i class="icon">📊</i> Prehľad
-        </div>
-        <div class="nav-item" onclick="showPage('conversations')" id="nav-conversations">
-          <i class="icon">💬</i> Konverzácie
-        </div>
-        <div class="nav-sep"></div>
-        <div class="nav-item" onclick="showPage('settings')" id="nav-settings">
-          <i class="icon">⚙️</i> Nastavenia
-        </div>
-        <div class="nav-item" onclick="showPage('help')" id="nav-help">
-          <i class="icon">❓</i> Ako to funguje
-        </div>
-      </nav>
-      <div class="sidebar-footer">
-        <button class="btn btn-ghost btn-full" onclick="logout()" style="font-size:.78rem">Odhlásiť sa</button>
-      </div>
-    </div>
-
-    <!-- Main -->
-    <main>
-
-      <!-- ── OVERVIEW ── -->
-      <div class="page active" id="page-overview">
-        <div class="page-header">
-          <h2>Prehľad</h2>
-          <p>Stav systému a štatistiky za posledných 24 hodín</p>
-        </div>
-
-        <div class="cards" id="stats-cards">
-          <div class="card"><div class="val">—</div><div class="lbl">Celkovo followers</div><div class="sub">všetci čo písali</div></div>
-          <div class="card"><div class="val">—</div><div class="lbl">Správy dnes</div><div class="sub">za posledných 24h</div></div>
-          <div class="card"><div class="val">—</div><div class="lbl">Aktívni dnes</div><div class="sub">unikátni userovia</div></div>
-          <div class="card"><div class="val">—</div><div class="lbl">Blokovaní</div><div class="sub">ignorovaní useri</div></div>
-        </div>
-
-        <div style="margin-bottom:.75rem;display:flex;align-items:center;justify-content:space-between">
-          <span style="font-size:.8rem;font-weight:600">Stav pripojených služieb</span>
-          <button class="btn btn-ghost" style="font-size:.75rem;padding:.35rem .75rem" onclick="loadStatus()">↻ Otestovať</button>
-        </div>
-        <div class="status-grid" id="status-grid">
-          <div class="status-card loading"><div class="sc-icon">📸</div><div class="sc-body"><div class="sc-title">Instagram API</div><div class="sc-detail">Testujem...</div></div></div>
-          <div class="status-card loading"><div class="sc-icon">🤖</div><div class="sc-body"><div class="sc-title">Grok AI</div><div class="sc-detail">Testujem...</div></div></div>
-          <div class="status-card loading"><div class="sc-icon">🗄️</div><div class="sc-body"><div class="sc-title">Databáza</div><div class="sc-detail">Testujem...</div></div></div>
-        </div>
-
-        <div class="info-box">
-          <h3>💡 Čo Admin heslo chráni?</h3>
-          <p>Heslo <code>ADMIN_SECRET</code> chráni <strong>iba tento admin panel</strong>. Každé volanie na <code>/admin/*</code> endpointy vyžaduje <code>Authorization: Bearer &lt;heslo&gt;</code> hlavičku. Ak niekto toto heslo nemá, nemôže:</p>
-          <ul>
-            <li>Čítať konverzácie tvojich followerov</li>
-            <li>Blokovať / odblokovať userov</li>
-            <li>Manuálne odosielať správy</li>
-            <li>Vidieť nastavenia bota</li>
-          </ul>
-          <p style="margin-top:.6rem">Webhook na <code>/webhook</code> je chránený samostatne — <strong>Meta podpisuje každý request</strong> pomocou HMAC-SHA256 (tvoj <code>META_APP_SECRET</code>), takže falošné requesty sú odmietnuté.</p>
-        </div>
-      </div>
-
-      <!-- ── CONVERSATIONS ── -->
-      <div class="page" id="page-conversations" style="padding:0">
-        <div class="conv-layout">
-          <div class="conv-sidebar">
-            <div class="conv-sidebar-head">
-              <strong style="font-size:.82rem">Konverzácie</strong>
-              <input type="text" id="search-input" placeholder="Hľadaj username / ID..." oninput="filterConvs()" />
-            </div>
-            <div class="conv-list" id="conv-list">
-              <div class="empty-state" style="height:200px"><div class="es-icon">💬</div><p>Žiadne konverzácie</p></div>
-            </div>
-          </div>
-          <div class="conv-main" id="conv-main">
-            <div class="empty-state">
-              <div class="es-icon">👈</div>
-              <p>Vyber konverzáciu zo zoznamu</p>
-              <p style="font-size:.75rem;color:var(--muted)">Konverzácie sa objavia keď ti followerovia napíšu DM</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── SETTINGS ── -->
-      <div class="page" id="page-settings">
-        <div class="page-header">
-          <h2>Nastavenia</h2>
-          <p>Aktuálna konfigurácia bota (read-only — meniť treba v <code>.env</code> na serveri)</p>
-        </div>
-        <div class="settings-grid" id="settings-grid">
-          <div style="color:var(--muted);font-size:.82rem">Načítavam...</div>
-        </div>
-      </div>
-
-      <!-- ── HELP ── -->
-      <div class="page" id="page-help">
-        <div class="page-header">
-          <h2>Ako to funguje</h2>
-          <p>Kompletný prehľad systému — čítaj ak niečomu nerozumieš</p>
-        </div>
-        <div class="help-grid">
-
-          <div class="help-card">
-            <h3>🔄 Tok správy od followera</h3>
-            <div class="flow-steps">
-              <div class="flow-step"><div class="step-num">1</div><p>Follower ti napíše DM na Instagrame</p></div>
-              <div class="flow-step"><div class="step-num">2</div><p>Meta pošle event na <code>/webhook</code> — overíme podpis (HMAC-SHA256)</p></div>
-              <div class="flow-step"><div class="step-num">3</div><p>Skontrolujeme spam, rate limit, či nie je user blokovaný</p></div>
-              <div class="flow-step"><div class="step-num">4</div><p>História konverzácie (posledných 10 správ) sa pošle Grouku ako kontext</p></div>
-              <div class="flow-step"><div class="step-num">5</div><p>Grok vygeneruje odpoveď v štýle Mie</p></div>
-              <div class="flow-step"><div class="step-num">6</div><p>Odpoveď sa odošle cez Instagram Graph API</p></div>
-              <div class="flow-step"><div class="step-num">7</div><p>Správa aj odpoveď sa uložia do SQLite databázy</p></div>
-            </div>
-          </div>
-
-          <div class="help-card">
-            <h3>📸 Ako pridať Instagram účet</h3>
-            <p>Instagram účet sa konfiguruje cez Meta Business API — nie tu v paneli. Postup:</p>
-            <ol>
-              <li>Vytvor <strong>Meta App</strong> na <a href="https://developers.facebook.com" target="_blank">developers.facebook.com</a></li>
-              <li>Pridaj produkt <strong>Messenger</strong> (funguje aj pre Instagram DM)</li>
-              <li>V Meta Business Suite pripoj <strong>Instagram Business/Creator účet</strong></li>
-              <li>Vygeneruj <strong>long-lived Access Token</strong> s oprávnením <code>instagram_manage_messages</code></li>
-              <li>Skopíruj <strong>Instagram Account ID</strong> (číselné ID z Meta)</li>
-              <li>Daj tieto hodnoty do <code>.env</code> na serveri a reštartuj bota</li>
-            </ol>
-            <p style="margin-top:.6rem">Podrobný návod je v <code>README.md</code> v repozitári.</p>
-          </div>
-
-          <div class="help-card">
-            <h3>⚙️ Webhook vs Polling</h3>
-            <p><strong>Webhook</strong> (odporúčané): Meta zavolá tvoj server hneď keď príde správa. Vyžaduje verejnú HTTPS doménu.</p>
-            <p style="margin-top:.5rem"><strong>Polling</strong>: Bot pravidelne sám skontroluje nové správy. Pomalšie, ale funguje aj bez webhookov. Nastav <code>ENABLE_POLLING=true</code> v <code>.env</code>.</p>
-            <p style="margin-top:.5rem">Aktuálny stav vidíš v sekcii <strong>Nastavenia</strong>.</p>
-          </div>
-
-          <div class="help-card">
-            <h3>✉️ Manuálne správy</h3>
-            <p>V záložke <strong>Konverzácie</strong> môžeš:</p>
-            <ul>
-              <li><strong>Odoslať teraz</strong> — správa ide ihneď ako keby ju napísala Mia</li>
-              <li><strong>Zaradiť do fronty</strong> — správa sa odošle namiesto AI odpovede keď ti follower nabudúce napíše</li>
-              <li><strong>Blokovať usera</strong> — bot prestane odpovedať tomuto followerovi</li>
-            </ul>
-          </div>
-
-          <div class="help-card">
-            <h3>🛡️ Ochrana proti spamu</h3>
-            <p>Každá prichádzajúca správa prechádza cez filtre:</p>
-            <ul>
-              <li><strong>Spam detekcia</strong> — linky, opakované znaky, typické spam frázky</li>
-              <li><strong>Nevhodné požiadavky</strong> — explicitný obsah, osobné údaje, hacking</li>
-              <li><strong>Rate limit</strong> — max <code>MAX_REPLIES_PER_USER_PER_HOUR</code> odpovedí na usera za hodinu</li>
-              <li><strong>Deduplikácia</strong> — každá Meta správa sa spracuje len raz (podľa ID)</li>
-            </ul>
-          </div>
-
-          <div class="help-card">
-            <h3>🤖 Osobnosť Mie</h3>
-            <p>Systémový prompt (osobnosť, tón, cenník) je v súbore:</p>
-            <p style="margin:.4rem 0"><code>src/prompts/systemPrompt.ts</code></p>
-            <p>Môžeš tam zmeniť:</p>
-            <ul>
-              <li>Meno, vek a popis osobnosti</li>
-              <li>Ceny balíčkov (Starter $15, Premium $35...)</li>
-              <li>Jazyk odpovedí (angličtina, slovenčina, oba...)</li>
-              <li>Pravidlá správania — čo Mia robí a čo nie</li>
-            </ul>
-            <p style="margin-top:.5rem">Po zmene: <code>npm run build && pm2 restart mia-dm</code></p>
-          </div>
-
-        </div>
-      </div>
-
-    </main>
-  </div>
-</div>
-
-<div id="toast"></div>
+<div id="toast-container" class="toast-container"></div>
+<div id="app"></div>
 
 <script>
-  let SECRET = '';
-  let conversations = [];
-  let activeUserId = null;
-  let sendMode = 'now'; // 'now' | 'queue'
+// ============================================================
+//  STATE
+// ============================================================
+var state = {
+  token: localStorage.getItem('token'),
+  user: JSON.parse(localStorage.getItem('user') || 'null'),
+  view: 'landing',
+  params: {},
+  personas: [],
+  currentPersona: null,
+  products: [],
+  images: [],
+  content: [],
+  trendAnalysis: null,
+  igStatus: null,
+  activeTab: 'profile',
+  selectedStyle: 'fashion editorial',
+  _productModal: null,
+  _systemPromptPreview: '',
+  _imgNsfw: false,
+};
 
-  // ─── Auth ───────────────────────────────────────────────────────────────────
-  async function login() {
-    const val = document.getElementById('secret-input').value.trim();
-    if (!val) return;
-    SECRET = val;
-    try {
-      await api('/admin/stats');
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-      loadAll();
-    } catch {
-      document.getElementById('login-err').style.display = 'block';
-      SECRET = '';
-    }
-  }
+// ============================================================
+//  UTILS
+// ============================================================
+function toast(msg, type) {
+  type = type || 'info';
+  var c = document.getElementById('toast-container');
+  var el = document.createElement('div');
+  el.className = 'toast toast-' + type;
+  el.textContent = msg;
+  c.appendChild(el);
+  setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 3500);
+}
 
-  function logout() {
-    SECRET = '';
-    location.reload();
-  }
-
-  // ─── API helper ─────────────────────────────────────────────────────────────
-  async function api(path, method = 'GET', body) {
-    const res = await fetch(path, {
-      method,
-      headers: { Authorization: `Bearer ${SECRET}`, 'Content-Type': 'application/json' },
-      body: body ? JSON.stringify(body) : undefined,
+function api(path, opts) {
+  opts = opts || {};
+  var headers = { 'Content-Type': 'application/json' };
+  if (state.token) headers['Authorization'] = 'Bearer ' + state.token;
+  return fetch(path, Object.assign({ headers: headers }, opts)).then(function(res) {
+    return res.json().catch(function() { return {}; }).then(function(data) {
+      if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+      return data;
     });
-    if (!res.ok) throw new Error(`${res.status}`);
-    return res.json();
+  });
+}
+
+function setToken(token, user) {
+  state.token = token;
+  state.user = user;
+  localStorage.setItem('token', token);
+  localStorage.setItem('user', JSON.stringify(user));
+}
+
+function logout() {
+  state.token = null;
+  state.user = null;
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  navigate('landing');
+}
+
+function navigate(view, params) {
+  state.view = view;
+  state.params = params || {};
+  render();
+}
+
+function isAuthed() {
+  return !!state.token;
+}
+
+function planBadge(plan) {
+  var cls = { free: 'badge-free', creator: 'badge-creator', pro: 'badge-pro' }[plan] || 'badge-free';
+  return '<span class="badge ' + cls + '">' + ((plan || 'free').toUpperCase()) + '</span>';
+}
+
+function fmtDate(ts) {
+  if (!ts) return '—';
+  return new Date(ts * 1000).toLocaleDateString('sk-SK');
+}
+
+function escHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ============================================================
+//  RENDER ROUTER
+// ============================================================
+function render() {
+  var app = document.getElementById('app');
+  if (!isAuthed() && ['dashboard','personas','persona-edit','avatars','content','instagram','billing'].indexOf(state.view) !== -1) {
+    state.view = 'landing';
+  }
+  switch (state.view) {
+    case 'landing': app.innerHTML = renderLanding(); break;
+    case 'login': app.innerHTML = renderLogin(); break;
+    case 'register': app.innerHTML = renderRegister(); break;
+    case 'dashboard': app.innerHTML = renderApp(renderDashboard()); break;
+    case 'personas': app.innerHTML = renderApp(renderPersonasList()); break;
+    case 'persona-edit': app.innerHTML = renderApp(renderPersonaEdit()); break;
+    case 'avatars': app.innerHTML = renderApp(renderAvatars()); break;
+    case 'content': app.innerHTML = renderApp(renderContent()); break;
+    case 'instagram': app.innerHTML = renderApp(renderInstagram()); break;
+    case 'billing': app.innerHTML = renderApp(renderBilling()); break;
+    default: app.innerHTML = renderApp(renderDashboard());
+  }
+  attachHandlers();
+}
+
+// ============================================================
+//  APP LAYOUT
+// ============================================================
+function renderApp(inner) {
+  var navItems = [
+    { id: 'dashboard', icon: '📊', label: 'Dashboard' },
+    { id: 'personas', icon: '👤', label: 'Persony' },
+    { id: 'avatars', icon: '🎨', label: 'Avatar Studio' },
+    { id: 'content', icon: '📱', label: 'Obsah' },
+    { id: 'instagram', icon: '📸', label: 'Instagram' },
+    { id: 'billing', icon: '💳', label: 'Billing' },
+  ];
+  var nav = navItems.map(function(n) {
+    return '<button class="nav-item ' + (state.view === n.id ? 'active' : '') + '" onclick="navigate(\'' + n.id + '\')">' + n.icon + ' ' + n.label + '</button>';
+  }).join('');
+
+  var u = state.user || {};
+  return '<div class="app-layout">' +
+    '<aside class="sidebar">' +
+      '<div class="sidebar-logo">OfAI</div>' +
+      '<nav class="sidebar-nav">' + nav + '</nav>' +
+      '<div class="sidebar-footer">' +
+        '<div class="user-info">' +
+          '<div class="user-name">' + escHtml(u.name) + '</div>' +
+          '<div class="user-email">' + escHtml(u.email) + ' ' + planBadge(u.plan) + '</div>' +
+        '</div>' +
+        '<button class="nav-item" onclick="logout()">🚪 Odhlásiť sa</button>' +
+      '</div>' +
+    '</aside>' +
+    '<main class="main">' + inner + '</main>' +
+  '</div>';
+}
+
+// ============================================================
+//  LANDING
+// ============================================================
+function renderLanding() {
+  var features = [
+    { icon: '🤖', title: 'AI Persony', desc: 'Vytvor viacero unikátnych AI persón s vlastnou osobnosťou, tónom a backstory.' },
+    { icon: '💬', title: 'Automatické DM', desc: 'AI odpovedá na Instagram správy 24/7 presne v štýle tvojej persony.' },
+    { icon: '🎨', title: 'Avatar Generátor', desc: 'Generuj fotorealistické avatary pomocou xAI Aurora modelu.' },
+    { icon: '📱', title: 'Content Studio', desc: 'Generuj captions, hashtagy a obsah pre posty, reels a stories.' },
+    { icon: '📈', title: 'Analýza trendov', desc: 'Grok analyzuje aktuálne trendy a navrhne vírusové content stratégie.' },
+    { icon: '💰', title: 'Predaj produktov', desc: 'Integruj svoje produkty a AI ich prirodzene propaguje v konverzáciách.' },
+  ];
+  var plans = [
+    { name: 'Free', price: 0, popular: false, features: ['1 AI Persona', 'Instagram DM automatizácia', 'História konverzácií', 'Manuálne správy'] },
+    { name: 'Creator', price: 29, popular: true, features: ['3 AI Persony', 'Instagram DM automatizácia', '50 AI avatarov/mesiac', 'Generovanie obsahu', 'Analýza trendov', 'Integrácia produktov'] },
+    { name: 'Pro', price: 79, popular: false, features: ['Neobmedzené persony', 'Instagram DM automatizácia', 'Neobmedzené avatary', 'Neobmedzený obsah', 'NSFW obsah (voliteľné)', 'Prioritná podpora'] },
+  ];
+
+  return '<div class="landing">' +
+    '<nav class="landing-nav">' +
+      '<div class="landing-logo">OfAI</div>' +
+      '<div class="landing-nav-links">' +
+        '<button class="btn btn-secondary" onclick="navigate(\'login\')">Prihlásiť sa</button>' +
+        '<button class="btn btn-primary" onclick="navigate(\'register\')">Začať zadarmo</button>' +
+      '</div>' +
+    '</nav>' +
+    '<div class="hero">' +
+      '<h1>Tvoja AI persona, ktorá predáva 24/7</h1>' +
+      '<p>Vytvor si realistickú AI personu, automatizuj Instagram DM konverzácie a generuj obsah s pomocou umelej inteligencie.</p>' +
+      '<div class="hero-cta">' +
+        '<button class="btn btn-primary" style="font-size:16px;padding:14px 28px" onclick="navigate(\'register\')">Začať zadarmo →</button>' +
+        '<button class="btn btn-secondary" style="font-size:16px;padding:14px 28px" onclick="navigate(\'login\')">Prihlásiť sa</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="features">' +
+      features.map(function(f) {
+        return '<div class="feature-card"><div class="feature-icon">' + f.icon + '</div><h3>' + f.title + '</h3><p>' + f.desc + '</p></div>';
+      }).join('') +
+    '</div>' +
+    '<div class="pricing-section">' +
+      '<h2>Jednoduché ceny</h2>' +
+      '<div class="pricing-grid">' +
+        plans.map(function(p) {
+          return '<div class="plan-card ' + (p.popular ? 'popular' : '') + '">' +
+            (p.popular ? '<div class="popular-badge">Najobľúbenejší</div>' : '') +
+            '<div class="plan-name">' + p.name + '</div>' +
+            '<div class="plan-price">$' + p.price + '<span>/mesiac</span></div>' +
+            '<ul class="plan-features">' + p.features.map(function(f) { return '<li>' + f + '</li>'; }).join('') + '</ul>' +
+            '<button class="btn btn-primary" style="width:100%" onclick="navigate(\'register\')">' + (p.price === 0 ? 'Začať zadarmo' : 'Začať teraz') + '</button>' +
+          '</div>';
+        }).join('') +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+// ============================================================
+//  AUTH
+// ============================================================
+function renderLogin() {
+  return '<div class="auth-page"><div class="auth-box">' +
+    '<div class="auth-logo"><h1>OfAI</h1><p>Prihlás sa do svojho účtu</p></div>' +
+    '<form id="login-form">' +
+      '<div class="field"><label>Email</label><input type="email" name="email" placeholder="ty@email.com" required></div>' +
+      '<div class="field"><label>Heslo</label><input type="password" name="password" placeholder="••••••••" required></div>' +
+      '<button type="submit" class="btn btn-primary" style="width:100%;justify-content:center" id="login-btn">Prihlásiť sa</button>' +
+    '</form>' +
+    '<div class="auth-footer">Nemáš účet? <a href="#" onclick="navigate(\'register\')">Registrovať sa</a></div>' +
+    '<div class="auth-footer" style="margin-top:8px"><a href="#" onclick="navigate(\'landing\')">← Späť na úvodnú stránku</a></div>' +
+  '</div></div>';
+}
+
+function renderRegister() {
+  return '<div class="auth-page"><div class="auth-box">' +
+    '<div class="auth-logo"><h1>OfAI</h1><p>Vytvor si bezplatný účet</p></div>' +
+    '<form id="register-form">' +
+      '<div class="field"><label>Meno</label><input type="text" name="name" placeholder="Tvoje meno" required></div>' +
+      '<div class="field"><label>Email</label><input type="email" name="email" placeholder="ty@email.com" required></div>' +
+      '<div class="field"><label>Heslo</label><input type="password" name="password" placeholder="Minimálne 8 znakov" required minlength="8"></div>' +
+      '<button type="submit" class="btn btn-primary" style="width:100%;justify-content:center" id="register-btn">Vytvoriť účet</button>' +
+    '</form>' +
+    '<div class="auth-footer">Už máš účet? <a href="#" onclick="navigate(\'login\')">Prihlásiť sa</a></div>' +
+  '</div></div>';
+}
+
+// ============================================================
+//  DASHBOARD
+// ============================================================
+function renderDashboard() {
+  var u = state.user || {};
+  var personaCards = state.personas.slice(0,3).map(function(p) {
+    return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">' +
+      '<div class="persona-avatar" style="width:36px;height:36px;font-size:14px">👤</div>' +
+      '<div><div style="font-weight:600">' + escHtml(p.name) + '</div>' +
+      '<div style="font-size:12px;color:var(--text2)">' + escHtml(p.nationality) + ', ' + p.age + ' r.</div></div>' +
+    '</div>';
+  }).join('');
+
+  return '<div class="page-header"><h1>Vitaj späť, ' + escHtml(u.name) + '! 👋</h1><p>Prehľad tvojej AI platformy</p></div>' +
+    '<div class="stats-grid">' +
+      '<div class="stat-card"><div class="stat-label">Persony</div><div class="stat-value">' + state.personas.length + '</div></div>' +
+      '<div class="stat-card"><div class="stat-label">Vygenerované avatary</div><div class="stat-value" id="dash-images">—</div></div>' +
+      '<div class="stat-card"><div class="stat-label">Obsah</div><div class="stat-value" id="dash-content">—</div></div>' +
+      '<div class="stat-card"><div class="stat-label">Plán</div><div class="stat-value">' + planBadge(u.plan) + '</div></div>' +
+    '</div>' +
+    '<div class="grid-2">' +
+      '<div class="card">' +
+        '<div class="section-header"><div class="section-title">Tvoje persony</div><button class="btn btn-primary btn-sm" onclick="navigate(\'personas\')">Zobraziť všetky</button></div>' +
+        (state.personas.length === 0
+          ? '<p style="color:var(--text2)">Zatiaľ žiadne persony. <a href="#" onclick="navigate(\'personas\')">Vytvoriť prvú →</a></p>'
+          : personaCards) +
+      '</div>' +
+      '<div class="card">' +
+        '<div class="section-title" style="margin-bottom:16px">Rýchle akcie</div>' +
+        '<div style="display:flex;flex-direction:column;gap:10px">' +
+          '<button class="btn btn-secondary" onclick="navigate(\'personas\')">👤 Pridať personu</button>' +
+          '<button class="btn btn-secondary" onclick="navigate(\'avatars\')">🎨 Generovať avatar</button>' +
+          '<button class="btn btn-secondary" onclick="navigate(\'content\')">📱 Vytvoriť obsah</button>' +
+          '<button class="btn btn-secondary" onclick="navigate(\'instagram\')">📸 Pripojiť Instagram</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+}
+
+// ============================================================
+//  PERSONAS LIST
+// ============================================================
+function renderPersonasList() {
+  var cards = state.personas.map(function(p) {
+    return '<div class="persona-card" onclick="editPersona(' + p.id + ')">' +
+      '<div class="persona-avatar">👤</div>' +
+      '<div class="persona-name">' + escHtml(p.name) + '</div>' +
+      '<div class="persona-meta">' + escHtml(p.nationality) + ' · ' + p.age + ' r. · ' + (p.is_active ? '✅ Aktívna' : '⏸ Neaktívna') + '</div>' +
+    '</div>';
+  }).join('');
+
+  return '<div class="page-header">' +
+    '<div style="display:flex;align-items:center;justify-content:space-between">' +
+      '<div><h1>Persony</h1><p>Správa tvojich AI persón</p></div>' +
+      '<button class="btn btn-primary" onclick="startNewPersona()">+ Pridať personu</button>' +
+    '</div></div>' +
+    (state.personas.length === 0
+      ? '<div class="empty-state"><div class="empty-icon">👤</div><h3>Zatiaľ žiadne persony</h3><p>Vytvor svoju prvú AI personu.</p><button class="btn btn-primary" style="margin-top:20px" onclick="startNewPersona()">Vytvoriť personu</button></div>'
+      : '<div class="personas-grid">' + cards + '</div>');
+}
+
+// ============================================================
+//  PERSONA EDIT
+// ============================================================
+function renderPersonaEdit() {
+  var p = state.currentPersona || {};
+  var isNew = !p.id;
+  var prods = state.products || [];
+  var sp = state._systemPromptPreview || '';
+
+  var prodList = prods.length === 0
+    ? '<p style="color:var(--text2);text-align:center;padding:20px">Žiadne produkty</p>'
+    : prods.map(function(pr) {
+        return '<div class="product-item">' +
+          '<div class="product-info">' +
+            '<div class="product-name">' + escHtml(pr.name) + '</div>' +
+            '<div class="product-meta">$' + pr.price + ' ' + escHtml(pr.currency) + ' · ' + escHtml(pr.type) + (pr.is_active ? '' : ' (neaktívny)') + '</div>' +
+            (pr.description ? '<div style="font-size:12px;color:var(--text2);margin-top:4px">' + escHtml(pr.description) + '</div>' : '') +
+          '</div>' +
+          '<div class="product-actions">' +
+            '<button class="btn btn-secondary btn-sm" onclick="openProductModal(' + pr.id + ')">Upraviť</button>' +
+            '<button class="btn btn-danger btn-sm" onclick="deleteProduct(' + pr.id + ')">Zmazať</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+  var traits = ['playful','confident','flirty','classy','warm','teasing','mysterious','bubbly','intellectual','ambitious'];
+
+  return '<div class="page-header">' +
+    '<div style="display:flex;align-items:center;gap:12px">' +
+      '<button class="btn btn-secondary btn-sm" onclick="navigate(\'personas\')">← Späť</button>' +
+      '<div><h1>' + (isNew ? 'Nová persona' : escHtml(p.name)) + '</h1><p>' + (isNew ? 'Vytvor novú AI personu' : 'Upraviť personu') + '</p></div>' +
+    '</div></div>' +
+    '<div class="tabs">' +
+      ['profile','personality','products','avatar'].map(function(t) {
+        var labels = { profile: 'Profil', personality: 'Osobnosť', products: 'Produkty', avatar: 'Avatar prompt' };
+        return '<button class="tab ' + (state.activeTab === t ? 'active' : '') + '" onclick="setTab(\'' + t + '\')">' + labels[t] + '</button>';
+      }).join('') +
+    '</div>' +
+
+    // PROFILE TAB
+    '<div class="tab-panel ' + (state.activeTab === 'profile' ? 'active' : '') + '">' +
+      '<div class="card">' +
+        '<div class="grid-2">' +
+          '<div class="field"><label>Meno persony *</label><input id="p-name" value="' + escHtml(p.name || '') + '" placeholder="napr. Sofia"></div>' +
+          '<div class="field"><label>Vek</label><input id="p-age" type="number" value="' + (p.age || 22) + '" min="18" max="60"></div>' +
+        '</div>' +
+        '<div class="field"><label>Národnosť</label><input id="p-nationality" value="' + escHtml(p.nationality || 'European') + '" placeholder="napr. Italian"></div>' +
+        '<div class="field"><label>Bio</label><textarea id="p-bio" placeholder="Krátky popis persony...">' + escHtml(p.bio || '') + '</textarea></div>' +
+        '<div class="toggle-row"><label style="margin:0;text-transform:none;font-size:14px">Aktívna persona</label>' +
+          '<div class="toggle ' + (p.is_active !== 0 ? 'on' : '') + '" id="toggle-active" onclick="this.classList.toggle(\'on\')"></div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    // PERSONALITY TAB
+    '<div class="tab-panel ' + (state.activeTab === 'personality' ? 'active' : '') + '">' +
+      '<div class="card">' +
+        '<div class="field"><label>Osobnosť</label><textarea id="p-personality" placeholder="napr. playful, confident, flirty but classy, empowered">' + escHtml(p.personality || '') + '</textarea></div>' +
+        '<div class="field"><label>Tón</label><textarea id="p-tone" placeholder="napr. casual, warm, teasing, authentic, never vulgar">' + escHtml(p.tone || '') + '</textarea></div>' +
+        '<div style="margin-bottom:16px"><label>Rýchly výber vlastností</label><div>' +
+          traits.map(function(t) { return '<span class="chip" onclick="addTrait(\'' + t + '\')">' + t + '</span>'; }).join('') +
+        '</div></div>' +
+      '</div>' +
+    '</div>' +
+
+    // PRODUCTS TAB
+    '<div class="tab-panel ' + (state.activeTab === 'products' ? 'active' : '') + '">' +
+      '<div class="card">' +
+        '<div class="section-header"><div class="section-title">Produkty &amp; ponuky</div><button class="btn btn-primary btn-sm" onclick="openProductModal(0)">+ Pridať produkt</button></div>' +
+        '<div class="product-list">' + prodList + '</div>' +
+      '</div>' +
+    '</div>' +
+
+    // AVATAR TAB
+    '<div class="tab-panel ' + (state.activeTab === 'avatar' ? 'active' : '') + '">' +
+      '<div class="card">' +
+        '<div class="field"><label>Základný avatar prompt</label><textarea id="p-avatar-prompt" rows="4" placeholder="napr. slim athletic woman with dark curly hair and olive skin, model face...">' + escHtml(p.avatar_prompt || '') + '</textarea><div style="font-size:12px;color:var(--text2);margin-top:6px">Základ pre všetky generované avatary tejto persony.</div></div>' +
+        '<hr>' +
+        '<div class="toggle-row">' +
+          '<div><label style="margin:0;text-transform:none;font-size:14px;font-weight:600">NSFW obsah povolený</label><div style="font-size:12px;color:var(--text2);margin-top:4px">Vyžaduje Creator alebo Pro plán</div></div>' +
+          '<div class="toggle ' + (p.is_nsfw_enabled ? 'on' : '') + '" id="toggle-nsfw" onclick="this.classList.toggle(\'on\')"></div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div style="display:flex;gap:12px;margin-top:24px">' +
+      '<button class="btn btn-primary" onclick="savePersona()" id="save-persona-btn">' + (isNew ? 'Vytvoriť personu' : 'Uložiť zmeny') + '</button>' +
+      (!isNew ? '<button class="btn btn-danger" onclick="deletePersona(' + p.id + ')">Zmazať personu</button>' : '') +
+    '</div>' +
+
+    (sp ? '<div style="margin-top:32px"><div class="section-title" style="margin-bottom:12px">Náhľad systémového promptu</div><div class="prompt-preview">' + escHtml(sp) + '</div></div>' : '') +
+
+    (state._productModal !== null ? renderProductModal() : '');
+}
+
+function renderProductModal() {
+  var pr = (state._productModal && typeof state._productModal === 'object') ? state._productModal : {};
+  var isEdit = !!pr.id;
+  var types = [['photo_pack','Foto Pack'],['subscription','Predplatné'],['video','Video'],['custom','Vlastný']];
+  var currencies = ['USD','EUR','GBP','CZK'];
+
+  return '<div class="modal-overlay" id="prod-overlay">' +
+    '<div class="modal">' +
+      '<div class="modal-header"><div class="modal-title">' + (isEdit ? 'Upraviť produkt' : 'Nový produkt') + '</div>' +
+        '<button class="modal-close" onclick="closeProductModal()">×</button></div>' +
+      '<div class="field"><label>Názov *</label><input id="prod-name" value="' + escHtml(pr.name || '') + '" placeholder="napr. Premium Photo Pack"></div>' +
+      '<div class="field"><label>Popis</label><textarea id="prod-desc">' + escHtml(pr.description || '') + '</textarea></div>' +
+      '<div class="row">' +
+        '<div class="field"><label>Cena *</label><input id="prod-price" type="number" value="' + (pr.price || '') + '" min="0" step="0.01" placeholder="29.99"></div>' +
+        '<div class="field"><label>Mena</label><select id="prod-currency">' + currencies.map(function(c) { return '<option ' + ((pr.currency||'USD')===c?'selected':'') + '>' + c + '</option>'; }).join('') + '</select></div>' +
+      '</div>' +
+      '<div class="field"><label>Typ</label><select id="prod-type">' + types.map(function(t) { return '<option value="' + t[0] + '" ' + ((pr.type||'photo_pack')===t[0]?'selected':'') + '>' + t[1] + '</option>'; }).join('') + '</select></div>' +
+      '<div style="display:flex;gap:12px;margin-top:20px">' +
+        '<button class="btn btn-primary" onclick="saveProduct(' + (pr.id || 0) + ')">' + (isEdit ? 'Uložiť' : 'Pridať') + '</button>' +
+        '<button class="btn btn-secondary" onclick="closeProductModal()">Zrušiť</button>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+// ============================================================
+//  AVATARS
+// ============================================================
+function renderAvatars() {
+  var u = state.user || {};
+  var isNsfwPlan = ['creator','pro'].indexOf(u.plan) !== -1;
+  var styles = [
+    { id: 'fashion editorial', icon: '👗', name: 'Fashion Editorial' },
+    { id: 'casual selfie', icon: '🤳', name: 'Casual Selfie' },
+    { id: 'outdoor', icon: '🌿', name: 'Outdoor' },
+    { id: 'glamour', icon: '✨', name: 'Glamour' },
+    { id: 'artistic', icon: '🎨', name: 'Artistic' },
+    { id: 'custom', icon: '⚙️', name: 'Custom' },
+  ];
+  if (isNsfwPlan) {
+    styles.push({ id: 'nsfw boudoir', icon: '🔞', name: 'Boudoir (NSFW)' });
+    styles.push({ id: 'nsfw artistic nude', icon: '🔞', name: 'Artistic Nude (NSFW)' });
   }
 
-  // ─── Navigation ─────────────────────────────────────────────────────────────
-  function showPage(name) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.getElementById('page-' + name).classList.add('active');
-    document.getElementById('nav-' + name).classList.add('active');
-    if (name === 'settings') loadSettings();
-    if (name === 'conversations') loadConversations();
+  var personaOpts = '<option value="">Vybrať personu...</option>' +
+    state.personas.map(function(p) { return '<option value="' + p.id + '">' + escHtml(p.name) + '</option>'; }).join('');
+
+  var gallery = state.images.length === 0
+    ? '<div class="empty-state"><div class="empty-icon">🖼️</div><h3>Žiadne avatary</h3><p>Vygeneruj prvý avatar.</p></div>'
+    : '<div class="image-gallery">' + state.images.map(function(img) {
+        return '<div class="image-card">' +
+          '<img src="' + escHtml(img.image_url) + '" alt="' + escHtml(img.style) + '" loading="lazy">' +
+          '<div class="image-card-info"><div class="image-card-style">' + escHtml(img.style) + '</div><div style="font-size:11px;color:var(--text2)">' + fmtDate(img.created_at) + '</div></div>' +
+          '<div class="image-card-actions"><a href="' + escHtml(img.image_url) + '" target="_blank" class="btn btn-secondary btn-sm">⬇ Stiahnuť</a>' +
+          '<button class="btn btn-danger btn-sm" onclick="deleteImage(' + img.id + ')">🗑</button></div>' +
+        '</div>';
+      }).join('') + '</div>';
+
+  return '<div class="page-header"><h1>Avatar Studio 🎨</h1><p>Generuj AI avatary pomocou xAI Aurora</p></div>' +
+    '<div class="grid-2">' +
+      '<div>' +
+        '<div class="card" style="margin-bottom:20px">' +
+          '<div class="section-title" style="margin-bottom:16px">Nastavenia generovania</div>' +
+          '<div class="field"><label>Persona</label><select id="img-persona">' + personaOpts + '</select></div>' +
+          '<div class="field"><label>Štýl</label><div class="style-grid">' +
+            styles.map(function(s) {
+              return '<div class="style-option ' + (state.selectedStyle === s.id ? 'selected' : '') + '" onclick="selectStyle(\'' + s.id.replace(/'/g,"\\'") + '\')">' +
+                '<div class="style-icon">' + s.icon + '</div><div class="style-name">' + s.name + '</div></div>';
+            }).join('') +
+          '</div></div>' +
+          (state.selectedStyle === 'custom' ? '<div class="field"><label>Vlastný štýl popis</label><input id="custom-style-text" placeholder="napr. beach photoshoot, sunset lighting..."></div>' : '') +
+          '<div class="toggle-row" style="margin-bottom:16px"><label style="margin:0;text-transform:none;font-size:14px">NSFW generovanie</label>' +
+            '<div class="toggle ' + (state._imgNsfw ? 'on' : '') + '" id="toggle-img-nsfw" onclick="state._imgNsfw=!state._imgNsfw;this.classList.toggle(\'on\')"></div>' +
+          '</div>' +
+          '<button class="btn btn-primary" style="width:100%;justify-content:center" onclick="generateImage()" id="gen-img-btn">🎨 Generovať avatar</button>' +
+          (u.plan === 'free' ? '<p style="font-size:12px;color:var(--text2);margin-top:10px;text-align:center">Free plán nepodporuje generovanie. <a href="#" onclick="navigate(\'billing\')">Upgradeuj →</a></p>' : '') +
+        '</div>' +
+      '</div>' +
+      '<div>' +
+        '<div class="section-header"><div class="section-title">Galéria</div><span style="font-size:12px;color:var(--text2)">' + state.images.length + ' avatarov</span></div>' +
+        gallery +
+      '</div>' +
+    '</div>';
+}
+
+// ============================================================
+//  CONTENT
+// ============================================================
+function renderContent() {
+  var ta = state.trendAnalysis;
+  var personaOpts = '<option value="">Vybrať personu...</option>' +
+    state.personas.map(function(p) { return '<option value="' + p.id + '">' + escHtml(p.name) + '</option>'; }).join('');
+
+  var trendSection = '';
+  if (ta) {
+    trendSection = '<div style="margin-bottom:32px">' +
+      '<div class="section-title" style="margin-bottom:16px">Výsledky analýzy: "' + escHtml(ta.topic) + '"</div>' +
+      '<div class="grid-2">' +
+        '<div class="trend-card"><div class="trend-title">🔥 Aktuálne trendy</div><ul class="trend-list">' + ta.trends.map(function(t) { return '<li>' + escHtml(t) + '</li>'; }).join('') + '</ul></div>' +
+        '<div class="trend-card"><div class="trend-title">🚀 Vírusové vzory</div><ul class="trend-list">' + ta.viralPatterns.map(function(t) { return '<li>' + escHtml(t) + '</li>'; }).join('') + '</ul></div>' +
+        '<div class="trend-card"><div class="trend-title">💡 Content uhly</div><ul class="trend-list">' + ta.suggestedAngles.map(function(t) { return '<li>' + escHtml(t) + '</li>'; }).join('') + '</ul></div>' +
+        '<div class="trend-card"><div class="trend-title"># Optimálne hashtagy</div><div style="font-size:13px;color:var(--accent2);line-height:2">' + escHtml(ta.optimalHashtags.join(' ')) + '</div></div>' +
+      '</div>' +
+      (ta.summary ? '<div class="card" style="margin-top:16px"><p style="color:var(--text2);line-height:1.7">' + escHtml(ta.summary) + '</p></div>' : '') +
+    '</div>';
   }
 
-  // ─── Load all ────────────────────────────────────────────────────────────────
-  async function loadAll() {
-    await Promise.all([loadStats(), loadStatus(), loadConversations(), loadConfigInfo()]);
+  var contentList = state.content.length === 0
+    ? '<div class="empty-state"><div class="empty-icon">📝</div><h3>Žiadny obsah</h3><p>Vygeneruj prvý post, reel alebo story.</p></div>'
+    : state.content.map(function(c) {
+        return '<div class="content-card">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
+            '<span class="badge badge-creator">' + c.content_type.toUpperCase() + '</span>' +
+            '<div style="display:flex;gap:8px">' +
+              '<button class="btn btn-secondary btn-sm" onclick="copyContent(' + c.id + ')">📋 Kopírovať</button>' +
+              '<button class="btn btn-danger btn-sm" onclick="deleteContentItem(' + c.id + ')">🗑</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="content-caption">' + escHtml(c.caption) + '</div>' +
+          '<div class="content-hashtags">' + escHtml(c.hashtags) + '</div>' +
+          '<div class="content-meta"><span>' + fmtDate(c.created_at) + '</span>' + (c.trend_topic ? '<span>Téma: ' + escHtml(c.trend_topic) + '</span>' : '') + '</div>' +
+        '</div>';
+      }).join('');
+
+  return '<div class="page-header"><h1>Content Studio 📱</h1><p>Generuj obsah pre Instagram s pomocou AI</p></div>' +
+    '<div class="grid-2" style="margin-bottom:32px">' +
+      '<div class="card">' +
+        '<div class="section-title" style="margin-bottom:16px">📈 Analýza trendov</div>' +
+        '<div class="field"><label>Téma (voliteľné)</label><input id="trend-topic" placeholder="napr. fitness, fashion, travel..."></div>' +
+        '<button class="btn btn-primary" onclick="analyzeTrends()" id="trends-btn">Analyzovať trendy</button>' +
+      '</div>' +
+      '<div class="card">' +
+        '<div class="section-title" style="margin-bottom:16px">✍️ Generovať obsah</div>' +
+        '<div class="field"><label>Persona</label><select id="content-persona">' + personaOpts + '</select></div>' +
+        '<div class="field"><label>Typ obsahu</label><select id="content-type"><option value="post">Post</option><option value="reel">Reel</option><option value="story">Story</option></select></div>' +
+        '<button class="btn btn-primary" onclick="generateContent()" id="gen-content-btn">Generovať obsah</button>' +
+      '</div>' +
+    '</div>' +
+    trendSection +
+    '<div>' +
+      '<div class="section-header"><div class="section-title">Vygenerovaný obsah</div><span style="font-size:12px;color:var(--text2)">' + state.content.length + ' položiek</span></div>' +
+      contentList +
+    '</div>';
+}
+
+// ============================================================
+//  INSTAGRAM
+// ============================================================
+function renderInstagram() {
+  var conn = state.igStatus;
+  var personaOpts = '<option value="">Žiadna (použije predvolenú)</option>' +
+    state.personas.map(function(p) {
+      var sel = conn && conn.connected && conn.connection && conn.connection.persona_id == p.id ? 'selected' : '';
+      return '<option value="' + p.id + '" ' + sel + '>' + escHtml(p.name) + '</option>';
+    }).join('');
+
+  return '<div class="page-header"><h1>Instagram Pripojenie 📸</h1><p>Správa Instagram Business účtu pre AI DM automatizáciu</p></div>' +
+    '<div class="card" style="margin-bottom:24px">' +
+      '<div class="connection-status" style="margin-bottom:20px">' +
+        '<div class="dot ' + (conn && conn.connected ? 'dot-green' : 'dot-red') + '"></div>' +
+        '<span style="font-weight:600">' + (conn && conn.connected ? 'Pripojené' : 'Nepripojené') + '</span>' +
+        (conn && conn.connected ? '<span style="color:var(--text2)">@' + escHtml(conn.connection.ig_username || conn.connection.ig_account_id) + '</span>' : '') +
+      '</div>' +
+      (conn && conn.connected ? '<button class="btn btn-danger btn-sm" onclick="disconnectIG()">Odpojiť účet</button>' : '') +
+    '</div>' +
+    '<div class="card">' +
+      '<div class="section-title" style="margin-bottom:20px">' + (conn && conn.connected ? 'Aktualizovať pripojenie' : 'Pripojiť Instagram účet') + '</div>' +
+      '<div class="field"><label>Instagram Account ID *</label><input id="ig-account-id" value="' + escHtml((conn && conn.connected && conn.connection.ig_account_id) || '') + '" placeholder="Tvoj IG Business Account ID"></div>' +
+      '<div class="field"><label>Používateľské meno</label><input id="ig-username" value="' + escHtml((conn && conn.connected && conn.connection.ig_username) || '') + '" placeholder="@tvoj_profil"></div>' +
+      '<div class="field"><label>Access Token *</label><input id="ig-token" type="password" placeholder="EAAxxxxxx..."></div>' +
+      '<div class="field"><label>Priradená persona (pre DM odpovede)</label><select id="ig-persona">' + personaOpts + '</select></div>' +
+      '<button class="btn btn-primary" onclick="saveIG()" id="save-ig-btn">' + (conn && conn.connected ? 'Aktualizovať' : 'Pripojiť') + '</button>' +
+      '<div style="margin-top:20px;padding:16px;background:var(--bg3);border-radius:8px;font-size:13px;color:var(--text2)">' +
+        '<strong style="color:var(--text)">Ako nastaviť:</strong><br>' +
+        '1. Vytvor Meta App na developers.facebook.com<br>' +
+        '2. Pridaj Instagram Graph API<br>' +
+        '3. Vygeneruj dlhodobý access token<br>' +
+        '4. Nastav webhook URL: <code>https://tvoja-domena.com/webhook</code>' +
+      '</div>' +
+    '</div>';
+}
+
+// ============================================================
+//  BILLING
+// ============================================================
+function renderBilling() {
+  var u = state.user || {};
+  var plans = [
+    { id: 'free', name: 'Free', price: 0, features: ['1 AI Persona','Instagram DM automatizácia','História konverzácií','Manuálne správy'], current: u.plan === 'free' },
+    { id: 'creator', name: 'Creator', price: 29, popular: true, features: ['3 AI Persony','50 avatarov/mesiac','Generovanie obsahu','Analýza trendov','Integrácia produktov'], current: u.plan === 'creator' },
+    { id: 'pro', name: 'Pro', price: 79, features: ['Neobmedzené persony','Neobmedzené avatary','Neobmedzený obsah','NSFW obsah','Prioritná podpora'], current: u.plan === 'pro' },
+  ];
+
+  return '<div class="page-header"><h1>Billing 💳</h1><p>Správa predplatného a platieb</p></div>' +
+    '<div class="current-plan-card">' +
+      '<div class="current-plan-info">' +
+        '<h3>Aktuálny plán: ' + planBadge(u.plan) + '</h3>' +
+        '<p>' + (u.plan_expires_at ? 'Platný do: ' + fmtDate(u.plan_expires_at) : u.plan === 'free' ? 'Bezplatný plán' : 'Aktívne predplatné') + '</p>' +
+      '</div>' +
+      (u.plan !== 'free' ? '<button class="btn btn-secondary" onclick="openPortal()">Spravovať predplatné →</button>' : '') +
+    '</div>' +
+    '<div class="pricing-grid">' +
+      plans.map(function(p) {
+        var btn;
+        if (p.current) {
+          btn = '<button class="btn btn-secondary" style="width:100%" disabled>Aktuálny plán</button>';
+        } else if (p.id === 'free') {
+          btn = '<button class="btn btn-secondary" style="width:100%" disabled>Základný</button>';
+        } else {
+          btn = '<button class="btn btn-primary" style="width:100%" onclick="startCheckout(\'' + p.id + '\')">Upgradovať na ' + p.name + '</button>';
+        }
+        return '<div class="plan-card ' + (p.popular ? 'popular' : '') + '">' +
+          (p.popular ? '<div class="popular-badge">Odporúčame</div>' : '') +
+          '<div class="plan-name">' + p.name + '</div>' +
+          '<div class="plan-price">$' + p.price + '<span>/mesiac</span></div>' +
+          '<ul class="plan-features">' + p.features.map(function(f) { return '<li>' + f + '</li>'; }).join('') + '</ul>' +
+          btn +
+        '</div>';
+      }).join('') +
+    '</div>';
+}
+
+// ============================================================
+//  ATTACH HANDLERS
+// ============================================================
+function attachHandlers() {
+  var loginForm = document.getElementById('login-form');
+  if (loginForm) {
+    loginForm.onsubmit = function(e) {
+      e.preventDefault();
+      var btn = document.getElementById('login-btn');
+      var fd = new FormData(loginForm);
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner"></div> Prihlasovanie...';
+      api('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email: fd.get('email'), password: fd.get('password') }),
+      }).then(function(data) {
+        setToken(data.token, data.user);
+        return loadInitialData();
+      }).then(function() {
+        navigate('dashboard');
+        toast('Vitaj späť!', 'success');
+      }).catch(function(err) {
+        toast(err.message, 'error');
+        btn.disabled = false;
+        btn.innerHTML = 'Prihlásiť sa';
+      });
+    };
   }
 
-  // ─── Stats ───────────────────────────────────────────────────────────────────
-  async function loadStats() {
-    try {
-      const s = await api('/admin/stats');
-      document.getElementById('stats-cards').innerHTML = `
-        <div class="card"><div class="val">${s.totalUsers}</div><div class="lbl">Celkovo followers</div><div class="sub">všetci čo písali</div></div>
-        <div class="card"><div class="val">${s.messagesDay}</div><div class="lbl">Správy dnes</div><div class="sub">za posledných 24h</div></div>
-        <div class="card"><div class="val">${s.activeToday}</div><div class="lbl">Aktívni dnes</div><div class="sub">unikátni useri</div></div>
-        <div class="card"><div class="val">${s.blocked}</div><div class="lbl">Blokovaní</div><div class="sub">ignorovaní useri</div></div>
-      `;
-    } catch(e) { console.error(e); }
+  var regForm = document.getElementById('register-form');
+  if (regForm) {
+    regForm.onsubmit = function(e) {
+      e.preventDefault();
+      var btn = document.getElementById('register-btn');
+      var fd = new FormData(regForm);
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner"></div> Registrácia...';
+      api('/api/auth/register', {
+        method: 'POST',
+        body: JSON.stringify({ email: fd.get('email'), password: fd.get('password'), name: fd.get('name') }),
+      }).then(function(data) {
+        setToken(data.token, data.user);
+        return loadInitialData();
+      }).then(function() {
+        navigate('dashboard');
+        toast('Účet bol vytvorený!', 'success');
+      }).catch(function(err) {
+        toast(err.message, 'error');
+        btn.disabled = false;
+        btn.innerHTML = 'Vytvoriť účet';
+      });
+    };
   }
 
-  // ─── API Status ──────────────────────────────────────────────────────────────
-  async function loadStatus() {
-    document.getElementById('status-grid').innerHTML = `
-      <div class="status-card loading"><div class="sc-icon">📸</div><div class="sc-body"><div class="sc-title">Instagram API</div><div class="sc-detail">Testujem...</div></div></div>
-      <div class="status-card loading"><div class="sc-icon">🤖</div><div class="sc-body"><div class="sc-title">Grok AI</div><div class="sc-detail">Testujem...</div></div></div>
-      <div class="status-card loading"><div class="sc-icon">🗄️</div><div class="sc-body"><div class="sc-title">Databáza</div><div class="sc-detail">Testujem...</div></div></div>
-    `;
-    try {
-      const s = await api('/admin/status');
-      const icons = { instagram: '📸', grok: '🤖', database: '🗄️' };
-      const titles = { instagram: 'Instagram API', grok: 'Grok AI', database: 'Databáza' };
-      document.getElementById('status-grid').innerHTML = Object.entries(s).map(([k,v]) => `
-        <div class="status-card ${v.ok ? 'ok' : 'err'}">
-          <div class="sc-icon">${icons[k] || '🔌'}</div>
-          <div class="sc-body">
-            <div class="sc-title">${titles[k] || k}</div>
-            <div class="sc-detail">${v.ok ? '✅ ' : '❌ '}${escHtml(v.detail)}</div>
-          </div>
-        </div>
-      `).join('');
-    } catch(e) { console.error(e); }
+  if (state.view === 'dashboard') {
+    api('/api/images').then(function(d) {
+      var el = document.getElementById('dash-images');
+      if (el) el.textContent = d.total || 0;
+    }).catch(function() {});
+    api('/api/content').then(function(d) {
+      var el = document.getElementById('dash-content');
+      if (el) el.textContent = d.total || 0;
+    }).catch(function() {});
   }
 
-  // ─── Config info ─────────────────────────────────────────────────────────────
-  let cfgInfo = {};
-  async function loadConfigInfo() {
-    try { cfgInfo = await api('/admin/config-info'); } catch(e) {}
-    if (cfgInfo.instagramAccountId) {
-      document.getElementById('sb-account').textContent = 'ID: ' + cfgInfo.instagramAccountId;
-    }
+  var overlay = document.getElementById('prod-overlay');
+  if (overlay) {
+    overlay.onclick = function(e) {
+      if (e.target === overlay) closeProductModal();
+    };
+  }
+}
+
+// ============================================================
+//  ACTIONS
+// ============================================================
+function setTab(tab) {
+  state.activeTab = tab;
+  render();
+}
+
+function addTrait(trait) {
+  var el = document.getElementById('p-personality');
+  if (!el) return;
+  var cur = el.value.trim();
+  if (cur.indexOf(trait) === -1) {
+    el.value = cur ? cur + ', ' + trait : trait;
+  }
+}
+
+function selectStyle(style) {
+  state.selectedStyle = style;
+  render();
+}
+
+function openProductModal(idOrObj) {
+  if (typeof idOrObj === 'number' && idOrObj > 0) {
+    var found = state.products.filter(function(p) { return p.id === idOrObj; })[0];
+    state._productModal = found || {};
+  } else {
+    state._productModal = {};
+  }
+  render();
+}
+
+function closeProductModal() {
+  state._productModal = null;
+  render();
+}
+
+function startNewPersona() {
+  state.currentPersona = { is_active: 1 };
+  state.products = [];
+  state.activeTab = 'profile';
+  state._systemPromptPreview = '';
+  state._productModal = null;
+  navigate('persona-edit');
+}
+
+function editPersona(id) {
+  api('/api/personas/' + id).then(function(data) {
+    state.currentPersona = data.persona;
+    state.products = data.products;
+    state._systemPromptPreview = data.systemPrompt;
+    state.activeTab = 'profile';
+    state._productModal = null;
+    navigate('persona-edit');
+  }).catch(function(err) { toast(err.message, 'error'); });
+}
+
+function savePersona() {
+  var btn = document.getElementById('save-persona-btn');
+  var p = state.currentPersona || {};
+  var isNew = !p.id;
+  if (btn) { btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>'; }
+
+  var body = {
+    name: (document.getElementById('p-name') && document.getElementById('p-name').value.trim()) || '',
+    age: parseInt((document.getElementById('p-age') && document.getElementById('p-age').value) || '22', 10),
+    nationality: (document.getElementById('p-nationality') && document.getElementById('p-nationality').value.trim()) || 'European',
+    bio: (document.getElementById('p-bio') && document.getElementById('p-bio').value.trim()) || '',
+    personality: (document.getElementById('p-personality') && document.getElementById('p-personality').value.trim()) || '',
+    tone: (document.getElementById('p-tone') && document.getElementById('p-tone').value.trim()) || '',
+    avatar_prompt: (document.getElementById('p-avatar-prompt') && document.getElementById('p-avatar-prompt').value.trim()) || '',
+    is_active: document.getElementById('toggle-active') && document.getElementById('toggle-active').classList.contains('on') ? 1 : 0,
+    is_nsfw_enabled: document.getElementById('toggle-nsfw') && document.getElementById('toggle-nsfw').classList.contains('on') ? 1 : 0,
+  };
+
+  if (!body.name) {
+    toast('Meno persony je povinné', 'error');
+    if (btn) { btn.disabled = false; btn.innerHTML = isNew ? 'Vytvoriť personu' : 'Uložiť zmeny'; }
+    return;
   }
 
-  // ─── Settings page ───────────────────────────────────────────────────────────
-  function loadSettings() {
-    if (!cfgInfo.grokModel) { loadConfigInfo().then(renderSettings); return; }
-    renderSettings();
+  var url = isNew ? '/api/personas' : '/api/personas/' + p.id;
+  var method = isNew ? 'POST' : 'PUT';
+
+  api(url, { method: method, body: JSON.stringify(body) }).then(function(data) {
+    state.currentPersona = data.persona;
+    toast(isNew ? 'Persona vytvorená!' : 'Zmeny uložené!', 'success');
+    return refreshPersonas().then(function() {
+      return api('/api/personas/' + state.currentPersona.id);
+    });
+  }).then(function(full) {
+    state._systemPromptPreview = full.systemPrompt;
+    state.products = full.products;
+    if (btn) { btn.disabled = false; btn.innerHTML = 'Uložiť zmeny'; }
+    render();
+  }).catch(function(err) {
+    toast(err.message, 'error');
+    if (btn) { btn.disabled = false; btn.innerHTML = isNew ? 'Vytvoriť personu' : 'Uložiť zmeny'; }
+  });
+}
+
+function deletePersona(id) {
+  if (!confirm('Naozaj chceš zmazať túto personu?')) return;
+  api('/api/personas/' + id, { method: 'DELETE' }).then(function() {
+    return refreshPersonas();
+  }).then(function() {
+    toast('Persona zmazaná', 'success');
+    navigate('personas');
+  }).catch(function(err) { toast(err.message, 'error'); });
+}
+
+function saveProduct(existingId) {
+  var personaId = state.currentPersona && state.currentPersona.id;
+  if (!personaId) { toast('Najprv ulož personu', 'error'); return; }
+
+  var body = {
+    name: (document.getElementById('prod-name') && document.getElementById('prod-name').value.trim()) || '',
+    description: (document.getElementById('prod-desc') && document.getElementById('prod-desc').value.trim()) || '',
+    price: parseFloat((document.getElementById('prod-price') && document.getElementById('prod-price').value) || '0'),
+    currency: (document.getElementById('prod-currency') && document.getElementById('prod-currency').value) || 'USD',
+    type: (document.getElementById('prod-type') && document.getElementById('prod-type').value) || 'photo_pack',
+  };
+
+  if (!body.name || isNaN(body.price)) { toast('Názov a cena sú povinné', 'error'); return; }
+
+  var url = existingId ? '/api/personas/' + personaId + '/products/' + existingId : '/api/personas/' + personaId + '/products';
+  var method = existingId ? 'PUT' : 'POST';
+
+  api(url, { method: method, body: JSON.stringify(body) }).then(function() {
+    return api('/api/personas/' + personaId);
+  }).then(function(full) {
+    state.products = full.products;
+    state._systemPromptPreview = full.systemPrompt;
+    state._productModal = null;
+    toast(existingId ? 'Produkt aktualizovaný' : 'Produkt pridaný', 'success');
+    render();
+  }).catch(function(err) { toast(err.message, 'error'); });
+}
+
+function deleteProduct(id) {
+  if (!confirm('Zmazať produkt?')) return;
+  var personaId = state.currentPersona && state.currentPersona.id;
+  api('/api/personas/' + personaId + '/products/' + id, { method: 'DELETE' }).then(function() {
+    return api('/api/personas/' + personaId);
+  }).then(function(full) {
+    state.products = full.products;
+    state._systemPromptPreview = full.systemPrompt;
+    toast('Produkt zmazaný', 'success');
+    render();
+  }).catch(function(err) { toast(err.message, 'error'); });
+}
+
+function generateImage() {
+  var personaId = document.getElementById('img-persona') && document.getElementById('img-persona').value;
+  if (!personaId) { toast('Vyber personu', 'error'); return; }
+
+  var style = state.selectedStyle;
+  if (style === 'custom') {
+    var customText = document.getElementById('custom-style-text') && document.getElementById('custom-style-text').value.trim();
+    if (!customText) { toast('Zadaj vlastný štýl', 'error'); return; }
+    style = customText;
   }
 
-  function renderSettings() {
-    const c = cfgInfo;
-    function row(label, hint, value, cls) {
-      return `<div class="setting-row">
-        <div class="sr-label">${label}<small>${hint}</small></div>
-        <div class="sr-value ${cls||''}">${value}</div>
-      </div>`;
-    }
-    document.getElementById('settings-grid').innerHTML = `
-      <div class="setting-section">
-        <h3>📸 Instagram / Meta API</h3>
-        ${row('Account ID', 'číselné ID tvojho IG účtu', c.instagramAccountId || '—', c.instagramAccountId ? '' : 'err')}
-        ${row('API verzia', 'verzia Graph API', c.metaApiVersion || '—')}
-        ${row('Access Token', 'long-lived token pre Graph API', c.accessTokenSet ? 'Nastavený ✅' : 'CHÝBA ❌', c.accessTokenSet ? 'ok' : 'err')}
-        ${row('Verify Token', 'secret pre webhook verifikáciu', c.webhookTokenSet ? 'Nastavený ✅' : 'CHÝBA ❌', c.webhookTokenSet ? 'ok' : 'err')}
-      </div>
-      <div class="setting-section">
-        <h3>🤖 Grok AI</h3>
-        ${row('Model', 'aktuálne použitý model', c.grokModel || '—')}
-        ${row('Teplota', 'kreatívnosť odpovedí (0-1)', '0.85 (pevné)')}
-        ${row('Max tokenov', 'maximálna dĺžka odpovede', '300 tokenov')}
-        ${row('Kontext', 'počet posledných správ ako kontext', '10 správ')}
-      </div>
-      <div class="setting-section">
-        <h3>⏱️ Polling / Webhook</h3>
-        ${row('Režim', 'spôsob prijímania správ', c.pollingEnabled ? 'Polling (aktívny)' : 'Webhook (odporúčané)', c.pollingEnabled ? 'warn' : 'ok')}
-        ${c.pollingEnabled ? row('Interval', 'ako často sa kontrolujú správy', c.pollIntervalSeconds + ' sekúnd') : ''}
-        ${row('Webhook URL', 'URL pre Meta nastavenia', 'https://mymia.xyz/webhook')}
-      </div>
-      <div class="setting-section">
-        <h3>🛡️ Limity</h3>
-        ${row('Max odpovedí / hodinu', 'na jedného usera', c.maxRepliesPerHour + '× / hodinu')}
-        ${row('Server rate limit', 'globálny limit všetkých requestov', '300 req / min / IP')}
-        ${row('Spam filter', 'detekcia spamu a nevhodných správ', 'Aktívny ✅', 'ok')}
-        ${row('HMAC overenie', 'overenie pravosti webhook requestov', 'Aktívne ✅', 'ok')}
-      </div>
-      <div class="setting-section" style="grid-column:1/-1">
-        <h3>🔧 Ako zmeniť nastavenia</h3>
-        <p style="font-size:.8rem;color:var(--muted2);line-height:1.65">
-          Nastavenia sa menia v súbore <code>.env</code> priamo na serveri. Po zmene musíš reštartovať bota:
-        </p>
-        <div style="background:var(--surface3);border-radius:8px;padding:.85rem 1rem;margin-top:.75rem;font-family:monospace;font-size:.78rem;color:var(--muted2);line-height:1.8">
-          ssh root@mymia.xyz<br>
-          nano /opt/mia-dm/.env<br>
-          <span style="color:var(--muted)"># uprav čo potrebuješ, ulož (Ctrl+X, Y, Enter)</span><br>
-          pm2 restart mia-dm<br>
-          pm2 logs mia-dm --lines 20
-        </div>
-      </div>
-    `;
+  var isNsfw = state._imgNsfw || false;
+  var btn = document.getElementById('gen-img-btn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<div class="spinner"></div> Generujem...'; }
+
+  api('/api/images/generate', {
+    method: 'POST',
+    body: JSON.stringify({ persona_id: parseInt(personaId, 10), style: style, is_nsfw: isNsfw }),
+  }).then(function(data) {
+    state.images.unshift(data.image);
+    toast('Avatar vygenerovaný!', 'success');
+    render();
+  }).catch(function(err) {
+    toast(err.message, 'error');
+    if (btn) { btn.disabled = false; btn.innerHTML = '🎨 Generovať avatar'; }
+  });
+}
+
+function deleteImage(id) {
+  if (!confirm('Zmazať obrázok?')) return;
+  api('/api/images/' + id, { method: 'DELETE' }).then(function() {
+    state.images = state.images.filter(function(i) { return i.id !== id; });
+    toast('Obrázok zmazaný', 'success');
+    render();
+  }).catch(function(err) { toast(err.message, 'error'); });
+}
+
+function analyzeTrends() {
+  var topic = document.getElementById('trend-topic') && document.getElementById('trend-topic').value.trim();
+  var btn = document.getElementById('trends-btn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<div class="spinner"></div> Analyzujem...'; }
+
+  api('/api/content/trends', {
+    method: 'POST',
+    body: JSON.stringify({ topic: topic || undefined }),
+  }).then(function(data) {
+    state.trendAnalysis = data.analysis;
+    toast('Analýza dokončená!', 'success');
+    render();
+  }).catch(function(err) {
+    toast(err.message, 'error');
+    if (btn) { btn.disabled = false; btn.innerHTML = 'Analyzovať trendy'; }
+  });
+}
+
+function generateContent() {
+  var personaId = document.getElementById('content-persona') && document.getElementById('content-persona').value;
+  var contentType = document.getElementById('content-type') && document.getElementById('content-type').value;
+  if (!personaId) { toast('Vyber personu', 'error'); return; }
+
+  var btn = document.getElementById('gen-content-btn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<div class="spinner"></div> Generujem...'; }
+
+  api('/api/content/generate', {
+    method: 'POST',
+    body: JSON.stringify({
+      persona_id: parseInt(personaId, 10),
+      content_type: contentType || 'post',
+      trend_data: state.trendAnalysis || undefined,
+    }),
+  }).then(function(data) {
+    state.content.unshift(data.content);
+    toast('Obsah vygenerovaný!', 'success');
+    render();
+  }).catch(function(err) {
+    toast(err.message, 'error');
+    if (btn) { btn.disabled = false; btn.innerHTML = 'Generovať obsah'; }
+  });
+}
+
+function copyContent(id) {
+  var item = state.content.filter(function(c) { return c.id === id; })[0];
+  if (!item) return;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(item.caption + '\n\n' + item.hashtags).then(function() {
+      toast('Skopírované!', 'success');
+    });
   }
+}
 
-  // ─── Conversations ───────────────────────────────────────────────────────────
-  async function loadConversations() {
-    try {
-      conversations = await api('/admin/conversations');
-      renderConvList(conversations);
-    } catch(e) { console.error(e); }
+function deleteContentItem(id) {
+  if (!confirm('Zmazať obsah?')) return;
+  api('/api/content/' + id, { method: 'DELETE' }).then(function() {
+    state.content = state.content.filter(function(c) { return c.id !== id; });
+    toast('Zmazané', 'success');
+    render();
+  }).catch(function(err) { toast(err.message, 'error'); });
+}
+
+function saveIG() {
+  var accountId = document.getElementById('ig-account-id') && document.getElementById('ig-account-id').value.trim();
+  var token = document.getElementById('ig-token') && document.getElementById('ig-token').value.trim();
+  var username = document.getElementById('ig-username') && document.getElementById('ig-username').value.trim();
+  var personaId = document.getElementById('ig-persona') && document.getElementById('ig-persona').value;
+  if (!accountId || !token) { toast('Account ID a token sú povinné', 'error'); return; }
+
+  var btn = document.getElementById('save-ig-btn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>'; }
+
+  api('/api/instagram/connect', {
+    method: 'POST',
+    body: JSON.stringify({
+      ig_account_id: accountId,
+      ig_username: username || undefined,
+      access_token: token,
+      persona_id: personaId ? parseInt(personaId, 10) : undefined,
+    }),
+  }).then(function() {
+    return loadIGStatus();
+  }).then(function() {
+    toast('Instagram prepojený!', 'success');
+    render();
+  }).catch(function(err) {
+    toast(err.message, 'error');
+    if (btn) { btn.disabled = false; btn.innerHTML = 'Pripojiť'; }
+  });
+}
+
+function disconnectIG() {
+  if (!confirm('Odpojiť Instagram účet?')) return;
+  api('/api/instagram/disconnect', { method: 'DELETE' }).then(function() {
+    state.igStatus = { connected: false };
+    toast('Instagram odpojený', 'success');
+    render();
+  }).catch(function(err) { toast(err.message, 'error'); });
+}
+
+function startCheckout(plan) {
+  api('/api/billing/checkout', {
+    method: 'POST',
+    body: JSON.stringify({
+      plan: plan,
+      success_url: window.location.origin + '/admin-ui/#billing',
+      cancel_url: window.location.origin + '/admin-ui/#billing',
+    }),
+  }).then(function(data) {
+    window.location.href = data.url;
+  }).catch(function(err) { toast(err.message, 'error'); });
+}
+
+function openPortal() {
+  api('/api/billing/portal?return_url=' + encodeURIComponent(window.location.href)).then(function(data) {
+    window.location.href = data.url;
+  }).catch(function(err) { toast(err.message, 'error'); });
+}
+
+// ============================================================
+//  DATA LOADING
+// ============================================================
+function refreshPersonas() {
+  return api('/api/personas').then(function(data) {
+    state.personas = data.personas || [];
+  }).catch(function() {});
+}
+
+function loadIGStatus() {
+  return api('/api/instagram/status').then(function(data) {
+    state.igStatus = data;
+  }).catch(function() {});
+}
+
+function loadImages() {
+  return api('/api/images').then(function(data) {
+    state.images = data.images || [];
+  }).catch(function() {});
+}
+
+function loadContent() {
+  return api('/api/content').then(function(data) {
+    state.content = data.content || [];
+  }).catch(function() {});
+}
+
+function refreshUser() {
+  return api('/api/auth/me').then(function(data) {
+    state.user = data;
+    localStorage.setItem('user', JSON.stringify(data));
+  }).catch(function() {});
+}
+
+function loadInitialData() {
+  return Promise.all([refreshUser(), refreshPersonas(), loadIGStatus(), loadImages(), loadContent()]);
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+(function init() {
+  if (isAuthed()) {
+    loadInitialData().then(function() {
+      var hash = window.location.hash.replace('#', '').split('?')[0];
+      var validViews = ['dashboard','personas','avatars','content','instagram','billing'];
+      navigate(validViews.indexOf(hash) !== -1 ? hash : 'dashboard');
+    });
+  } else {
+    navigate('landing');
   }
-
-  function renderConvList(list) {
-    const el = document.getElementById('conv-list');
-    if (!list.length) {
-      el.innerHTML = '<div class="empty-state" style="height:200px;padding:1rem"><div class="es-icon" style="font-size:1.5rem">💬</div><p>Zatiaľ žiadne konverzácie.<br>Čakaj kým ti niekto napíše DM.</p></div>';
-      return;
-    }
-    el.innerHTML = list.map(u => `
-      <div class="conv-item ${u.instagram_user_id === activeUserId ? 'active' : ''}"
-           onclick="openConv('${u.instagram_user_id}','${escAttr(u.username||u.instagram_user_id)}',${u.is_blocked})">
-        <div class="ci-name">
-          ${escHtml(u.username || u.instagram_user_id)}
-          ${u.is_blocked ? '<span class="badge badge-danger">blokovaný</span>' : ''}
-        </div>
-        <div class="ci-meta">
-          <span>💬 ${u.message_count} správ</span>
-          <span>· ${timeAgo(u.last_activity)}</span>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  function filterConvs() {
-    const q = document.getElementById('search-input').value.toLowerCase();
-    renderConvList(conversations.filter(u =>
-      (u.username||'').toLowerCase().includes(q) || u.instagram_user_id.includes(q)
-    ));
-  }
-
-  async function openConv(userId, username, isBlocked) {
-    activeUserId = userId;
-    filterConvs();
-
-    let messages = [];
-    try { messages = await api(`/admin/conversations/${userId}`); } catch(e) {}
-
-    document.getElementById('conv-main').innerHTML = `
-      <div class="conv-head">
-        <div class="conv-head-info">
-          <h3>${escHtml(username)} ${isBlocked ? '<span class="badge badge-danger">blokovaný</span>' : ''}</h3>
-          <p>ID: ${userId}</p>
-        </div>
-        <div class="conv-head-actions">
-          ${isBlocked
-            ? `<button class="btn btn-success" onclick="toggleBlock('${userId}',false)">✅ Odblokovať</button>`
-            : `<button class="btn btn-danger" onclick="toggleBlock('${userId}',true)">🚫 Blokovať</button>`}
-          <button class="btn btn-ghost" onclick="openConv('${userId}','${escAttr(username)}',${isBlocked})">↻</button>
-        </div>
-      </div>
-      <div class="conv-messages" id="chat-msgs">
-        ${messages.length === 0
-          ? '<div class="empty-state" style="height:200px"><div class="es-icon">📭</div><p>Žiadne správy</p></div>'
-          : messages.map(m => `
-            <div class="msg ${m.role}">
-              <div class="msg-bubble">${escHtml(m.content)}</div>
-              <div class="msg-time">${m.role === 'user' ? '👤 Follower' : '🤖 Mia'} · ${timeAgo(m.created_at)}</div>
-            </div>
-          `).join('')}
-      </div>
-      <div class="conv-send">
-        <div class="send-tabs">
-          <div class="send-tab active" id="tab-now" onclick="setSendMode('now')">✈️ Odoslať teraz</div>
-          <div class="send-tab" id="tab-queue" onclick="setSendMode('queue')">⏳ Zaradiť do fronty</div>
-        </div>
-        <div class="send-row">
-          <textarea id="manual-msg" placeholder="Napíš správu ako Mia..." rows="2"></textarea>
-          <button class="btn btn-primary" onclick="sendMsg('${userId}','${escAttr(username)}',${isBlocked})">Odoslať</button>
-        </div>
-        <p class="send-hint" id="send-hint">Správa sa odošle ihneď followerovi.</p>
-      </div>
-    `;
-
-    const msgs = document.getElementById('chat-msgs');
-    if (msgs) msgs.scrollTop = msgs.scrollHeight;
-  }
-
-  function setSendMode(mode) {
-    sendMode = mode;
-    document.getElementById('tab-now').classList.toggle('active', mode === 'now');
-    document.getElementById('tab-queue').classList.toggle('active', mode === 'queue');
-    document.getElementById('send-hint').textContent = mode === 'now'
-      ? 'Správa sa odošle ihneď followerovi.'
-      : 'Správa sa odošle nabudúce keď ti follower napíše — namiesto AI odpovede.';
-  }
-
-  async function sendMsg(userId, username, isBlocked) {
-    const msg = document.getElementById('manual-msg')?.value.trim();
-    if (!msg) return;
-    try {
-      const endpoint = sendMode === 'queue' ? 'override' : 'send';
-      await api(`/admin/conversations/${userId}/${endpoint}`, 'POST', { message: msg });
-      document.getElementById('manual-msg').value = '';
-      toast(sendMode === 'queue' ? '⏳ Zaradené do fronty' : '✅ Správa odoslaná', 'ok');
-      if (sendMode === 'now') openConv(userId, username, isBlocked);
-    } catch(e) {
-      toast('❌ Chyba pri odosielaní', 'err');
-    }
-  }
-
-  async function toggleBlock(userId, block) {
-    await api(`/admin/conversations/${userId}/${block ? 'block' : 'unblock'}`, 'POST');
-    toast(block ? '🚫 User blokovaný' : '✅ User odblokovaný', 'ok');
-    await loadConversations();
-    const user = conversations.find(u => u.instagram_user_id === userId);
-    if (user) openConv(userId, user.username || userId, block);
-  }
-
-  // ─── Utils ───────────────────────────────────────────────────────────────────
-  function timeAgo(unix) {
-    const d = Math.floor(Date.now()/1000) - unix;
-    if (d < 60) return d + 's';
-    if (d < 3600) return Math.floor(d/60) + 'm';
-    if (d < 86400) return Math.floor(d/3600) + 'h';
-    return Math.floor(d/86400) + 'd';
-  }
-  function escHtml(s='') { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-  function escAttr(s='') { return String(s).replace(/'/g,"\\'"); }
-
-  let toastTimer;
-  function toast(msg, type='ok') {
-    const el = document.getElementById('toast');
-    el.textContent = msg;
-    el.className = 'show ' + type;
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.className = '', 3000);
-  }
+})();
 </script>
 </body>
 </html>
