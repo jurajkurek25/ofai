@@ -1,7 +1,7 @@
 {
   "name": "instagram-dm-ai",
-  "version": "1.0.0",
-  "description": "AI-powered Instagram DM automation for fashion influencer persona",
+  "version": "2.0.0",
+  "description": "AI-powered Instagram DM automation SaaS platform",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
@@ -15,16 +15,21 @@
     "@fastify/rate-limit": "^9.1.0",
     "@fastify/static": "^7.0.4",
     "axios": "^1.7.2",
+    "bcryptjs": "^2.4.3",
     "better-sqlite3": "^9.4.3",
     "dotenv": "^16.4.5",
     "fastify": "^4.28.1",
+    "jsonwebtoken": "^9.0.2",
     "node-cron": "^3.0.3",
     "pino": "^9.2.0",
     "pino-pretty": "^11.2.1",
+    "stripe": "^16.0.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/better-sqlite3": "^7.6.10",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.14.9",
     "@types/node-cron": "^3.0.11",
     "tsx": "^4.16.2",

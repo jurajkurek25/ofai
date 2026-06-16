@@ -29,6 +29,15 @@ const configSchema = z.object({
   limits: z.object({
     maxRepliesPerUserPerHour: z.number().default(10),
   }),
+  jwt: z.object({
+    secret: z.string().min(32),
+  }),
+  stripe: z.object({
+    secretKey: z.string().default(''),
+    webhookSecret: z.string().default(''),
+    creatorPriceId: z.string().default(''),
+    proPriceId: z.string().default(''),
+  }),
 });
 
 export type Config = z.infer<typeof configSchema>;
@@ -59,6 +68,15 @@ function loadConfig(): Config {
     },
     limits: {
       maxRepliesPerUserPerHour: parseInt(process.env.MAX_REPLIES_PER_USER_PER_HOUR ?? '10', 10),
+    },
+    jwt: {
+      secret: process.env.JWT_SECRET ?? '',
+    },
+    stripe: {
+      secretKey: process.env.STRIPE_SECRET_KEY ?? '',
+      webhookSecret: process.env.STRIPE_WEBHOOK_SECRET ?? '',
+      creatorPriceId: process.env.STRIPE_CREATOR_PRICE_ID ?? '',
+      proPriceId: process.env.STRIPE_PRO_PRICE_ID ?? '',
     },
   };
 
