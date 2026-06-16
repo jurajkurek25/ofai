@@ -7,9 +7,9 @@
   <style>
     :root {
       --bg: #2B2D42;
-      --bg2: #353652;
-      --bg3: #3e405f;
-      --border: rgba(141,153,174,0.22);
+      --bg2: #0e0e12;
+      --bg3: #18181e;
+      --border: rgba(141,153,174,0.18);
       --text: #EDF2F4;
       --text2: #8D99AE;
       --accent: #EF233C;
@@ -196,132 +196,99 @@
     .modal-title { font-size: 18px; font-weight: 700; }
     .modal-close { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); width: 32px; height: 32px; border-radius: 50%; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-    /* ══════════ MOBILE TOP BAR (app) ══════════ */
+    /* ══════════ MOBILE NAV ══════════ */
     .mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; height: 56px; background: var(--bg2); border-bottom: 1px solid var(--border); z-index: 150; align-items: center; justify-content: space-between; padding: 0 16px; }
     .mobile-topbar-logo { font-size: 18px; font-weight: 900; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .hamburger { background: none; border: none; cursor: pointer; padding: 6px; display: flex; flex-direction: column; gap: 5px; }
-    .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: all 0.2s; }
-    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 199; }
+    .hamburger { background: none; border: none; cursor: pointer; padding: 8px; display: flex; flex-direction: column; gap: 5px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; }
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 199; }
     .sidebar-overlay.active { display: block; }
 
-    /* ══════════ RESPONSIVE ══════════ */
+    /* Landing nav pieces — desktop defaults */
+    .landing-nav-links { display: flex; align-items: center; gap: 32px; }
+    .landing-nav-cta { display: flex; gap: 10px; }
+    .landing-hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+    .landing-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; }
+    .landing-mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: var(--bg2); border-bottom: 1px solid var(--border); z-index: 300; }
+    .landing-mobile-menu.open { display: block; }
+    .landing-mobile-menu a,
+    .landing-mobile-menu button { display: block; width: 100%; text-align: left; padding: 16px 24px; font-size: 15px; color: var(--text); background: none; border: none; border-top: 1px solid var(--border); cursor: pointer; font-family: inherit; font-weight: 500; }
+    .landing-mobile-menu a:first-child,
+    .landing-mobile-menu button:first-child { border-top: none; }
+    .landing-mobile-menu a:hover, .landing-mobile-menu button:hover { background: var(--bg3); }
+    .landing-mobile-menu .mob-cta { color: var(--accent); font-weight: 700; }
+
+    /* ══════════ TABLET (≤ 900px) ══════════ */
     @media (max-width: 900px) {
-      /* Landing nav */
-      .landing-nav { padding: 0 20px; height: 56px; }
-      .landing-nav-links { display: none; }
-      .landing-nav-cta { display: none; }
-      .landing-hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; }
-      .landing-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; }
-      .landing-mobile-menu { display: none; position: fixed; top: 56px; left: 0; right: 0; background: var(--bg2); border-bottom: 1px solid var(--border); z-index: 300; padding: 12px 0; }
-      .landing-mobile-menu.open { display: block; }
-      .landing-mobile-menu a, .landing-mobile-menu button { display: block; width: 100%; text-align: left; padding: 14px 24px; font-size: 15px; color: var(--text); background: none; border: none; border-radius: 0; cursor: pointer; font-family: inherit; }
-      .landing-mobile-menu a:hover, .landing-mobile-menu button:hover { background: var(--bg3); }
+      /* Landing nav → hamburger */
+      .landing-nav-links { display: none !important; }
+      .landing-nav-cta { display: none !important; }
+      .landing-hamburger { display: flex !important; }
+      .landing-mobile-menu { top: 56px; }
 
-      /* Hero */
-      .hero h1, h1.hero-h1 { font-size: 36px !important; }
-
-      /* Grids → single column */
-      .features { grid-template-columns: 1fr !important; padding: 0 16px; }
-      .pricing-grid { grid-template-columns: 1fr !important; }
-
-      /* App sidebar */
+      /* App sidebar → drawer */
       .mobile-topbar { display: flex; }
-      .sidebar { transform: translateX(-100%); transition: transform 0.25s ease; top: 0; }
-      .sidebar.open { transform: translateX(0); z-index: 200; }
-      .main { margin-left: 0 !important; max-width: 100vw !important; padding: 80px 16px 24px; }
+      .sidebar { transform: translateX(-100%); transition: transform 0.25s ease; z-index: 200; }
+      .sidebar.open { transform: translateX(0); }
+      #sidebar-close-btn { display: block !important; }
+      .main { margin-left: 0 !important; max-width: 100vw !important; padding: 76px 16px 32px; }
 
-      /* Stats */
+      /* App layout grids */
       .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
-
-      /* grid-2 */
       .grid-2 { grid-template-columns: 1fr !important; }
-
-      /* Style grid */
       .style-grid { grid-template-columns: repeat(2, 1fr) !important; }
-
-      /* Billing plan card */
       .current-plan-card { flex-direction: column; align-items: flex-start; gap: 16px; }
-
-      /* Tabs scroll */
-      .tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap; padding-bottom: 1px; }
+      .tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap; }
       .tab { white-space: nowrap; flex-shrink: 0; }
-
-      /* Product items */
       .product-item { flex-wrap: wrap; }
       .product-actions { width: 100%; justify-content: flex-end; margin-top: 8px; }
+
+      /* Landing grids */
+      .l-grid-3 { grid-template-columns: 1fr !important; }
+      .l-grid-4 { grid-template-columns: 1fr 1fr !important; }
+      .l-grid-2col { flex-direction: column !important; }
+      .l-section { padding-left: 20px !important; padding-right: 20px !important; }
     }
 
+    /* ══════════ MOBILE (≤ 640px) ══════════ */
     @media (max-width: 640px) {
-      /* Landing hero */
-      .hero { padding: 70px 16px 40px !important; }
+      /* Landing nav height */
+      nav.landing-sticky-nav { padding: 0 16px !important; height: 56px !important; }
 
-      /* Inline landing sections with big padding */
-      [style*="padding: 100px 20px"], [style*="padding:100px 20px"] { padding: 60px 16px !important; }
-      [style*="padding: 90px 40px"], [style*="padding:90px 40px"] { padding: 48px 16px !important; }
-      [style*="padding: 80px 40px"], [style*="padding:80px 40px"] { padding: 48px 16px !important; }
-      [style*="max-width: 1100px"] { padding-left: 16px !important; padding-right: 16px !important; }
-      [style*="max-width:1100px"] { padding-left: 16px !important; padding-right: 16px !important; }
-      [style*="max-width: 900px"] { padding-left: 16px !important; padding-right: 16px !important; }
-      [style*="max-width:900px"] { padding-left: 16px !important; padding-right: 16px !important; }
-      [style*="max-width: 760px"] { padding-left: 16px !important; padding-right: 16px !important; }
-      [style*="max-width:760px"] { padding-left: 16px !important; padding-right: 16px !important; }
+      /* Landing sections padding */
+      .l-section { padding: 48px 16px !important; }
+      .l-hero { padding: 72px 16px 40px !important; }
+      footer.l-footer { padding: 32px 16px 24px !important; }
 
-      /* Landing hero font */
-      [style*="font-size:64px"] { font-size: 34px !important; letter-spacing: -.01em !important; }
-      [style*="font-size: 64px"] { font-size: 34px !important; }
-      [style*="font-size:52px"] { font-size: 30px !important; }
-      [style*="font-size:48px"] { font-size: 28px !important; }
-      [style*="font-size:40px"] { font-size: 26px !important; }
-      [style*="font-size:36px"] { font-size: 24px !important; }
+      /* Landing headings */
+      .l-h1 { font-size: 34px !important; letter-spacing: -.01em !important; }
+      .l-h2 { font-size: 26px !important; }
+      .l-h3 { font-size: 20px !important; }
 
-      /* Landing inline grids → single col */
-      [style*="grid-template-columns: repeat(3"] { display: flex !important; flex-direction: column !important; }
-      [style*="grid-template-columns:repeat(3"] { display: flex !important; flex-direction: column !important; }
-      [style*="grid-template-columns: repeat(4"] { display: flex !important; flex-wrap: wrap !important; }
-      [style*="grid-template-columns:repeat(4"] { display: flex !important; flex-wrap: wrap !important; }
-      [style*="grid-template-columns: 2fr 1fr 1fr 1fr"] { display: flex !important; flex-direction: column !important; }
-      [style*="grid-template-columns:2fr 1fr 1fr 1fr"] { display: flex !important; flex-direction: column !important; }
+      /* Landing grids all → single col */
+      .l-grid-3, .l-grid-footer { grid-template-columns: 1fr !important; display: flex !important; flex-direction: column !important; }
+      .l-grid-4 { grid-template-columns: 1fr 1fr !important; }
+      .l-grid-2col { flex-direction: column !important; direction: ltr !important; }
 
-      /* How it works alternating grid */
-      [style*="grid-template-columns: 1fr 1fr"] { display: flex !important; flex-direction: column !important; }
-      [style*="grid-template-columns:1fr 1fr"] { display: flex !important; flex-direction: column !important; }
+      /* CTA buttons stack */
+      .l-cta-row { flex-direction: column !important; align-items: stretch !important; }
+      .l-cta-row button { width: 100% !important; }
 
-      /* Stats bar items — 2 per row */
-      [style*="grid-template-columns: repeat(4,1fr)"] { display: grid !important; grid-template-columns: 1fr 1fr !important; }
-      [style*="grid-template-columns:repeat(4,1fr)"] { display: grid !important; grid-template-columns: 1fr 1fr !important; }
+      /* Comparison table scroll */
+      .l-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
-      /* Footer padding */
-      footer { padding: 32px 16px 24px !important; }
+      /* Stats */
+      .stats-grid { grid-template-columns: 1fr 1fr !important; }
 
-      /* Hero CTA buttons — stack */
-      [style*="display:flex;gap:14px;justify-content:center"] { flex-direction: column !important; align-items: stretch !important; }
-      [style*="display:flex;gap:16px;justify-content:center"] { flex-direction: column !important; align-items: stretch !important; }
-
-      /* Nav sticky padding */
-      nav[style*="padding:0 60px"] { padding: 0 16px !important; }
-
-      /* Comparison table horizontal scroll */
-      .pricing-section > div:last-child { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-
-      /* Modal full-width */
-      .modal { max-width: 100% !important; border-radius: 16px 16px 0 0 !important; margin-top: auto; }
+      /* Modal bottom sheet */
+      .modal { max-width: 100% !important; border-radius: 16px 16px 0 0 !important; }
       .modal-overlay { align-items: flex-end !important; padding: 0 !important; }
 
-      /* Image gallery 2 col */
+      /* Gallery 2 col */
       .image-gallery { grid-template-columns: repeat(2, 1fr) !important; }
 
-      /* Auth box */
-      .auth-box { padding: 28px 20px !important; }
-    }
-
-    /* Sidebar close button only on mobile */
-    @media (max-width: 900px) {
-      #sidebar-close-btn { display: block !important; }
-    }
-
-    /* Landscape phone */
-    @media (max-width: 640px) and (orientation: landscape) {
-      .hero { padding: 40px 16px 24px !important; }
+      /* Auth */
+      .auth-box { padding: 28px 16px !important; }
     }
   </style>
 </head>
@@ -495,18 +462,18 @@ function renderLanding() {
   return `<div class="landing" style="overflow-x:hidden">
 
   <!-- ══════════ STICKY NAV ══════════ -->
-  <nav style="position:sticky;top:0;z-index:200;background:rgba(43,45,66,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 60px;height:64px;display:flex;align-items:center;justify-content:space-between">
+  <nav class="landing-sticky-nav" style="position:sticky;top:0;z-index:200;background:rgba(43,45,66,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 60px;height:64px;display:flex;align-items:center;justify-content:space-between">
     <div style="font-size:22px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">MyMia</div>
-    <div class="landing-nav-links" style="display:flex;align-items:center;gap:32px">
+    <div class="landing-nav-links">
       <a href="#how" style="font-size:14px;color:var(--text2);text-decoration:none" onclick="event.preventDefault();document.getElementById('how').scrollIntoView({behavior:'smooth'})">Ako to funguje</a>
       <a href="#features" style="font-size:14px;color:var(--text2);text-decoration:none" onclick="event.preventDefault();document.getElementById('features').scrollIntoView({behavior:'smooth'})">Funkcie</a>
       <a href="#pricing" style="font-size:14px;color:var(--text2);text-decoration:none" onclick="event.preventDefault();document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Ceny</a>
     </div>
-    <div class="landing-nav-cta" style="display:flex;gap:10px">
+    <div class="landing-nav-cta">
       <button class="btn btn-secondary btn-sm" onclick="navigate('login')">Prihlásiť sa</button>
       <button class="btn btn-primary btn-sm" onclick="navigate('register')">Začať zadarmo →</button>
     </div>
-    <button class="landing-hamburger" onclick="toggleLandingMenu()" aria-label="Menu" style="display:none"><span></span><span></span><span></span></button>
+    <button class="landing-hamburger" onclick="toggleLandingMenu()" aria-label="Menu"><span></span><span></span><span></span></button>
   </nav>
   <div class="landing-mobile-menu" id="landing-mobile-menu">
     <a href="#how" onclick="event.preventDefault();closeLandingMenu();setTimeout(function(){document.getElementById('how').scrollIntoView({behavior:'smooth'})},100)">Ako to funguje</a>
@@ -517,7 +484,7 @@ function renderLanding() {
   </div>
 
   <!-- ══════════ HERO ══════════ -->
-  <div style="position:relative;overflow:hidden;padding:100px 20px 60px">
+  <div class="l-hero" style="position:relative;overflow:hidden;padding:100px 20px 60px">
     <div style="position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(239,35,60,.18) 0%,transparent 65%);pointer-events:none"></div>
     <div style="position:absolute;top:200px;left:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(217,4,41,.08) 0%,transparent 65%);pointer-events:none"></div>
 
@@ -527,7 +494,7 @@ function renderLanding() {
         Aktívne — AI spracováva DM správy v reálnom čase
       </div>
 
-      <h1 style="font-size:64px;font-weight:900;line-height:1.03;margin-bottom:28px;letter-spacing:-.02em">
+      <h1 class="l-h1" style="font-size:64px;font-weight:900;line-height:1.03;margin-bottom:28px;letter-spacing:-.02em">
         <span style="background:linear-gradient(135deg,#fff 20%,#c4b5fd 60%,var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Tvoj Instagram zarába</span><br>
         <span style="background:linear-gradient(135deg,var(--accent2),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent">aj kým spíš</span>
       </h1>
@@ -537,7 +504,7 @@ function renderLanding() {
       </p>
       <p style="font-size:14px;color:var(--text2);opacity:.6;margin-bottom:44px">Nastavenie za 5 minút · Žiadna kreditná karta · Zruš kedykoľvek</p>
 
-      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:52px">
+      <div class="l-cta-row" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:52px">
         <button onclick="navigate('register')" style="background:linear-gradient(135deg,var(--accent),#D90429);color:#fff;font-size:17px;font-weight:700;padding:15px 38px;border-radius:12px;border:none;cursor:pointer;transition:opacity .15s;font-family:inherit">
           Vytvoriť účet zadarmo →
         </button>
@@ -556,8 +523,8 @@ function renderLanding() {
   </div>
 
   <!-- ══════════ STATS BAR ══════════ -->
-  <div style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:36px 40px">
-    <div style="max-width:1000px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:32px;text-align:center">
+  <div class="l-section" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:36px 40px">
+    <div class="l-grid-4" style="max-width:1000px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:32px;text-align:center">
       ${[
         ['24/7','AI pracuje nepretržite','— každý deň, každú hodinu'],
         ['< 2s','Priemerná doba odpovede','od prijatia DM po odoslanie'],
@@ -570,15 +537,15 @@ function renderLanding() {
   </div>
 
   <!-- ══════════ PROBLEM SECTION ══════════ -->
-  <div style="max-width:900px;margin:90px auto;padding:0 40px;text-align:center">
+  <div class="l-section" style="max-width:900px;margin:90px auto;padding:0 40px;text-align:center">
     <div style="display:inline-block;background:rgba(224,82,82,.1);border:1px solid rgba(224,82,82,.25);border-radius:100px;padding:6px 16px;font-size:12px;color:var(--danger);font-weight:600;margin-bottom:24px">
       😤 Poznaješ tento problém?
     </div>
-    <h2 style="font-size:40px;font-weight:900;margin-bottom:20px">Ručné DM manažovanie ťa oberá o čas aj peniaze</h2>
+    <h2 class="l-h2" style="font-size:40px;font-weight:900;margin-bottom:20px">Ručné DM manažovanie ťa oberá o čas aj peniaze</h2>
     <p style="font-size:17px;color:var(--text2);line-height:1.7;margin-bottom:48px">
       Každý follower, ktorý ti napíše a nedostane odpoveď do pár minút, odíde ku konkurencii. Ručné odpovedanie zaberá hodiny denne a stejne to nestíhaš — a predaj sa stratí.
     </p>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;text-align:left">
+    <div class="l-grid-3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;text-align:left">
       ${[
         ['⏰','Strácaš hodiny denne','Odpovedáš na tie isté otázky znova a znova. Ceny, obsah, kedy nový set — donekonečna.'],
         ['💸','Prichádzaš o predaj','Follower napíše o 2 v noci, ráno nájde odpoveď — a medzitým kúpil od niekoho iného.'],
@@ -593,18 +560,18 @@ function renderLanding() {
   </div>
 
   <!-- ══════════ SOLUTION ══════════ -->
-  <div style="background:linear-gradient(135deg,rgba(239,35,60,.08),rgba(217,4,41,.04));border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:80px 40px;text-align:center">
+  <div class="l-section" style="background:linear-gradient(135deg,rgba(239,35,60,.08),rgba(217,4,41,.04));border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:80px 40px;text-align:center">
     <div style="display:inline-block;background:rgba(76,175,125,.1);border:1px solid rgba(76,175,125,.25);border-radius:100px;padding:6px 16px;font-size:12px;color:var(--success);font-weight:600;margin-bottom:24px">
       ✨ Riešenie
     </div>
-    <h2 style="font-size:40px;font-weight:900;margin-bottom:16px;max-width:700px;margin-left:auto;margin-right:auto">MyMia to zvládne za teba — lepšie, rýchlejšie, nonstop</h2>
+    <h2 class="l-h2" style="font-size:40px;font-weight:900;margin-bottom:16px;max-width:700px;margin-left:auto;margin-right:auto">MyMia to zvládne za teba — lepšie, rýchlejšie, nonstop</h2>
     <p style="font-size:17px;color:var(--text2);max-width:600px;margin:0 auto 20px;line-height:1.7">
       Vytvoríš AI personu, prepojíš Instagram a MyMia prevezme všetku komunikáciu. Nie generický bot — realistická persona s vlastnou osobnosťou, štýlom a cenníkom.
     </p>
   </div>
 
   <!-- ══════════ MONETIZATION PLATFORMS ══════════ -->
-  <div style="max-width:1100px;margin:90px auto;padding:0 40px">
+  <div class="l-section" style="max-width:1100px;margin:90px auto;padding:0 40px">
     <div style="text-align:center;margin-bottom:52px">
       <div style="display:inline-block;background:rgba(239,35,60,.1);border:1px solid rgba(239,35,60,.25);border-radius:100px;padding:6px 16px;font-size:12px;color:var(--accent2);font-weight:600;margin-bottom:20px">
         💸 Monetizácia na autopilote
@@ -615,7 +582,7 @@ function renderLanding() {
       </p>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-bottom:52px">
+    <div class="l-grid-3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-bottom:52px">
       <div style="background:linear-gradient(135deg,rgba(249,76,34,.08),rgba(249,76,34,.02));border:1px solid rgba(249,76,34,.2);border-radius:20px;padding:36px;text-align:center">
         <div style="font-size:44px;margin-bottom:16px">🅿️</div>
         <div style="font-weight:800;font-size:18px;margin-bottom:10px">Patreon</div>
@@ -638,7 +605,7 @@ function renderLanding() {
     </div>
 
     <!-- HOW THE LINK SENDING WORKS -->
-    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:40px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center">
+    <div class="l-grid-2col" style="background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:40px;display:flex;gap:48px;align-items:center">
       <div>
         <div style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent2);margin-bottom:12px">Ako to vyzerá v praxi</div>
         <h3 style="font-size:24px;font-weight:800;margin-bottom:16px">Follower napíše — bot predá</h3>
@@ -662,9 +629,9 @@ function renderLanding() {
   </div>
 
   <!-- ══════════ HOW IT WORKS ══════════ -->
-  <div id="how" style="max-width:1100px;margin:90px auto;padding:0 40px">
+  <div id="how" class="l-section" style="max-width:1100px;margin:90px auto;padding:0 40px">
     <div style="text-align:center;margin-bottom:60px">
-      <h2 style="font-size:40px;font-weight:900;margin-bottom:12px">Ako to funguje</h2>
+      <h2 class="l-h2" style="font-size:40px;font-weight:900;margin-bottom:12px">Ako to funguje</h2>
       <p style="font-size:17px;color:var(--text2)">Od registrácie po prvú automatickú odpoveď za menej ako 10 minút</p>
     </div>
 
@@ -677,7 +644,7 @@ function renderLanding() {
       ['06','Monitoruješ a škáluješ','V dashboarde vidíš všetky konverzácie, štatistiky, môžeš manuálne zasiahnuť, blokovať userov alebo nastaviť vlastnú odpoveď namiesto AI.','📊'],
     ].map(function(s,i){
       var even = i%2===1;
-      return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;margin-bottom:70px;direction:'+(even?'rtl':'ltr')+'">'+
+      return '<div class="l-grid-2col" style="display:flex;align-items:center;gap:60px;margin-bottom:70px;direction:'+(even?'rtl':'ltr')+'">'+
         '<div style="direction:ltr">'+
           '<div style="font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--accent);text-transform:uppercase;margin-bottom:12px">Krok '+s[0]+'</div>'+
           '<h3 style="font-size:26px;font-weight:800;margin-bottom:14px">'+s[1]+'</h3>'+
@@ -692,13 +659,13 @@ function renderLanding() {
   </div>
 
   <!-- ══════════ FEATURES DEEP DIVE ══════════ -->
-  <div id="features" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:90px 40px">
+  <div id="features" class="l-section" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:90px 40px">
     <div style="max-width:1100px;margin:0 auto">
       <div style="text-align:center;margin-bottom:60px">
-        <h2 style="font-size:40px;font-weight:900;margin-bottom:12px">Kompletná platforma pre AI créatorov</h2>
+        <h2 class="l-h2" style="font-size:40px;font-weight:900;margin-bottom:12px">Kompletná platforma pre AI créatorov</h2>
         <p style="font-size:17px;color:var(--text2);max-width:600px;margin:0 auto">Nie len chatbot. Celý ekosystém pre monetizáciu tvojej AI identity.</p>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
+      <div class="l-grid-3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
         ${[
           ['🤖','AI Persona Engine','Každá persona má vlastné meno, vek, národnosť, bio, osobnostné rysy a komunikačný tón. Grok (xAI) generuje odpovede, ktoré znejú ako skutočný človek — nie ako robot. Kontext konverzácie sa pamätá naprieč celou históriou.','Creator, Pro'],
           ['💬','DM Automatizácia 24/7','Webhook integrácia s Meta Instagram API zabezpečuje okamžité doručenie každej správy. Systém zvládne neobmedzené množstvo súbežných konverzácií bez spomalenia. Priemerná odozva pod 2 sekundy.','Všetky plány'],
@@ -722,12 +689,12 @@ function renderLanding() {
   </div>
 
   <!-- ══════════ TESTIMONIALS ══════════ -->
-  <div style="max-width:1100px;margin:90px auto;padding:0 40px">
+  <div class="l-section" style="max-width:1100px;margin:90px auto;padding:0 40px">
     <div style="text-align:center;margin-bottom:50px">
-      <h2 style="font-size:40px;font-weight:900;margin-bottom:12px">Čo hovoria créatori</h2>
+      <h2 class="l-h2" style="font-size:40px;font-weight:900;margin-bottom:12px">Čo hovoria créatori</h2>
       <p style="font-size:17px;color:var(--text2)">Reálne výsledky od reálnych používateľov</p>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
+    <div class="l-grid-3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
       ${[
         ['Katarína M.','Fashion créatorka, 45k followerov','MyMia mi ušetrí 3–4 hodiny denne. Moja AI persona Mia odpovedá followerom tak prirodzene, že viacerí sa ma opýtali, či odpovedám ja osobne. A predaj foto setov vzrástol o 60 % za prvý mesiac.','Creator plán'],
         ['Lucia T.','Content créatorka, 120k followerov','Najväčšia zmena? Predávam aj o polnoci. Doslova. Follower napíše o 2:00, AI mu odpovie a pošle môj Unlockt.me link. Ráno vidím notifikáciu o platbe. Toto sa mi predtým nestávalo.','Pro plán'],
@@ -749,13 +716,13 @@ function renderLanding() {
   </div>
 
   <!-- ══════════ PRICING ══════════ -->
-  <div id="pricing" style="max-width:1100px;margin:0 auto 90px;padding:0 40px">
+  <div id="pricing" class="l-section" style="max-width:1100px;margin:0 auto 90px;padding:0 40px">
     <div style="text-align:center;margin-bottom:60px">
-      <h2 style="font-size:40px;font-weight:900;margin-bottom:12px">Investícia, ktorá sa vráti za pár dní</h2>
+      <h2 class="l-h2" style="font-size:40px;font-weight:900;margin-bottom:12px">Investícia, ktorá sa vráti za pár dní</h2>
       <p style="font-size:17px;color:var(--text2);max-width:550px;margin:0 auto">Jeden predaný foto set v Creator pláne pokryje mesačné náklady. Zvyšok je čistý zisk.</p>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-bottom:48px">
+    <div class="l-grid-3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-bottom:48px">
 
       <!-- FREE -->
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:36px;display:flex;flex-direction:column">
@@ -805,7 +772,7 @@ function renderLanding() {
     </div>
 
     <!-- COMPARISON TABLE -->
-    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden">
+    <div class="l-table-wrap" style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden">
       <table style="width:100%;border-collapse:collapse;font-size:13px">
         <thead>
           <tr style="background:var(--bg3)">
@@ -841,7 +808,7 @@ function renderLanding() {
   </div>
 
   <!-- ══════════ FAQ ══════════ -->
-  <div style="max-width:760px;margin:0 auto 90px;padding:0 40px">
+  <div class="l-section" style="max-width:760px;margin:0 auto 90px;padding:0 40px">
     <h2 style="font-size:36px;font-weight:900;text-align:center;margin-bottom:50px">Časté otázky</h2>
     ${[
       ['Je to legálne a etické?','Áno. Používame výhradne officiálne Meta Instagram Graph API — žiadny scraping ani obchádzanie pravidiel. Odporúčame v bio profilu uviesť, že DM komunikáciu môže spravovať AI asistent. Mnohí créatori to považujú za USP, nie nevýhodu.'],
@@ -863,7 +830,7 @@ function renderLanding() {
   </div>
 
   <!-- ══════════ FINAL CTA ══════════ -->
-  <div style="position:relative;overflow:hidden;padding:100px 20px;text-align:center;background:var(--bg2);border-top:1px solid var(--border)">
+  <div class="l-section" style="position:relative;overflow:hidden;padding:100px 20px;text-align:center;background:var(--bg2);border-top:1px solid var(--border)">
     <div style="position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(239,35,60,.2) 0%,transparent 65%);pointer-events:none"></div>
     <div style="position:relative;max-width:680px;margin:0 auto">
       <h2 style="font-size:48px;font-weight:900;line-height:1.1;margin-bottom:20px">
@@ -872,7 +839,7 @@ function renderLanding() {
       <p style="font-size:18px;color:var(--text2);margin-bottom:40px;line-height:1.7">
         Každá DM správa bez odpovede je stratená príležitosť. MyMia ju zachytí, odpovedá a predá — 24 hodín denne.
       </p>
-      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <div class="l-cta-row" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
         <button onclick="navigate('register')" style="background:linear-gradient(135deg,var(--accent),#D90429);color:#fff;font-size:18px;font-weight:700;padding:17px 44px;border-radius:12px;border:none;cursor:pointer;font-family:inherit">
           Vytvoriť účet zadarmo →
         </button>
@@ -882,9 +849,9 @@ function renderLanding() {
   </div>
 
   <!-- ══════════ FOOTER ══════════ -->
-  <footer style="background:var(--bg);border-top:1px solid var(--border);padding:48px 60px 32px">
+  <footer class="l-footer" style="background:var(--bg);border-top:1px solid var(--border);padding:48px 60px 32px">
     <div style="max-width:1100px;margin:0 auto">
-      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px">
+      <div class="l-grid-footer" style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px">
         <div>
           <div style="font-size:22px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:14px">MyMia</div>
           <p style="font-size:13px;color:var(--text2);line-height:1.7;max-width:280px">Platforma pre AI-powered Instagram monetizáciu. Vytváraj, automatizuj, predávaj.</p>
@@ -1379,10 +1346,7 @@ function closeLandingMenu() {
   if (m) m.classList.remove('open');
 }
 // Show hamburger only on mobile (CSS handles visibility but button has display:none inline — override via JS after render)
-function initMobileNav() {
-  var hb = document.querySelector('.landing-hamburger');
-  if (hb && window.innerWidth <= 900) hb.style.display = 'flex';
-}
+
 // Also close sidebar on nav-item click on mobile
 function mobileNavClick(id) {
   closeSidebar();
@@ -1817,18 +1781,14 @@ function loadInitialData() {
       var hash = window.location.hash.replace('#', '').split('?')[0];
       var validViews = ['dashboard','personas','avatars','content','instagram','billing'];
       navigate(validViews.indexOf(hash) !== -1 ? hash : 'dashboard');
-      initMobileNav();
-    });
+      });
   } else {
     navigate('landing');
-    initMobileNav();
   }
 })();
 
 // Re-check hamburger visibility on resize
 window.addEventListener('resize', function() {
-  var hb = document.querySelector('.landing-hamburger');
-  if (hb) hb.style.display = window.innerWidth <= 900 ? 'flex' : 'none';
   if (window.innerWidth > 900) {
     closeSidebar();
     closeLandingMenu();
