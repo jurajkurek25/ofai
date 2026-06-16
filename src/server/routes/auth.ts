@@ -123,7 +123,7 @@ export async function authRoutes(fastify: FastifyInstance): Promise<void> {
     }
   );
 
-  // GET /api/auth/instagram — start Instagram OAuth flow
+  // GET /api/auth/instagram — start Facebook Login OAuth (works with Business apps)
   fastify.get('/api/auth/instagram', async (request: FastifyRequest, reply: FastifyReply) => {
     const state = crypto.randomBytes(16).toString('hex');
     oauthStates.set(state, Date.now() + 10 * 60 * 1000);
@@ -134,15 +134,15 @@ export async function authRoutes(fastify: FastifyInstance): Promise<void> {
     const params = new URLSearchParams({
       client_id: config.meta.appId,
       redirect_uri: redirectUri,
-      scope: 'user_profile,user_media',
+      scope: 'public_profile,email',
       response_type: 'code',
       state,
     });
 
-    return reply.redirect(`https://api.instagram.com/oauth/authorize?${params.toString()}`);
+    return reply.redirect(`https://www.facebook.com/dialog/oauth?${params.toString()}`);
   });
 
-  // GET /api/auth/instagram/callback — handle Instagram OAuth callback
+  // GET /api/auth/instagram/callback — handle Facebook Login callback
   fastify.get<{ Querystring: { code?: string; state?: string; error?: string } }>(
     '/api/auth/instagram/callback',
     async (request: FastifyRequest<{ Querystring: { code?: string; state?: string; error?: string } }>, reply: FastifyReply) => {
@@ -162,28 +162,37 @@ export async function authRoutes(fastify: FastifyInstance): Promise<void> {
       try {
         const redirectUri = `${origin}/api/auth/instagram/callback`;
 
-        const tokenRes = await axios.post(
-          'https://api.instagram.com/oauth/access_token',
-          new URLSearchParams({
+        // Exchange code for access token
+        const tokenRes = await axios.get('https://graph.facebook.com/v20.0/oauth/access_token', {
+          params: {
             client_id: config.meta.appId,
             client_secret: config.meta.appSecret,
-            grant_type: 'authorization_code',
             redirect_uri: redirectUri,
             code,
-          }).toString(),
-          { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
-        );
+          },
+        });
+        const accessToken = (tokenRes.data as { access_token: string }).access_token;
 
-        const { access_token, user_id } = tokenRes.data as { access_token: string; user_id: string };
+        // Get user profile
+        const profileRes = await axios.get('https://graph.facebook.com/v20.0/me', {
+          params: { fields: 'id,name,email', access_token: accessToken },
+        });
+        const { id: fbId, name, email } = profileRes.data as { id: string; name: string; email?: string };
 
-        const profileRes = await axios.get(
-          `https://graph.instagram.com/me?fields=id,username&access_token=${access_token}`
-        );
-        const { id: igId, username } = profileRes.data as { id: string; username: string };
-
-        let user = findByInstagramOAuthId(igId);
+        let user = findByInstagramOAuthId(fbId);
         if (!user) {
-          user = await createOAuthUser(igId, username || `ig_${igId}`);
+          // Try to find by email first to link existing accounts
+          if (email) {
+            const existing = findByEmail(email.toLowerCase());
+            if (existing) {
+              const { linkInstagramOAuth } = await import('../../services/userService');
+              linkInstagramOAuth(existing.id, fbId);
+              user = existing;
+            }
+          }
+          if (!user) {
+            user = await createOAuthUser(fbId, name || `fb_${fbId}`);
+          }
         }
 
         const token = generateToken(user.id, user.email);
