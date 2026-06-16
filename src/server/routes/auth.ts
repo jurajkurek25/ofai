@@ -134,7 +134,7 @@ export async function authRoutes(fastify: FastifyInstance): Promise<void> {
     const params = new URLSearchParams({
       client_id: config.meta.appId,
       redirect_uri: redirectUri,
-      scope: 'public_profile,email',
+      scope: 'public_profile',
       response_type: 'code',
       state,
     });
@@ -177,22 +177,11 @@ export async function authRoutes(fastify: FastifyInstance): Promise<void> {
         const profileRes = await axios.get('https://graph.facebook.com/v20.0/me', {
           params: { fields: 'id,name,email', access_token: accessToken },
         });
-        const { id: fbId, name, email } = profileRes.data as { id: string; name: string; email?: string };
+        const { id: fbId, name } = profileRes.data as { id: string; name: string };
 
         let user = findByInstagramOAuthId(fbId);
         if (!user) {
-          // Try to find by email first to link existing accounts
-          if (email) {
-            const existing = findByEmail(email.toLowerCase());
-            if (existing) {
-              const { linkInstagramOAuth } = await import('../../services/userService');
-              linkInstagramOAuth(existing.id, fbId);
-              user = existing;
-            }
-          }
-          if (!user) {
-            user = await createOAuthUser(fbId, name || `fb_${fbId}`);
-          }
+          user = await createOAuthUser(fbId, name || `fb_${fbId}`);
         }
 
         const token = generateToken(user.id, user.email);
