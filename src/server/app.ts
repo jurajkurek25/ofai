@@ -50,6 +50,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   await app.register(webhookRoutes);
   await app.register(adminRoutes);
 
+  app.get('/', async (_req, reply) => reply.redirect('/admin-ui/'));
   app.get('/health', async () => ({ status: 'ok', ts: new Date().toISOString() }));
 
   app.setErrorHandler((error, _request, reply) => {
