@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OfAI — AI Persona Platform</title>
+  <title>MyMia — AI Instagram Persona Platform</title>
   <style>
     :root {
-      --bg: #0d0d0f;
-      --bg2: #16161a;
-      --bg3: #1e1e24;
-      --border: #2a2a32;
-      --text: #e8e8f0;
-      --text2: #9090a8;
-      --accent: #7c6af7;
-      --accent2: #a08fff;
+      --bg: #2B2D42;
+      --bg2: #353652;
+      --bg3: #3e405f;
+      --border: rgba(141,153,174,0.22);
+      --text: #EDF2F4;
+      --text2: #8D99AE;
+      --accent: #EF233C;
+      --accent2: #D90429;
       --success: #4caf7d;
-      --danger: #e05252;
+      --danger: #EF233C;
       --warning: #e09a30;
       --sidebar-w: 220px;
       --radius: 10px;
@@ -45,7 +45,7 @@
     .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
     .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
     .badge-free { background: var(--bg3); color: var(--text2); }
-    .badge-creator { background: #2d2460; color: var(--accent2); }
+    .badge-creator { background: rgba(239,35,60,0.15); color: var(--accent); }
     .badge-pro { background: #2a1e10; color: var(--warning); }
     .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
     .toast { padding: 12px 18px; border-radius: var(--radius); color: #fff; font-weight: 500; animation: slideIn 0.2s; max-width: 320px; }
@@ -182,7 +182,7 @@
     .style-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .style-option { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 14px; cursor: pointer; text-align: center; transition: all 0.15s; }
     .style-option:hover { border-color: var(--accent); }
-    .style-option.selected { border-color: var(--accent); background: rgba(124,106,247,0.1); }
+    .style-option.selected { border-color: var(--accent); background: rgba(239,35,60,0.1); }
     .style-option .style-icon { font-size: 24px; margin-bottom: 6px; }
     .style-option .style-name { font-size: 12px; font-weight: 600; }
     .connection-status { display: flex; align-items: center; gap: 8px; }
@@ -332,7 +332,7 @@ function renderApp(inner) {
   var u = state.user || {};
   return '<div class="app-layout">' +
     '<aside class="sidebar">' +
-      '<div class="sidebar-logo">OfAI</div>' +
+      '<div class="sidebar-logo">MyMia</div>' +
       '<nav class="sidebar-nav">' + nav + '</nav>' +
       '<div class="sidebar-footer">' +
         '<div class="user-info">' +
@@ -356,8 +356,8 @@ function renderLanding() {
   return `<div class="landing" style="overflow-x:hidden">
 
   <!-- ══════════ STICKY NAV ══════════ -->
-  <nav style="position:sticky;top:0;z-index:200;background:rgba(13,13,15,.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 60px;height:64px;display:flex;align-items:center;justify-content:space-between">
-    <div style="font-size:22px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">OfAI</div>
+  <nav style="position:sticky;top:0;z-index:200;background:rgba(43,45,66,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 60px;height:64px;display:flex;align-items:center;justify-content:space-between">
+    <div style="font-size:22px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">MyMia</div>
     <div style="display:flex;align-items:center;gap:32px">
       <a href="#how" style="font-size:14px;color:var(--text2);text-decoration:none" onclick="event.preventDefault();document.getElementById('how').scrollIntoView({behavior:'smooth'})">Ako to funguje</a>
       <a href="#features" style="font-size:14px;color:var(--text2);text-decoration:none" onclick="event.preventDefault();document.getElementById('features').scrollIntoView({behavior:'smooth'})">Funkcie</a>
@@ -371,11 +371,11 @@ function renderLanding() {
 
   <!-- ══════════ HERO ══════════ -->
   <div style="position:relative;overflow:hidden;padding:100px 20px 60px">
-    <div style="position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(124,106,247,.18) 0%,transparent 65%);pointer-events:none"></div>
-    <div style="position:absolute;top:200px;left:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(160,143,255,.08) 0%,transparent 65%);pointer-events:none"></div>
+    <div style="position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(239,35,60,.18) 0%,transparent 65%);pointer-events:none"></div>
+    <div style="position:absolute;top:200px;left:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(217,4,41,.08) 0%,transparent 65%);pointer-events:none"></div>
 
     <div style="max-width:860px;margin:0 auto;text-align:center;position:relative">
-      <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(124,106,247,.1);border:1px solid rgba(124,106,247,.25);border-radius:100px;padding:7px 18px;font-size:12px;color:var(--accent2);font-weight:600;margin-bottom:32px;letter-spacing:.05em">
+      <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(239,35,60,.1);border:1px solid rgba(239,35,60,.25);border-radius:100px;padding:7px 18px;font-size:12px;color:var(--accent2);font-weight:600;margin-bottom:32px;letter-spacing:.05em">
         <span style="width:6px;height:6px;border-radius:50%;background:var(--success);display:inline-block;animation:pulse 2s infinite"></span>
         Aktívne — AI spracováva DM správy v reálnom čase
       </div>
@@ -386,12 +386,12 @@ function renderLanding() {
       </h1>
 
       <p style="font-size:20px;color:var(--text2);line-height:1.7;max-width:640px;margin:0 auto 16px">
-        OfAI vytvorí realistickú AI personu, ktorá <strong style="color:var(--text)">automaticky odpovedá na DM správy</strong>, prirodzene <strong style="color:var(--text)">predáva tvoj obsah</strong> a každý týždeň <strong style="color:var(--text)">generuje virálne posty</strong> — bez tvojej účasti.
+        MyMia vytvorí realistickú AI personu, ktorá <strong style="color:var(--text)">automaticky odpovedá na DM správy</strong>, prirodzene <strong style="color:var(--text)">predáva tvoj obsah</strong> a každý týždeň <strong style="color:var(--text)">generuje virálne posty</strong> — bez tvojej účasti.
       </p>
       <p style="font-size:14px;color:var(--text2);opacity:.6;margin-bottom:44px">Nastavenie za 5 minút · Žiadna kreditná karta · Zruš kedykoľvek</p>
 
       <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:52px">
-        <button onclick="navigate('register')" style="background:linear-gradient(135deg,var(--accent),#9f7aea);color:#fff;font-size:17px;font-weight:700;padding:15px 38px;border-radius:12px;border:none;cursor:pointer;transition:opacity .15s;font-family:inherit">
+        <button onclick="navigate('register')" style="background:linear-gradient(135deg,var(--accent),#D90429);color:#fff;font-size:17px;font-weight:700;padding:15px 38px;border-radius:12px;border:none;cursor:pointer;transition:opacity .15s;font-family:inherit">
           Vytvoriť účet zadarmo →
         </button>
         <button onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})" style="background:var(--bg2);color:var(--text);font-size:17px;font-weight:600;padding:15px 32px;border-radius:12px;border:1px solid var(--border);cursor:pointer;font-family:inherit">
@@ -446,20 +446,20 @@ function renderLanding() {
   </div>
 
   <!-- ══════════ SOLUTION ══════════ -->
-  <div style="background:linear-gradient(135deg,rgba(124,106,247,.08),rgba(160,143,255,.04));border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:80px 40px;text-align:center">
+  <div style="background:linear-gradient(135deg,rgba(239,35,60,.08),rgba(217,4,41,.04));border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:80px 40px;text-align:center">
     <div style="display:inline-block;background:rgba(76,175,125,.1);border:1px solid rgba(76,175,125,.25);border-radius:100px;padding:6px 16px;font-size:12px;color:var(--success);font-weight:600;margin-bottom:24px">
       ✨ Riešenie
     </div>
-    <h2 style="font-size:40px;font-weight:900;margin-bottom:16px;max-width:700px;margin-left:auto;margin-right:auto">OfAI to zvládne za teba — lepšie, rýchlejšie, nonstop</h2>
+    <h2 style="font-size:40px;font-weight:900;margin-bottom:16px;max-width:700px;margin-left:auto;margin-right:auto">MyMia to zvládne za teba — lepšie, rýchlejšie, nonstop</h2>
     <p style="font-size:17px;color:var(--text2);max-width:600px;margin:0 auto 20px;line-height:1.7">
-      Vytvoríš AI personu, prepojíš Instagram a OfAI prevezme všetku komunikáciu. Nie generický bot — realistická persona s vlastnou osobnosťou, štýlom a cenníkom.
+      Vytvoríš AI personu, prepojíš Instagram a MyMia prevezme všetku komunikáciu. Nie generický bot — realistická persona s vlastnou osobnosťou, štýlom a cenníkom.
     </p>
   </div>
 
   <!-- ══════════ MONETIZATION PLATFORMS ══════════ -->
   <div style="max-width:1100px;margin:90px auto;padding:0 40px">
     <div style="text-align:center;margin-bottom:52px">
-      <div style="display:inline-block;background:rgba(124,106,247,.1);border:1px solid rgba(124,106,247,.25);border-radius:100px;padding:6px 16px;font-size:12px;color:var(--accent2);font-weight:600;margin-bottom:20px">
+      <div style="display:inline-block;background:rgba(239,35,60,.1);border:1px solid rgba(239,35,60,.25);border-radius:100px;padding:6px 16px;font-size:12px;color:var(--accent2);font-weight:600;margin-bottom:20px">
         💸 Monetizácia na autopilote
       </div>
       <h2 style="font-size:40px;font-weight:900;margin-bottom:14px">Bot predáva tvoj obsah — automaticky</h2>
@@ -475,12 +475,12 @@ function renderLanding() {
         <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px">Mesačné subscripcie, tiers, exkluzívny obsah. Bot pošle link na tvoj Patreon keď follower prejaví záujem o členstvo.</p>
         <div style="background:rgba(249,76,34,.1);border-radius:8px;padding:10px 14px;font-size:12px;font-weight:700;color:#f94c22">patreon.com/tvojeeno</div>
       </div>
-      <div style="background:linear-gradient(135deg,rgba(124,106,247,.12),rgba(124,106,247,.04));border:2px solid rgba(124,106,247,.3);border-radius:20px;padding:36px;text-align:center;position:relative">
+      <div style="background:linear-gradient(135deg,rgba(239,35,60,.12),rgba(239,35,60,.04));border:2px solid rgba(239,35,60,.3);border-radius:20px;padding:36px;text-align:center;position:relative">
         <div style="position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;padding:4px 16px;border-radius:100px;font-size:11px;font-weight:800;white-space:nowrap">ODPORÚČANÉ</div>
         <div style="font-size:44px;margin-bottom:16px">🔓</div>
         <div style="font-weight:800;font-size:18px;margin-bottom:10px">Unlockt.me</div>
         <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px">Platforma špeciálne pre créatorov — predaj foto setov, videí, custom content. AI pošle priamy link na konkrétny produkt.</p>
-        <div style="background:rgba(124,106,247,.1);border-radius:8px;padding:10px 14px;font-size:12px;font-weight:700;color:var(--accent2)">unlockt.me/tvojeprofil</div>
+        <div style="background:rgba(239,35,60,.1);border-radius:8px;padding:10px 14px;font-size:12px;font-weight:700;color:var(--accent2)">unlockt.me/tvojeprofil</div>
       </div>
       <div style="background:linear-gradient(135deg,rgba(76,175,125,.08),rgba(76,175,125,.02));border:1px solid rgba(76,175,125,.2);border-radius:20px;padding:36px;text-align:center">
         <div style="font-size:44px;margin-bottom:16px">🔗</div>
@@ -506,9 +506,9 @@ function renderLanding() {
         <div style="margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.05em">DM KONVERZÁCIA — REÁLNY PRÍKLAD</div>
         <div style="display:flex;flex-direction:column;gap:12px">
           <div style="display:flex;gap:10px"><span style="color:var(--text2);font-size:11px;white-space:nowrap;padding-top:2px">follower</span><div style="background:var(--bg2);border-radius:10px;padding:10px 14px;font-size:13px;line-height:1.5;flex:1">Mia si nádherná 😍 kde si môžem pozrieť viac tvojich fotiek?</div></div>
-          <div style="display:flex;gap:10px;flex-direction:row-reverse"><span style="color:var(--accent2);font-size:11px;white-space:nowrap;padding-top:2px">AI</span><div style="background:rgba(124,106,247,.15);border:1px solid rgba(124,106,247,.2);border-radius:10px;padding:10px 14px;font-size:13px;line-height:1.5;flex:1">Ďakujem, to mi urobilo deň! 🥰 Exkluzívny obsah mám na Patreon — tam postujem veci, ktoré nikde inde nenájdeš: <span style="color:var(--accent2)">patreon.com/mia</span></div></div>
+          <div style="display:flex;gap:10px;flex-direction:row-reverse"><span style="color:var(--accent2);font-size:11px;white-space:nowrap;padding-top:2px">AI</span><div style="background:rgba(239,35,60,.15);border:1px solid rgba(239,35,60,.2);border-radius:10px;padding:10px 14px;font-size:13px;line-height:1.5;flex:1">Ďakujem, to mi urobilo deň! 🥰 Exkluzívny obsah mám na Patreon — tam postujem veci, ktoré nikde inde nenájdeš: <span style="color:var(--accent2)">patreon.com/mia</span></div></div>
           <div style="display:flex;gap:10px"><span style="color:var(--text2);font-size:11px;white-space:nowrap;padding-top:2px">follower</span><div style="background:var(--bg2);border-radius:10px;padding:10px 14px;font-size:13px;line-height:1.5;flex:1">Chcem sa prihlásiť! Aký tier odporúčaš?</div></div>
-          <div style="display:flex;gap:10px;flex-direction:row-reverse"><span style="color:var(--accent2);font-size:11px;white-space:nowrap;padding-top:2px">AI</span><div style="background:rgba(124,106,247,.15);border:1px solid rgba(124,106,247,.2);border-radius:10px;padding:10px 14px;font-size:13px;line-height:1.5;flex:1">Creator tier je super štart — foto sety každý týždeň + moje behind-the-scenes. Budeš spokojný 😊</div></div>
+          <div style="display:flex;gap:10px;flex-direction:row-reverse"><span style="color:var(--accent2);font-size:11px;white-space:nowrap;padding-top:2px">AI</span><div style="background:rgba(239,35,60,.15);border:1px solid rgba(239,35,60,.2);border-radius:10px;padding:10px 14px;font-size:13px;line-height:1.5;flex:1">Creator tier je super štart — foto sety každý týždeň + moje behind-the-scenes. Budeš spokojný 😊</div></div>
         </div>
       </div>
     </div>
@@ -524,7 +524,7 @@ function renderLanding() {
     ${[
       ['01','Vytvoríš svoju AI personu','V intuitívnom editore nastavíš meno, vek, národnosť, osobnosť a tón komunikácie. Chceš hravú európsku modelku, elegantnú ázijskú créatorku alebo energickú americkú fitness influencerku? Persona bude komunikovať presne tak, ako ju nastavíš — konzistentne, v každej správe.','🎭'],
       ['02','Prepojíš Patreon, Unlockt.me alebo vlastný shop','Zadáš URL svojho Patreon profilu, Unlockt.me stránky alebo akéhokoľvek iného odkazu. Keď follower prejaví záujem o exkluzívny obsah, AI mu automaticky pošle priamy link — žiadne kopírovanie, žiadne omeškanie.','💼'],
-      ['03','Prepojíš Instagram účet','Vložíš Meta access token (návod krok za krokom priamo v paneli). OfAI sa prepojí s tvojím Instagram Business účtom a začne monitorovať prichádzajúce správy v reálnom čase.','📲'],
+      ['03','Prepojíš Instagram účet','Vložíš Meta access token (návod krok za krokom priamo v paneli). MyMia sa prepojí s tvojím Instagram Business účtom a začne monitorovať prichádzajúce správy v reálnom čase.','📲'],
       ['04','AI preberá konverzácie','Od tejto chvíle každý follower, ktorý ti napíše, dostane odpoveď za menej ako 2 sekundy. Persona si pamätá kontext celej konverzácie, prirodzene odpovedá na otázky a pri správnom momente navrhne nákup tvojho obsahu.','🤖'],
       ['05','Generuješ obsah s AI','V Content Studiu ti Grok analyzuje aktuálne trendy a vygeneruje caption, hashtagy a vizuálny brief pre post, reel alebo story. Ty len stiahneš, upravíš podľa seba a uploadneš.','📱'],
       ['06','Monitoruješ a škáluješ','V dashboarde vidíš všetky konverzácie, štatistiky, môžeš manuálne zasiahnuť, blokovať userov alebo nastaviť vlastnú odpoveď namiesto AI.','📊'],
@@ -582,9 +582,9 @@ function renderLanding() {
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
       ${[
-        ['Katarína M.','Fashion créatorka, 45k followerov','OfAI mi ušetrí 3–4 hodiny denne. Moja AI persona Mia odpovedá followerom tak prirodzene, že viacerí sa ma opýtali, či odpovedám ja osobne. A predaj foto setov vzrástol o 60 % za prvý mesiac.','Creator plán'],
+        ['Katarína M.','Fashion créatorka, 45k followerov','MyMia mi ušetrí 3–4 hodiny denne. Moja AI persona Mia odpovedá followerom tak prirodzene, že viacerí sa ma opýtali, či odpovedám ja osobne. A predaj foto setov vzrástol o 60 % za prvý mesiac.','Creator plán'],
         ['Lucia T.','Content créatorka, 120k followerov','Najväčšia zmena? Predávam aj o polnoci. Doslova. Follower napíše o 2:00, AI mu odpovie a pošle môj Unlockt.me link. Ráno vidím notifikáciu o platbe. Toto sa mi predtým nestávalo.','Pro plán'],
-        ['Martina K.','AI Influencer, 28k followerov','Celú moju AI personu som postavila na OfAI. Žiaden skutočný follower netušil, že komunikuje s AI — kým som im to sama neprezradila. Persona je neuveriteľne konzistentná.','Pro plán'],
+        ['Martina K.','AI Influencer, 28k followerov','Celú moju AI personu som postavila na MyMia. Žiaden skutočný follower netušil, že komunikuje s AI — kým som im to sama neprezradila. Persona je neuveriteľne konzistentná.','Pro plán'],
       ].map(function(t){
         return '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px">'+
           '<div style="display:flex;gap:4px;margin-bottom:16px">'+
@@ -594,7 +594,7 @@ function renderLanding() {
           '<div style="border-top:1px solid var(--border);padding-top:16px;display:flex;align-items:center;gap:12px">'+
             '<div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#f06f9a);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">'+t[0][0]+'</div>'+
             '<div><div style="font-weight:700;font-size:14px">'+t[0]+'</div><div style="font-size:12px;color:var(--text2)">'+t[1]+'</div></div>'+
-            '<div style="margin-left:auto;font-size:11px;font-weight:700;color:var(--accent2);background:rgba(124,106,247,.1);border-radius:100px;padding:4px 10px">'+t[3]+'</div>'+
+            '<div style="margin-left:auto;font-size:11px;font-weight:700;color:var(--accent2);background:rgba(239,35,60,.1);border-radius:100px;padding:4px 10px">'+t[3]+'</div>'+
           '</div>'+
         '</div>';
       }).join('')}
@@ -625,8 +625,8 @@ function renderLanding() {
       </div>
 
       <!-- CREATOR -->
-      <div style="background:var(--bg2);border:2px solid var(--accent);border-radius:20px;padding:36px;display:flex;flex-direction:column;position:relative;box-shadow:0 0 60px rgba(124,106,247,.15)">
-        <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--accent),#9f7aea);color:#fff;padding:5px 20px;border-radius:100px;font-size:12px;font-weight:800;white-space:nowrap;letter-spacing:.03em">🔥 NAJPOPULÁRNEJŠÍ</div>
+      <div style="background:var(--bg2);border:2px solid var(--accent);border-radius:20px;padding:36px;display:flex;flex-direction:column;position:relative;box-shadow:0 0 60px rgba(239,35,60,.15)">
+        <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--accent),#D90429);color:#fff;padding:5px 20px;border-radius:100px;font-size:12px;font-weight:800;white-space:nowrap;letter-spacing:.03em">🔥 NAJPOPULÁRNEJŠÍ</div>
         <div style="margin-bottom:28px">
           <div style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent2);margin-bottom:10px">Creator</div>
           <div style="font-size:52px;font-weight:900;line-height:1;margin-bottom:6px">$29</div>
@@ -636,7 +636,7 @@ function renderLanding() {
         <ul style="list-style:none;flex:1;margin-bottom:28px">
           ${[['3 AI Persony',true],['Automatické DM odpovede 24/7',true],['Historia konverzácií (neobmedzene)',true],['Admin dashboard',true],['50 AI avatarov / mesiac',true],['Content Studio + Hashtagy',true],['Trend analýza (Grok web search)',true],['NSFW obsah',false]].map(function(i){return li(i[0],i[1]);}).join('')}
         </ul>
-        <button onclick="navigate('register')" style="width:100%;padding:14px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#9f7aea);color:#fff;font-weight:700;border:none;cursor:pointer;font-family:inherit;font-size:15px">Začať — $29/mes →</button>
+        <button onclick="navigate('register')" style="width:100%;padding:14px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#D90429);color:#fff;font-weight:700;border:none;cursor:pointer;font-family:inherit;font-size:15px">Začať — $29/mes →</button>
         <p style="text-align:center;font-size:12px;color:var(--text2);margin-top:10px">Zruš kedykoľvek. Bez záväzkov.</p>
       </div>
 
@@ -704,7 +704,7 @@ function renderLanding() {
       ['Môžem mať viac Instagram účtov?','V Creator pláne je podporovaný jeden Instagram účet. V Pro pláne môžeš prepojiť viacero účtov a každému priradiť inú personu — ideálne pre agentúry spravujúce viacero AI influencerov.'],
       ['Aké dlhé trvá nastavenie?','Prvé DM od AI zvyčajne odosiela do 10 minút od registrácie. Persona sa dá nastaviť za 3–5 minút, Instagram prepojenie za ďalšie 3–5 minút.'],
       ['Čo sa stane keď Meta token vyprší?','Meta access tokeny majú životnosť 60 dní. Na dashboarde vidíš upozornenie pred vypršaním. Obnova trvá asi 2 minúty — postup je vysvetlený priamo v paneli.'],
-      ['Aká je bezpečnosť mojich dát?','Access tokeny a citlivé dáta sú uložené na tvojom vlastnom serveri — OfAI nepristupuje k tvojim dátam. Webhook komunikácia je overená HMAC-SHA256 podpisom. Admin panel je chránený silným heslom.'],
+      ['Aká je bezpečnosť mojich dát?','Access tokeny a citlivé dáta sú uložené na tvojom vlastnom serveri — MyMia nepristupuje k tvojim dátam. Webhook komunikácia je overená HMAC-SHA256 podpisom. Admin panel je chránený silným heslom.'],
     ].map(function(q,i){
       return '<details style="border-bottom:1px solid var(--border);'+(i===0?'border-top:1px solid var(--border);':'')+'">'+
         '<summary style="padding:20px 0;font-weight:700;font-size:15px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center">'+
@@ -717,16 +717,16 @@ function renderLanding() {
 
   <!-- ══════════ FINAL CTA ══════════ -->
   <div style="position:relative;overflow:hidden;padding:100px 20px;text-align:center;background:var(--bg2);border-top:1px solid var(--border)">
-    <div style="position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(124,106,247,.2) 0%,transparent 65%);pointer-events:none"></div>
+    <div style="position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(239,35,60,.2) 0%,transparent 65%);pointer-events:none"></div>
     <div style="position:relative;max-width:680px;margin:0 auto">
       <h2 style="font-size:48px;font-weight:900;line-height:1.1;margin-bottom:20px">
         Prestať nechávať peniaze<br>na stole
       </h2>
       <p style="font-size:18px;color:var(--text2);margin-bottom:40px;line-height:1.7">
-        Každá DM správa bez odpovede je stratená príležitosť. OfAI ju zachytí, odpovedá a predá — 24 hodín denne.
+        Každá DM správa bez odpovede je stratená príležitosť. MyMia ju zachytí, odpovedá a predá — 24 hodín denne.
       </p>
       <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
-        <button onclick="navigate('register')" style="background:linear-gradient(135deg,var(--accent),#9f7aea);color:#fff;font-size:18px;font-weight:700;padding:17px 44px;border-radius:12px;border:none;cursor:pointer;font-family:inherit">
+        <button onclick="navigate('register')" style="background:linear-gradient(135deg,var(--accent),#D90429);color:#fff;font-size:18px;font-weight:700;padding:17px 44px;border-radius:12px;border:none;cursor:pointer;font-family:inherit">
           Vytvoriť účet zadarmo →
         </button>
       </div>
@@ -739,7 +739,7 @@ function renderLanding() {
     <div style="max-width:1100px;margin:0 auto">
       <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px">
         <div>
-          <div style="font-size:22px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:14px">OfAI</div>
+          <div style="font-size:22px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:14px">MyMia</div>
           <p style="font-size:13px;color:var(--text2);line-height:1.7;max-width:280px">Platforma pre AI-powered Instagram monetizáciu. Vytváraj, automatizuj, predávaj.</p>
         </div>
         <div>
@@ -756,7 +756,7 @@ function renderLanding() {
         </div>
       </div>
       <div style="border-top:1px solid var(--border);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
-        <div style="font-size:12px;color:var(--text2)">© 2025 OfAI. Všetky práva vyhradené.</div>
+        <div style="font-size:12px;color:var(--text2)">© 2025 MyMia. Všetky práva vyhradené.</div>
         <div style="font-size:12px;color:var(--text2);display:flex;gap:20px">
           <a href="#" style="color:var(--text2);text-decoration:none">Podmienky použitia</a>
           <a href="#" style="color:var(--text2);text-decoration:none">Ochrana súkromia</a>
@@ -779,7 +779,7 @@ function renderLanding() {
 // ============================================================
 function renderLogin() {
   return '<div class="auth-page"><div class="auth-box">' +
-    '<div class="auth-logo"><h1>OfAI</h1><p>Prihlás sa do svojho účtu</p></div>' +
+    '<div class="auth-logo"><h1>MyMia</h1><p>Prihlás sa do svojho účtu</p></div>' +
     '<form id="login-form">' +
       '<div class="field"><label>Email</label><input type="email" name="email" placeholder="ty@email.com" required></div>' +
       '<div class="field"><label>Heslo</label><input type="password" name="password" placeholder="••••••••" required></div>' +
@@ -792,7 +792,7 @@ function renderLogin() {
 
 function renderRegister() {
   return '<div class="auth-page"><div class="auth-box">' +
-    '<div class="auth-logo"><h1>OfAI</h1><p>Vytvor si bezplatný účet</p></div>' +
+    '<div class="auth-logo"><h1>MyMia</h1><p>Vytvor si bezplatný účet</p></div>' +
     '<form id="register-form">' +
       '<div class="field"><label>Meno</label><input type="text" name="name" placeholder="Tvoje meno" required></div>' +
       '<div class="field"><label>Email</label><input type="email" name="email" placeholder="ty@email.com" required></div>' +
@@ -940,7 +940,7 @@ function renderPersonaEdit() {
     // MONETIZE TAB
     '<div class="tab-panel ' + (state.activeTab === 'monetize' ? 'active' : '') + '">' +
       '<div class="card">' +
-        '<div style="background:rgba(124,106,247,.07);border:1px solid rgba(124,106,247,.2);border-radius:10px;padding:16px 20px;margin-bottom:24px;font-size:13px;color:var(--text2);line-height:1.65">' +
+        '<div style="background:rgba(239,35,60,.07);border:1px solid rgba(239,35,60,.2);border-radius:10px;padding:16px 20px;margin-bottom:24px;font-size:13px;color:var(--text2);line-height:1.65">' +
           '💡 <strong style="color:var(--text)">Ako to funguje:</strong> Zadaj URL tvojich platforiem. Keď follower v DM prejaví záujem o exkluzívny obsah alebo chce teba podporiť, AI mu automaticky pošle správny link — presne v správnom momente.' +
         '</div>' +
         '<div class="field"><label>🅿️ Patreon URL</label>' +
