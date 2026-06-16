@@ -134,7 +134,7 @@ export async function authRoutes(fastify: FastifyInstance): Promise<void> {
     const params = new URLSearchParams({
       client_id: config.meta.appId,
       redirect_uri: redirectUri,
-      scope: 'public_profile',
+      scope: 'instagram_basic',
       response_type: 'code',
       state,
     });
@@ -173,15 +173,35 @@ export async function authRoutes(fastify: FastifyInstance): Promise<void> {
         });
         const accessToken = (tokenRes.data as { access_token: string }).access_token;
 
-        // Get user profile
-        const profileRes = await axios.get('https://graph.facebook.com/v20.0/me', {
-          params: { fields: 'id,name,email', access_token: accessToken },
+        // Get Instagram accounts linked to this token
+        const pagesRes = await axios.get('https://graph.facebook.com/v20.0/me/accounts', {
+          params: { access_token: accessToken, fields: 'instagram_business_account,name' },
         });
-        const { id: fbId, name } = profileRes.data as { id: string; name: string };
+        const pages = (pagesRes.data as { data: Array<{ name: string; instagram_business_account?: { id: string } }> }).data;
 
-        let user = findByInstagramOAuthId(fbId);
+        let igId: string | null = null;
+        let displayName = 'Instagram User';
+        for (const page of pages) {
+          if (page.instagram_business_account?.id) {
+            igId = page.instagram_business_account.id;
+            displayName = page.name;
+            break;
+          }
+        }
+
+        // Fallback: use FB user id if no IG account found
+        if (!igId) {
+          const meRes = await axios.get('https://graph.facebook.com/v20.0/me', {
+            params: { fields: 'id,name', access_token: accessToken },
+          });
+          const me = meRes.data as { id: string; name: string };
+          igId = `fb_${me.id}`;
+          displayName = me.name || displayName;
+        }
+
+        let user = findByInstagramOAuthId(igId);
         if (!user) {
-          user = await createOAuthUser(fbId, name || `fb_${fbId}`);
+          user = await createOAuthUser(igId, displayName);
         }
 
         const token = generateToken(user.id, user.email);
