@@ -125,11 +125,15 @@ export async function instagramRoutes(fastify: FastifyInstance): Promise<void> {
   );
 
   // GET /api/instagram/oauth/start — start Facebook/IG Business OAuth
-  fastify.get(
+  fastify.get<{ Querystring: { token?: string } }>(
     '/api/instagram/oauth/start',
-    auth,
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      const userId = request.user!.userId;
+    async (request: FastifyRequest<{ Querystring: { token?: string } }>, reply: FastifyReply) => {
+      // Accept token from query param (browser redirect can't send Authorization header)
+      const { verifyToken } = await import('../../services/auth');
+      const raw = request.query.token ?? (request.headers['authorization'] as string ?? '').replace('Bearer ', '');
+      const payload = raw ? verifyToken(raw) : null;
+      if (!payload) return reply.code(401).send({ error: 'Unauthorized' });
+      const userId = payload.userId;
       const state = crypto.randomBytes(16).toString('hex');
       igOAuthStates.set(state, { userId, expiry: Date.now() + 10 * 60 * 1000 });
 
