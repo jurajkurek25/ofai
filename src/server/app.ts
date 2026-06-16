@@ -50,7 +50,7 @@ export async function buildApp(): Promise<FastifyInstance> {
 
   await app.register(fastifyStatic, {
     root: path.resolve(process.cwd(), 'admin'),
-    prefix: '/admin-ui/',
+    prefix: '/',
   });
 
   // Legacy routes
