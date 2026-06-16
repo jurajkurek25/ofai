@@ -931,6 +931,11 @@ function renderLanding() {
 function renderLogin() {
   return '<div class="auth-page"><div class="auth-box">' +
     '<div class="auth-logo"><h1>MyMia</h1><p>Prihlás sa do svojho účtu</p></div>' +
+    '<a href="/api/auth/instagram" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px;border-radius:var(--radius);background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:#fff;font-weight:700;font-size:15px;text-decoration:none;margin-bottom:20px">' +
+      '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>' +
+      'Prihlásiť sa cez Instagram' +
+    '</a>' +
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px"><div style="flex:1;height:1px;background:var(--border)"></div><span style="color:var(--text2);font-size:12px">alebo emailom</span><div style="flex:1;height:1px;background:var(--border)"></div></div>' +
     '<form id="login-form">' +
       '<div class="field"><label>Email</label><input type="email" name="email" placeholder="ty@email.com" required></div>' +
       '<div class="field"><label>Heslo</label><input type="password" name="password" placeholder="••••••••" required></div>' +
@@ -944,6 +949,11 @@ function renderLogin() {
 function renderRegister() {
   return '<div class="auth-page"><div class="auth-box">' +
     '<div class="auth-logo"><h1>MyMia</h1><p>Vytvor si bezplatný účet</p></div>' +
+    '<a href="/api/auth/instagram" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px;border-radius:var(--radius);background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:#fff;font-weight:700;font-size:15px;text-decoration:none;margin-bottom:20px">' +
+      '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>' +
+      'Registrovať sa cez Instagram' +
+    '</a>' +
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px"><div style="flex:1;height:1px;background:var(--border)"></div><span style="color:var(--text2);font-size:12px">alebo emailom</span><div style="flex:1;height:1px;background:var(--border)"></div></div>' +
     '<form id="register-form">' +
       '<div class="field"><label>Meno</label><input type="text" name="name" placeholder="Tvoje meno" required></div>' +
       '<div class="field"><label>Email</label><input type="email" name="email" placeholder="ty@email.com" required></div>' +
@@ -1757,8 +1767,8 @@ function startCheckout(plan) {
     method: 'POST',
     body: JSON.stringify({
       plan: plan,
-      success_url: window.location.origin + '/admin-ui/#billing',
-      cancel_url: window.location.origin + '/admin-ui/#billing',
+      success_url: window.location.origin + '/#billing',
+      cancel_url: window.location.origin + '/#billing',
     }),
   }).then(function(data) {
     window.location.href = data.url;
@@ -1813,12 +1823,36 @@ function loadInitialData() {
 //  INIT
 // ============================================================
 (function init() {
+  // Handle Instagram OAuth callback — hash contains ig-login=TOKEN&ig-user=JSON
+  var rawHash = window.location.hash.replace('#', '');
+  if (rawHash.indexOf('ig-login=') === 0) {
+    var parts = rawHash.split('&ig-user=');
+    var token = parts[0].replace('ig-login=', '');
+    var userJson = parts[1] ? decodeURIComponent(parts[1]) : null;
+    if (token && userJson) {
+      try {
+        var user = JSON.parse(userJson);
+        setToken(token, user);
+        history.replaceState(null, '', '/');
+        loadInitialData().then(function() { navigate('dashboard'); });
+        return;
+      } catch(e) {}
+    }
+  }
+  if (rawHash.indexOf('ig-login-error=') === 0) {
+    var errMsg = decodeURIComponent(rawHash.replace('ig-login-error=', ''));
+    history.replaceState(null, '', '/');
+    navigate('login');
+    setTimeout(function() { toast('Instagram login zlyhal: ' + errMsg, 'error'); }, 100);
+    return;
+  }
+
   if (isAuthed()) {
     loadInitialData().then(function() {
       var hash = window.location.hash.replace('#', '').split('?')[0];
       var validViews = ['dashboard','personas','avatars','content','instagram','billing'];
       navigate(validViews.indexOf(hash) !== -1 ? hash : 'dashboard');
-      });
+    });
   } else {
     navigate('landing');
   }

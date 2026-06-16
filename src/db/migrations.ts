@@ -126,6 +126,11 @@ export function runMigrations(): void {
   `);
 
   // Idempotent column additions for existing DBs
+  const saasUserCols = (db.pragma('table_info(saas_users)') as Array<{ name: string }>).map((c) => c.name);
+  if (!saasUserCols.includes('instagram_oauth_id')) {
+    db.exec("ALTER TABLE saas_users ADD COLUMN instagram_oauth_id TEXT");
+  }
+
   const personaCols = (db.pragma('table_info(personas)') as Array<{ name: string }>).map((c) => c.name);
   if (!personaCols.includes('patreon_url')) db.exec("ALTER TABLE personas ADD COLUMN patreon_url TEXT DEFAULT ''");
   if (!personaCols.includes('unlockt_url')) db.exec("ALTER TABLE personas ADD COLUMN unlockt_url TEXT DEFAULT ''");

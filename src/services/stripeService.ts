@@ -39,6 +39,7 @@ export async function createCheckoutSession(
     line_items: [{ price: planConfig.priceId, quantity: 1 }],
     success_url: successUrl,
     cancel_url: cancelUrl,
+    allow_promotion_codes: true,
     metadata: { plan },
   });
 

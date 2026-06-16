@@ -11,6 +11,7 @@ export interface SaasUser {
   plan_expires_at: number | null;
   created_at: number;
   is_active: number;
+  instagram_oauth_id: string | null;
 }
 
 export interface PlanLimits {
@@ -59,4 +60,22 @@ export function updateStripeCustomerId(userId: number, customerId: string): void
 
 export function getPlanLimits(plan: string): PlanLimits {
   return PLAN_LIMITS[plan] ?? PLAN_LIMITS.free;
+}
+
+export function findByInstagramOAuthId(igId: string): SaasUser | undefined {
+  return db.prepare('SELECT * FROM saas_users WHERE instagram_oauth_id = ?').get(igId) as SaasUser | undefined;
+}
+
+export async function createOAuthUser(igId: string, username: string): Promise<SaasUser> {
+  const email = `ig_${igId}@instagram.oauth`;
+  const existing = findByEmail(email);
+  if (existing) return existing;
+  const result = db
+    .prepare('INSERT INTO saas_users (email, password_hash, name, instagram_oauth_id) VALUES (?, ?, ?, ?)')
+    .run(email, `INSTAGRAM_OAUTH:${igId}`, username, igId);
+  return findById(result.lastInsertRowid as number) as SaasUser;
+}
+
+export function linkInstagramOAuth(userId: number, igId: string): void {
+  db.prepare('UPDATE saas_users SET instagram_oauth_id = ? WHERE id = ?').run(igId, userId);
 }
