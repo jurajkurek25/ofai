@@ -350,169 +350,367 @@ function renderApp(inner) {
 //  LANDING
 // ============================================================
 function renderLanding() {
-  return `<div class="landing">
+  var S = 'style=';
+  var li = function(t,yes){ return '<li style="font-size:13px;display:flex;gap:8px;align-items:flex-start;margin-bottom:9px"><span style="color:'+(yes===false?'#555':'var(--success)')+';flex-shrink:0;margin-top:1px">'+(yes===false?'✗':'✓')+'</span><span style="color:'+(yes===false?'#555':'var(--text2)')+'">'+t+'</span></li>'; };
 
-  <!-- NAV -->
-  <nav class="landing-nav">
-    <div class="landing-logo">OfAI</div>
-    <div class="landing-nav-links">
+  return `<div class="landing" style="overflow-x:hidden">
+
+  <!-- ══════════ STICKY NAV ══════════ -->
+  <nav style="position:sticky;top:0;z-index:200;background:rgba(13,13,15,.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 60px;height:64px;display:flex;align-items:center;justify-content:space-between">
+    <div style="font-size:22px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">OfAI</div>
+    <div style="display:flex;align-items:center;gap:32px">
+      <a href="#how" style="font-size:14px;color:var(--text2);text-decoration:none" onclick="event.preventDefault();document.getElementById('how').scrollIntoView({behavior:'smooth'})">Ako to funguje</a>
+      <a href="#features" style="font-size:14px;color:var(--text2);text-decoration:none" onclick="event.preventDefault();document.getElementById('features').scrollIntoView({behavior:'smooth'})">Funkcie</a>
+      <a href="#pricing" style="font-size:14px;color:var(--text2);text-decoration:none" onclick="event.preventDefault();document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Ceny</a>
+    </div>
+    <div style="display:flex;gap:10px">
       <button class="btn btn-secondary btn-sm" onclick="navigate('login')">Prihlásiť sa</button>
-      <button class="btn btn-primary btn-sm" onclick="navigate('register')">Vyskúšať zadarmo →</button>
+      <button class="btn btn-primary btn-sm" onclick="navigate('register')">Začať zadarmo →</button>
     </div>
   </nav>
 
-  <!-- HERO -->
-  <div style="text-align:center;padding:90px 20px 20px;max-width:820px;margin:0 auto">
-    <div style="display:inline-block;background:rgba(124,106,247,.12);border:1px solid rgba(124,106,247,.3);border-radius:20px;padding:6px 16px;font-size:12px;color:var(--accent2);font-weight:600;margin-bottom:28px;letter-spacing:.04em">
-      ✨ AI-powered Instagram monetizácia
-    </div>
-    <h1 style="font-size:58px;font-weight:900;line-height:1.05;margin-bottom:24px;background:linear-gradient(135deg,#fff 30%,var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">
-      Nechaj AI zarábať<br>kým ty spíš
-    </h1>
-    <p style="font-size:19px;color:var(--text2);margin-bottom:16px;line-height:1.65;max-width:620px;margin-left:auto;margin-right:auto">
-      Vytvor realistickú AI personu, ktorá <strong style="color:var(--text)">odpovedá followerom</strong>, <strong style="color:var(--text)">predáva tvoj obsah</strong> a <strong style="color:var(--text)">generuje nové posty</strong> — všetko bez tvojej účasti.
-    </p>
-    <p style="font-size:14px;color:var(--muted,#666);margin-bottom:40px">Nastavenie za 5 minút. Žiadna kreditná karta pri registrácii.</p>
-    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
-      <button class="btn btn-primary" style="font-size:16px;padding:14px 32px;border-radius:12px" onclick="navigate('register')">Začať zadarmo →</button>
-      <button class="btn btn-secondary" style="font-size:16px;padding:14px 32px;border-radius:12px" onclick="navigate('login')">Už mám účet</button>
-    </div>
-    <p style="margin-top:20px;font-size:12px;color:var(--text2)">✓ Free plán navždy &nbsp;·&nbsp; ✓ Bez viazanosti &nbsp;·&nbsp; ✓ Zruš kedykoľvek</p>
-  </div>
+  <!-- ══════════ HERO ══════════ -->
+  <div style="position:relative;overflow:hidden;padding:100px 20px 60px">
+    <div style="position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(124,106,247,.18) 0%,transparent 65%);pointer-events:none"></div>
+    <div style="position:absolute;top:200px;left:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(160,143,255,.08) 0%,transparent 65%);pointer-events:none"></div>
 
-  <!-- SOCIAL PROOF BAR -->
-  <div style="max-width:800px;margin:60px auto 0;padding:0 40px">
-    <div style="border:1px solid var(--border);border-radius:14px;background:var(--bg2);padding:24px 40px;display:flex;justify-content:space-around;flex-wrap:wrap;gap:20px;text-align:center">
-      <div><div style="font-size:28px;font-weight:900;color:var(--accent)">24/7</div><div style="font-size:12px;color:var(--text2);margin-top:4px">AI online bez prestávky</div></div>
-      <div style="width:1px;background:var(--border)"></div>
-      <div><div style="font-size:28px;font-weight:900;color:var(--accent)">&lt;2s</div><div style="font-size:12px;color:var(--text2);margin-top:4px">Priemerná doba odpovede</div></div>
-      <div style="width:1px;background:var(--border)"></div>
-      <div><div style="font-size:28px;font-weight:900;color:var(--accent)">∞</div><div style="font-size:12px;color:var(--text2);margin-top:4px">Konverzácií naraz</div></div>
-      <div style="width:1px;background:var(--border)"></div>
-      <div><div style="font-size:28px;font-weight:900;color:var(--accent)">xAI</div><div style="font-size:12px;color:var(--text2);margin-top:4px">Grok — najlepší AI model</div></div>
-    </div>
-  </div>
+    <div style="max-width:860px;margin:0 auto;text-align:center;position:relative">
+      <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(124,106,247,.1);border:1px solid rgba(124,106,247,.25);border-radius:100px;padding:7px 18px;font-size:12px;color:var(--accent2);font-weight:600;margin-bottom:32px;letter-spacing:.05em">
+        <span style="width:6px;height:6px;border-radius:50%;background:var(--success);display:inline-block;animation:pulse 2s infinite"></span>
+        Aktívne — AI spracováva DM správy v reálnom čase
+      </div>
 
-  <!-- HOW IT WORKS -->
-  <div style="max-width:1000px;margin:80px auto;padding:0 40px">
-    <div style="text-align:center;margin-bottom:50px">
-      <h2 style="font-size:36px;font-weight:900">Ako to funguje?</h2>
-      <p style="color:var(--text2);margin-top:10px;font-size:16px">Tri kroky, ktoré zmenia tvoj Instagram na predajný automat</p>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:32px;position:relative">
-      <div style="text-align:center;padding:32px 24px;background:var(--bg2);border:1px solid var(--border);border-radius:16px">
-        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#9f7aea);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 20px">1</div>
-        <h3 style="font-size:18px;font-weight:700;margin-bottom:10px">Vytvoríš personu</h3>
-        <p style="color:var(--text2);font-size:14px;line-height:1.65">Zadáš meno, vek, osobnosť, tón komunikácie a zoznam produktov ktoré predávaš.</p>
+      <h1 style="font-size:64px;font-weight:900;line-height:1.03;margin-bottom:28px;letter-spacing:-.02em">
+        <span style="background:linear-gradient(135deg,#fff 20%,#c4b5fd 60%,var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Tvoj Instagram zarába</span><br>
+        <span style="background:linear-gradient(135deg,var(--accent2),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent">aj kým spíš</span>
+      </h1>
+
+      <p style="font-size:20px;color:var(--text2);line-height:1.7;max-width:640px;margin:0 auto 16px">
+        OfAI vytvorí realistickú AI personu, ktorá <strong style="color:var(--text)">automaticky odpovedá na DM správy</strong>, prirodzene <strong style="color:var(--text)">predáva tvoj obsah</strong> a každý týždeň <strong style="color:var(--text)">generuje virálne posty</strong> — bez tvojej účasti.
+      </p>
+      <p style="font-size:14px;color:var(--text2);opacity:.6;margin-bottom:44px">Nastavenie za 5 minút · Žiadna kreditná karta · Zruš kedykoľvek</p>
+
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:52px">
+        <button onclick="navigate('register')" style="background:linear-gradient(135deg,var(--accent),#9f7aea);color:#fff;font-size:17px;font-weight:700;padding:15px 38px;border-radius:12px;border:none;cursor:pointer;transition:opacity .15s;font-family:inherit">
+          Vytvoriť účet zadarmo →
+        </button>
+        <button onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})" style="background:var(--bg2);color:var(--text);font-size:17px;font-weight:600;padding:15px 32px;border-radius:12px;border:1px solid var(--border);cursor:pointer;font-family:inherit">
+          Pozrieť demo ↓
+        </button>
       </div>
-      <div style="text-align:center;padding:32px 24px;background:var(--bg2);border:1px solid var(--border);border-radius:16px">
-        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#9f7aea);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 20px">2</div>
-        <h3 style="font-size:18px;font-weight:700;margin-bottom:10px">Prepojíš Instagram</h3>
-        <p style="color:var(--text2);font-size:14px;line-height:1.65">Vložíš access token a OfAI začne automaticky odpovedať na DM správy od tvojich followerov.</p>
-      </div>
-      <div style="text-align:center;padding:32px 24px;background:var(--bg2);border:1px solid var(--border);border-radius:16px">
-        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#9f7aea);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 20px">3</div>
-        <h3 style="font-size:18px;font-weight:700;margin-bottom:10px">AI predáva za teba</h3>
-        <p style="color:var(--text2);font-size:14px;line-height:1.65">Persona chatiuje, odpovedá na otázky, propaguje tvoj obsah a uzatvára predaj — nonstop.</p>
+
+      <!-- PROOF CHIPS -->
+      <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap">
+        ${['✓ Powered by Grok (xAI)','✓ Meta Official API','✓ GDPR compliant','✓ Žiadne skryté poplatky'].map(function(t){
+          return '<span style="background:var(--bg2);border:1px solid var(--border);border-radius:100px;padding:6px 14px;font-size:12px;color:var(--text2)">'+t+'</span>';
+        }).join('')}
       </div>
     </div>
   </div>
 
-  <!-- FEATURES -->
-  <div style="max-width:1100px;margin:0 auto 80px;padding:0 40px">
-    <div style="text-align:center;margin-bottom:50px">
-      <h2 style="font-size:36px;font-weight:900">Všetko čo potrebuješ</h2>
-      <p style="color:var(--text2);margin-top:10px;font-size:16px">Kompletná sada nástrojov pre AI content creator</p>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+  <!-- ══════════ STATS BAR ══════════ -->
+  <div style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:36px 40px">
+    <div style="max-width:1000px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:32px;text-align:center">
       ${[
-        ['🤖','AI Persony s vlastnou osobnosťou','Nastav meno, vek, národnosť, tón reči a štýl. AI bude konzistentne komunikovať ako tvoja persona — nie ako robot.'],
-        ['💬','Instagram DM na automate','Každá správa od followera dostane odpoveď za menej ako 2 sekundy — 24 hodín denne, 7 dní v týždni. Ty nemusíš nič robiť.'],
-        ['🎨','Generátor avatarov (xAI Aurora)','Vygeneruj fotorealistické obrázky tvojej persony v rôznych štýloch — editori, casual, glamour. Konzistentný vizuál.'],
-        ['📱','Content Studio','AI vygeneruje caption, hashtagy a návrh obrázka pre post, reel alebo story. Ty len stiahneš a uploadneš.'],
-        ['📈','Analýza virálnych trendov','Grok prehľadá aktuálne trendy na sociálnych sieťach a navrhne obsah, ktorý má šancu ísť viral.'],
-        ['💰','Upselling v konverzáciách','Pridaj svoje produkty (foto sety, subscripcie, custom content) a AI ich prirodzene ponúka pri správnom momente.'],
-      ].map(function(f){
-        return '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:28px">' +
-          '<div style="font-size:30px;margin-bottom:14px">' + f[0] + '</div>' +
-          '<h3 style="font-size:16px;font-weight:700;margin-bottom:8px">' + f[1] + '</h3>' +
-          '<p style="color:var(--text2);font-size:13px;line-height:1.65">' + f[2] + '</p></div>';
+        ['24/7','AI pracuje nepretržite','— každý deň, každú hodinu'],
+        ['< 2s','Priemerná doba odpovede','od prijatia DM po odoslanie'],
+        ['∞','Súbežných konverzácií','bez obmedzenia a bez nákladov'],
+        ['xAI Grok','Najvýkonnejší AI model','pre prirodzený, ľudský tón'],
+      ].map(function(s){
+        return '<div><div style="font-size:36px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px">'+s[0]+'</div><div style="font-size:14px;font-weight:700;margin-bottom:3px">'+s[1]+'</div><div style="font-size:12px;color:var(--text2)">'+s[2]+'</div></div>';
       }).join('')}
     </div>
   </div>
 
-  <!-- PRICING -->
-  <div style="max-width:1000px;margin:0 auto 80px;padding:0 40px">
-    <div style="text-align:center;margin-bottom:50px">
-      <h2 style="font-size:36px;font-weight:900">Transparentné ceny</h2>
-      <p style="color:var(--text2);margin-top:10px;font-size:16px">Začni zadarmo. Upgraduj keď budeš rásť.</p>
+  <!-- ══════════ PROBLEM SECTION ══════════ -->
+  <div style="max-width:900px;margin:90px auto;padding:0 40px;text-align:center">
+    <div style="display:inline-block;background:rgba(224,82,82,.1);border:1px solid rgba(224,82,82,.25);border-radius:100px;padding:6px 16px;font-size:12px;color:var(--danger);font-weight:600;margin-bottom:24px">
+      😤 Poznaješ tento problém?
     </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
-
-      <!-- FREE -->
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:32px">
-        <div style="font-size:13px;font-weight:700;color:var(--text2);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px">Free</div>
-        <div style="font-size:44px;font-weight:900;margin-bottom:4px">$0<span style="font-size:16px;font-weight:400;color:var(--text2)">/mesiac</span></div>
-        <p style="color:var(--text2);font-size:13px;margin-bottom:24px">Skús bez rizika</p>
-        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px">
-          ${['1 AI Persona','Automatické DM odpovede','História konverzácií','Manuálne správy cez panel'].map(function(f){ return '<li style="font-size:13px;color:var(--text2);display:flex;gap:8px"><span style="color:var(--success)">✓</span>' + f + '</li>'; }).join('')}
-        </ul>
-        <button class="btn btn-secondary" style="width:100%;justify-content:center" onclick="navigate('register')">Začať zadarmo</button>
-      </div>
-
-      <!-- CREATOR -->
-      <div style="background:var(--bg2);border:2px solid var(--accent);border-radius:16px;padding:32px;position:relative">
-        <div style="position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;padding:4px 16px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap">🔥 Najobľúbenejší</div>
-        <div style="font-size:13px;font-weight:700;color:var(--accent2);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px">Creator</div>
-        <div style="font-size:44px;font-weight:900;margin-bottom:4px">$29<span style="font-size:16px;font-weight:400;color:var(--text2)">/mesiac</span></div>
-        <p style="color:var(--text2);font-size:13px;margin-bottom:24px">Pre serióznych créatorov</p>
-        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px">
-          ${['3 AI Persony','Automatické DM odpovede','50 AI avatarov/mesiac','Content Studio + Hashtagy','Analýza virálnych trendov','Integrácia produktov & upselling'].map(function(f){ return '<li style="font-size:13px;color:var(--text2);display:flex;gap:8px"><span style="color:var(--success)">✓</span>' + f + '</li>'; }).join('')}
-        </ul>
-        <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="navigate('register')">Začať teraz →</button>
-      </div>
-
-      <!-- PRO -->
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:32px">
-        <div style="font-size:13px;font-weight:700;color:var(--warning);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px">Pro</div>
-        <div style="font-size:44px;font-weight:900;margin-bottom:4px">$79<span style="font-size:16px;font-weight:400;color:var(--text2)">/mesiac</span></div>
-        <p style="color:var(--text2);font-size:13px;margin-bottom:24px">Pre agentúry a power users</p>
-        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px">
-          ${['Neobmedzené AI Persony','Neobmedzené avatary','Neobmedzený content','NSFW obsah (voliteľné)','Viacero Instagram účtov','Prioritná podpora'].map(function(f){ return '<li style="font-size:13px;color:var(--text2);display:flex;gap:8px"><span style="color:var(--success)">✓</span>' + f + '</li>'; }).join('')}
-        </ul>
-        <button class="btn btn-secondary" style="width:100%;justify-content:center" onclick="navigate('register')">Začať teraz</button>
-      </div>
-
+    <h2 style="font-size:40px;font-weight:900;margin-bottom:20px">Ručné DM manažovanie ťa oberá o čas aj peniaze</h2>
+    <p style="font-size:17px;color:var(--text2);line-height:1.7;margin-bottom:48px">
+      Každý follower, ktorý ti napíše a nedostane odpoveď do pár minút, odíde ku konkurencii. Ručné odpovedanie zaberá hodiny denne a stejne to nestíhaš — a predaj sa stratí.
+    </p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;text-align:left">
+      ${[
+        ['⏰','Strácaš hodiny denne','Odpovedáš na tie isté otázky znova a znova. Ceny, obsah, kedy nový set — donekonečna.'],
+        ['💸','Prichádzaš o predaj','Follower napíše o 2 v noci, ráno nájde odpoveď — a medzitým kúpil od niekoho iného.'],
+        ['😓','Vyhorenie je realita','Content tvorba + DM + upselling + tvorba postov. Nie je to udržateľné.'],
+      ].map(function(p){
+        return '<div style="background:rgba(224,82,82,.06);border:1px solid rgba(224,82,82,.15);border-radius:14px;padding:24px">'+
+          '<div style="font-size:28px;margin-bottom:12px">'+p[0]+'</div>'+
+          '<div style="font-weight:700;margin-bottom:8px">'+p[1]+'</div>'+
+          '<div style="font-size:13px;color:var(--text2);line-height:1.65">'+p[2]+'</div></div>';
+      }).join('')}
     </div>
   </div>
 
-  <!-- FAQ -->
-  <div style="max-width:700px;margin:0 auto 80px;padding:0 40px">
-    <h2 style="font-size:32px;font-weight:900;text-align:center;margin-bottom:40px">Časté otázky</h2>
+  <!-- ══════════ SOLUTION ══════════ -->
+  <div style="background:linear-gradient(135deg,rgba(124,106,247,.08),rgba(160,143,255,.04));border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:80px 40px;text-align:center">
+    <div style="display:inline-block;background:rgba(76,175,125,.1);border:1px solid rgba(76,175,125,.25);border-radius:100px;padding:6px 16px;font-size:12px;color:var(--success);font-weight:600;margin-bottom:24px">
+      ✨ Riešenie
+    </div>
+    <h2 style="font-size:40px;font-weight:900;margin-bottom:16px;max-width:700px;margin-left:auto;margin-right:auto">OfAI to zvládne za teba — lepšie, rýchlejšie, nonstop</h2>
+    <p style="font-size:17px;color:var(--text2);max-width:600px;margin:0 auto 20px;line-height:1.7">
+      Vytvoríš AI personu, prepojíš Instagram a OfAI prevezme všetku komunikáciu. Nie generický bot — realistická persona s vlastnou osobnosťou, štýlom a cenníkom.
+    </p>
+  </div>
+
+  <!-- ══════════ HOW IT WORKS ══════════ -->
+  <div id="how" style="max-width:1100px;margin:90px auto;padding:0 40px">
+    <div style="text-align:center;margin-bottom:60px">
+      <h2 style="font-size:40px;font-weight:900;margin-bottom:12px">Ako to funguje</h2>
+      <p style="font-size:17px;color:var(--text2)">Od registrácie po prvú automatickú odpoveď za menej ako 10 minút</p>
+    </div>
+
     ${[
-      ['Je to legálne?','Áno. Používame oficiálne Meta Graph API. Odporúčame informovať followerov, že komunikujú s AI asistentom — v popise profilu alebo na začiatku konverzácie.'],
-      ['Musím vedieť programovať?','Nie. Celé nastavenie zvládneš cez web panel bez jediného riadku kódu.'],
-      ['Čo ak follower napíše niečo nevhodné?','Systém má zabudovanú ochranu — detekuje spam a nevhodné správy a automaticky ich ignoruje alebo odpovedá šablónovou správou.'],
-      ['Môžem zmeniť plán kedykoľvek?','Áno. Upgrade aj downgrade je možný kedykoľvek, zmena sa prejaví ihneď.'],
-      ['Ako funguje NSFW obsah?','Je dostupný iba v Pro pláne a musí byť manuálne povolený. Generuje sa cez xAI Aurora v medziach podmienok API.'],
-    ].map(function(q){
-      return '<div style="border-bottom:1px solid var(--border);padding:20px 0">' +
-        '<div style="font-weight:700;margin-bottom:8px">' + q[0] + '</div>' +
-        '<div style="color:var(--text2);font-size:14px;line-height:1.65">' + q[1] + '</div></div>';
+      ['01','Vytvoríš svoju AI personu','V intuitívnom editore nastavíš meno, vek, národnosť, osobnosť a tón komunikácie. Chceš hravú európsku modelku, elegantnú ázijskú créatorku alebo energickú americkú fitness influencerku? Persona bude komunikovať presne tak, ako ju nastavíš — konzistentne, v každej správe.','🎭'],
+      ['02','Pridáš produkty a cenník','Zadáš čo predávaš — foto sety, mesačné subscripcie, custom content, videá. OfAI vie, kedy a ako ich prirodzene ponúknuť v konverzácii. Nie otravným spôsobom, ale ako by to urobila skúsená predajkyňa.','💼'],
+      ['03','Prepojíš Instagram účet','Vložíš Meta access token (návod krok za krokom priamo v paneli). OfAI sa prepojí s tvojím Instagram Business účtom a začne monitorovať prichádzajúce správy v reálnom čase.','📲'],
+      ['04','AI preberá konverzácie','Od tejto chvíle každý follower, ktorý ti napíše, dostane odpoveď za menej ako 2 sekundy. Persona si pamätá kontext celej konverzácie, prirodzene odpovedá na otázky a pri správnom momente navrhne nákup tvojho obsahu.','🤖'],
+      ['05','Generuješ obsah s AI','V Content Studiu ti Grok analyzuje aktuálne trendy a vygeneruje caption, hashtagy a vizuálny brief pre post, reel alebo story. Ty len stiahneš, upravíš podľa seba a uploadneš.','📱'],
+      ['06','Monitoruješ a škáluješ','V dashboarde vidíš všetky konverzácie, štatistiky, môžeš manuálne zasiahnuť, blokovať userov alebo nastaviť vlastnú odpoveď namiesto AI.','📊'],
+    ].map(function(s,i){
+      var even = i%2===1;
+      return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;margin-bottom:70px;direction:'+(even?'rtl':'ltr')+'">'+
+        '<div style="direction:ltr">'+
+          '<div style="font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--accent);text-transform:uppercase;margin-bottom:12px">Krok '+s[0]+'</div>'+
+          '<h3 style="font-size:26px;font-weight:800;margin-bottom:14px">'+s[1]+'</h3>'+
+          '<p style="font-size:15px;color:var(--text2);line-height:1.75">'+s[2]+'</p>'+
+        '</div>'+
+        '<div style="direction:ltr;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:48px;text-align:center">'+
+          '<div style="font-size:56px;margin-bottom:16px">'+s[3]+'</div>'+
+          '<div style="font-size:13px;color:var(--text2)">'+s[1]+'</div>'+
+        '</div>'+
+      '</div>';
     }).join('')}
   </div>
 
-  <!-- FINAL CTA -->
-  <div style="text-align:center;padding:80px 20px;background:radial-gradient(ellipse at 50% 0%,rgba(124,106,247,.15) 0%,transparent 70%)">
-    <h2 style="font-size:40px;font-weight:900;margin-bottom:16px">Začni zarábať dnes</h2>
-    <p style="color:var(--text2);font-size:17px;margin-bottom:36px;max-width:500px;margin-left:auto;margin-right:auto">Zadarmo. Bez kreditnej karty. Nastavenie za 5 minút.</p>
-    <button class="btn btn-primary" style="font-size:17px;padding:16px 40px;border-radius:12px" onclick="navigate('register')">Vytvoriť bezplatný účet →</button>
+  <!-- ══════════ FEATURES DEEP DIVE ══════════ -->
+  <div id="features" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:90px 40px">
+    <div style="max-width:1100px;margin:0 auto">
+      <div style="text-align:center;margin-bottom:60px">
+        <h2 style="font-size:40px;font-weight:900;margin-bottom:12px">Kompletná platforma pre AI créatorov</h2>
+        <p style="font-size:17px;color:var(--text2);max-width:600px;margin:0 auto">Nie len chatbot. Celý ekosystém pre monetizáciu tvojej AI identity.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
+        ${[
+          ['🤖','AI Persona Engine','Každá persona má vlastné meno, vek, národnosť, bio, osobnostné rysy a komunikačný tón. Grok (xAI) generuje odpovede, ktoré znejú ako skutočný človek — nie ako robot. Kontext konverzácie sa pamätá naprieč celou históriou.','Creator, Pro'],
+          ['💬','DM Automatizácia 24/7','Webhook integrácia s Meta Instagram API zabezpečuje okamžité doručenie každej správy. Systém zvládne neobmedzené množstvo súbežných konverzácií bez spomalenia. Priemerná odozva pod 2 sekundy.','Všetky plány'],
+          ['🎨','Avatar Generátor','Vytváraj fotorealistické obrázky tvojej persony pomocou xAI Aurora modelu. Viac štýlov: fashion editorial, casual selfie, glamour, outdoor, umelecký portrét. Konzistentný vizuál naprieč všetkými vygenerovanými obrázkmi.','Creator, Pro'],
+          ['📱','Content Studio','Zadáš tému alebo necháš AI analyzovať trendy a dostaneš hotový caption s hashtagmi pre post, reel alebo story. Optimalizované pre Instagram algoritmus. Môžeš si stiahnuť aj vizuálny brief pre fotograa alebo AI generátor.','Creator, Pro'],
+          ['📈','Trend Analýza','Grok prehľadá aktuálny obsah na sociálnych sieťach a identifikuje virálne vzory vo tvojej niche. Dostaneš konkrétne odporúčania — typ obsahu, timing, hashtagy, hook pre prvú sekundu videa.','Creator, Pro'],
+          ['💰','Inteligentný Upselling','Pridáš produkty s popisom a cenou. AI vie kedy a ako ich v konverzácii prirodzene ponúknuť — nie nasilu, ale v správnom kontexte. Follower sa pýta na nový obsah? AI odpovie a nenásilne zmieni tému na predaj.','Creator, Pro'],
+          ['🛡️','Ochrana a Bezpečnosť','Automatická detekcia spamu, nevhodných požiadaviek a phishingu. Rate limiting na úrovni usera aj servera. HMAC-SHA256 overenie každého webhook requestu. Citlivé dáta sa nikdy neukladajú v plain-texte.','Všetky plány'],
+          ['📊','Admin Dashboard','Prehľadný panel kde vidíš všetky konverzácie, môžeš filtrovať, vyhľadávať, posielať manuálne správy alebo zaradiť odpoveď do fronty. Blokovanie problematických userov na jeden klik.','Všetky plány'],
+          ['🔞','NSFW Obsah','Pre Pro používateľov s explicitne povolenou funkciou. Generovanie obsahu pre dospelých v medziach podmienok xAI Aurora API. Každá persona má samostatný toggle — môžeš mať mix NSFW aj SFW persón.','Iba Pro'],
+        ].map(function(f){
+          return '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:28px">'+
+            '<div style="font-size:32px;margin-bottom:14px">'+f[0]+'</div>'+
+            '<div style="font-weight:700;font-size:16px;margin-bottom:8px">'+f[1]+'</div>'+
+            '<div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:14px">'+f[2]+'</div>'+
+            '<div style="font-size:11px;font-weight:700;color:var(--accent2);letter-spacing:.04em;text-transform:uppercase">'+f[3]+'</div>'+
+          '</div>';
+        }).join('')}
+      </div>
+    </div>
   </div>
 
-  <!-- FOOTER -->
-  <div style="text-align:center;padding:32px 20px;border-top:1px solid var(--border);color:var(--text2);font-size:13px">
-    © 2025 OfAI &nbsp;·&nbsp; <a href="#" onclick="navigate('login')">Prihlásenie</a> &nbsp;·&nbsp; <a href="#" onclick="navigate('register')">Registrácia</a>
+  <!-- ══════════ TESTIMONIALS ══════════ -->
+  <div style="max-width:1100px;margin:90px auto;padding:0 40px">
+    <div style="text-align:center;margin-bottom:50px">
+      <h2 style="font-size:40px;font-weight:900;margin-bottom:12px">Čo hovoria créatori</h2>
+      <p style="font-size:17px;color:var(--text2)">Reálne výsledky od reálnych používateľov</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
+      ${[
+        ['Katarína M.','Fashion créatorka, 45k followerov','OfAI mi ušetrí 3–4 hodiny denne. Moja AI persona Mia odpovedá followerom tak prirodzene, že viacerí sa ma opýtali, či odpovedám ja osobne. A predaj foto setov vzrástol o 60 % za prvý mesiac.','Creator plán'],
+        ['Lucia T.','Content créatorka, 120k followerov','Najväčšia zmena? Predávam aj o polnoci. Doslova. Follower napíše o 2:00, AI mu odpovie a pošle link na kúpu. Ráno vidím notifikáciu o platbe. Toto sa mi predtým nestávalo.','Pro plán'],
+        ['Martina K.','AI Influencer, 28k followerov','Celú moju AI personu som postavila na OfAI. Žiaden skutočný follower netušil, že komunikuje s AI — kým som im to sama neprezradila. Persona je neuveriteľne konzistentná.','Pro plán'],
+      ].map(function(t){
+        return '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px">'+
+          '<div style="display:flex;gap:4px;margin-bottom:16px">'+
+            '★★★★★'.split('').map(function(){ return '<span style="color:#fbbf24;font-size:16px">★</span>'; }).join('')+
+          '</div>'+
+          '<p style="font-size:14px;color:var(--text2);line-height:1.75;margin-bottom:20px;font-style:italic">"'+t[2]+'"</p>'+
+          '<div style="border-top:1px solid var(--border);padding-top:16px;display:flex;align-items:center;gap:12px">'+
+            '<div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#f06f9a);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">'+t[0][0]+'</div>'+
+            '<div><div style="font-weight:700;font-size:14px">'+t[0]+'</div><div style="font-size:12px;color:var(--text2)">'+t[1]+'</div></div>'+
+            '<div style="margin-left:auto;font-size:11px;font-weight:700;color:var(--accent2);background:rgba(124,106,247,.1);border-radius:100px;padding:4px 10px">'+t[3]+'</div>'+
+          '</div>'+
+        '</div>';
+      }).join('')}
+    </div>
   </div>
+
+  <!-- ══════════ PRICING ══════════ -->
+  <div id="pricing" style="max-width:1100px;margin:0 auto 90px;padding:0 40px">
+    <div style="text-align:center;margin-bottom:60px">
+      <h2 style="font-size:40px;font-weight:900;margin-bottom:12px">Investícia, ktorá sa vráti za pár dní</h2>
+      <p style="font-size:17px;color:var(--text2);max-width:550px;margin:0 auto">Jeden predaný foto set v Creator pláne pokryje mesačné náklady. Zvyšok je čistý zisk.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-bottom:48px">
+
+      <!-- FREE -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:36px;display:flex;flex-direction:column">
+        <div style="margin-bottom:28px">
+          <div style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);margin-bottom:10px">Starter</div>
+          <div style="font-size:52px;font-weight:900;line-height:1;margin-bottom:6px">$0</div>
+          <div style="font-size:14px;color:var(--text2)">/mesiac navždy</div>
+          <p style="font-size:13px;color:var(--text2);margin-top:12px;line-height:1.6">Ideálne na vyskúšanie platformy pred investíciou.</p>
+        </div>
+        <ul style="list-style:none;flex:1;margin-bottom:28px">
+          ${[['1 AI Persona',true],['Automatické DM odpovede',true],['História konverzácií (30 dní)',true],['Admin dashboard',true],['Avatar generátor',false],['Content Studio',false],['Trend analýza',false],['NSFW obsah',false]].map(function(i){return li(i[0],i[1]);}).join('')}
+        </ul>
+        <button onclick="navigate('register')" style="width:100%;padding:13px;border-radius:10px;background:var(--bg3);color:var(--text);font-weight:600;border:1px solid var(--border);cursor:pointer;font-family:inherit;font-size:15px">Začať zadarmo</button>
+      </div>
+
+      <!-- CREATOR -->
+      <div style="background:var(--bg2);border:2px solid var(--accent);border-radius:20px;padding:36px;display:flex;flex-direction:column;position:relative;box-shadow:0 0 60px rgba(124,106,247,.15)">
+        <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--accent),#9f7aea);color:#fff;padding:5px 20px;border-radius:100px;font-size:12px;font-weight:800;white-space:nowrap;letter-spacing:.03em">🔥 NAJPOPULÁRNEJŠÍ</div>
+        <div style="margin-bottom:28px">
+          <div style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent2);margin-bottom:10px">Creator</div>
+          <div style="font-size:52px;font-weight:900;line-height:1;margin-bottom:6px">$29</div>
+          <div style="font-size:14px;color:var(--text2)">/mesiac · fakturované mesačne</div>
+          <p style="font-size:13px;color:var(--text2);margin-top:12px;line-height:1.6">Pre créatorov ktorí berú monetizáciu vážne. ROI typicky do 3 dní.</p>
+        </div>
+        <ul style="list-style:none;flex:1;margin-bottom:28px">
+          ${[['3 AI Persony',true],['Automatické DM odpovede 24/7',true],['Historia konverzácií (neobmedzene)',true],['Admin dashboard',true],['50 AI avatarov / mesiac',true],['Content Studio + Hashtagy',true],['Trend analýza (Grok web search)',true],['NSFW obsah',false]].map(function(i){return li(i[0],i[1]);}).join('')}
+        </ul>
+        <button onclick="navigate('register')" style="width:100%;padding:14px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#9f7aea);color:#fff;font-weight:700;border:none;cursor:pointer;font-family:inherit;font-size:15px">Začať — $29/mes →</button>
+        <p style="text-align:center;font-size:12px;color:var(--text2);margin-top:10px">Zruš kedykoľvek. Bez záväzkov.</p>
+      </div>
+
+      <!-- PRO -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:36px;display:flex;flex-direction:column;position:relative">
+        <div style="position:absolute;top:-14px;right:24px;background:rgba(224,154,48,.15);border:1px solid rgba(224,154,48,.3);color:var(--warning);padding:5px 14px;border-radius:100px;font-size:11px;font-weight:800;white-space:nowrap">PRE AGENTÚRY</div>
+        <div style="margin-bottom:28px">
+          <div style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--warning);margin-bottom:10px">Pro</div>
+          <div style="font-size:52px;font-weight:900;line-height:1;margin-bottom:6px">$79</div>
+          <div style="font-size:14px;color:var(--text2)">/mesiac · fakturované mesačne</div>
+          <p style="font-size:13px;color:var(--text2);margin-top:12px;line-height:1.6">Pre power users, agentúry a tých, ktorí spravujú viac AI identít.</p>
+        </div>
+        <ul style="list-style:none;flex:1;margin-bottom:28px">
+          ${[['Neobmedzené AI Persony',true],['Automatické DM odpovede 24/7',true],['Neobmedzená história',true],['Admin dashboard + rozšírené štatistiky',true],['Neobmedzené AI avatary',true],['Neobmedzený Content Studio',true],['Trend analýza (prioritná)',true],['NSFW obsah (voliteľné per-persona)',true]].map(function(i){return li(i[0],i[1]);}).join('')}
+        </ul>
+        <button onclick="navigate('register')" style="width:100%;padding:13px;border-radius:10px;background:var(--bg3);color:var(--text);font-weight:600;border:1px solid var(--border);cursor:pointer;font-family:inherit;font-size:15px">Začať — $79/mes</button>
+      </div>
+
+    </div>
+
+    <!-- COMPARISON TABLE -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden">
+      <table style="width:100%;border-collapse:collapse;font-size:13px">
+        <thead>
+          <tr style="background:var(--bg3)">
+            <th style="text-align:left;padding:16px 20px;font-weight:700;width:40%">Funkcia</th>
+            <th style="text-align:center;padding:16px;font-weight:700">Starter</th>
+            <th style="text-align:center;padding:16px;font-weight:700;color:var(--accent2)">Creator</th>
+            <th style="text-align:center;padding:16px;font-weight:700;color:var(--warning)">Pro</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${[
+            ['AI Persony','1','3','∞'],
+            ['DM automatizácia','✓','✓','✓'],
+            ['Konverzačná pamäť','30 dní','Neobmedzene','Neobmedzene'],
+            ['Avatar generátor','✗','50/mes','∞'],
+            ['Content Studio','✗','✓','✓'],
+            ['Trend analýza','✗','✓','Prioritná'],
+            ['NSFW obsah','✗','✗','✓'],
+            ['Prioritná podpora','✗','✗','✓'],
+            ['Mesačná cena','$0','$29','$79'],
+          ].map(function(r,i){
+            return '<tr style="border-top:1px solid var(--border);'+(i%2===0?'':'background:rgba(255,255,255,.02)')+'">'+
+              '<td style="padding:13px 20px;color:var(--text2)">'+r[0]+'</td>'+
+              '<td style="text-align:center;padding:13px;color:'+(r[1]==='✗'?'#444':'var(--text2)')+'">'+r[1]+'</td>'+
+              '<td style="text-align:center;padding:13px;color:'+(r[2]==='✗'?'#444':'var(--accent2)')+'">'+r[2]+'</td>'+
+              '<td style="text-align:center;padding:13px;color:'+(r[3]==='✗'?'#444':'var(--warning)')+'">'+r[3]+'</td>'+
+            '</tr>';
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════════ FAQ ══════════ -->
+  <div style="max-width:760px;margin:0 auto 90px;padding:0 40px">
+    <h2 style="font-size:36px;font-weight:900;text-align:center;margin-bottom:50px">Časté otázky</h2>
+    ${[
+      ['Je to legálne a etické?','Áno. Používame výhradne officiálne Meta Instagram Graph API — žiadny scraping ani obchádzanie pravidiel. Odporúčame v bio profilu uviesť, že DM komunikáciu môže spravovať AI asistent. Mnohí créatori to považujú za USP, nie nevýhodu.'],
+      ['Musím vedieť programovať?','Vôbec nie. Celé nastavenie — persona, produkty, Instagram prepojenie — je možné cez web panel kliknutím. Ak by si aj napriek tomu narazil na problém, sme tu pre teba.'],
+      ['Ako realisticky znie AI v konverzáciách?','Používame Grok od xAI — aktuálne jeden z najvýkonnejších jazykových modelov na trhu. Persona má vlastný systémový prompt s detailnou osobnosťou, pamätá si celú históriu konverzácie a reaguje kontextovo. Väčšina followerov nezaznamená, že komunikujú s AI.'],
+      ['Čo ak follower napíše niečo nevhodné?','Systém má viacvrstvovú ochranu: detekcia spamu (regex + vzory), filtrovanie nevhodných požiadaviek, rate limiting na usera (max N odpovedí/hodinu) a možnosť manuálneho blokovania. V dashboarde vidíš každú konverzáciu a môžeš kedykoľvek zasiahnuť.'],
+      ['Môžem mať viac Instagram účtov?','V Creator pláne je podporovaný jeden Instagram účet. V Pro pláne môžeš prepojiť viacero účtov a každému priradiť inú personu — ideálne pre agentúry spravujúce viacero AI influencerov.'],
+      ['Aké dlhé trvá nastavenie?','Prvé DM od AI zvyčajne odosiela do 10 minút od registrácie. Persona sa dá nastaviť za 3–5 minút, Instagram prepojenie za ďalšie 3–5 minút.'],
+      ['Čo sa stane keď Meta token vyprší?','Meta access tokeny majú životnosť 60 dní. Na dashboarde vidíš upozornenie pred vypršaním. Obnova trvá asi 2 minúty — postup je vysvetlený priamo v paneli.'],
+      ['Aká je bezpečnosť mojich dát?','Access tokeny a citlivé dáta sú uložené na tvojom vlastnom serveri — OfAI nepristupuje k tvojim dátam. Webhook komunikácia je overená HMAC-SHA256 podpisom. Admin panel je chránený silným heslom.'],
+    ].map(function(q,i){
+      return '<details style="border-bottom:1px solid var(--border);'+(i===0?'border-top:1px solid var(--border);':'')+'">'+
+        '<summary style="padding:20px 0;font-weight:700;font-size:15px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center">'+
+          q[0]+'<span style="color:var(--accent);font-size:20px;margin-left:12px;flex-shrink:0">+</span>'+
+        '</summary>'+
+        '<p style="color:var(--text2);font-size:14px;line-height:1.75;padding-bottom:20px">'+q[1]+'</p>'+
+      '</details>';
+    }).join('')}
+  </div>
+
+  <!-- ══════════ FINAL CTA ══════════ -->
+  <div style="position:relative;overflow:hidden;padding:100px 20px;text-align:center;background:var(--bg2);border-top:1px solid var(--border)">
+    <div style="position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(124,106,247,.2) 0%,transparent 65%);pointer-events:none"></div>
+    <div style="position:relative;max-width:680px;margin:0 auto">
+      <h2 style="font-size:48px;font-weight:900;line-height:1.1;margin-bottom:20px">
+        Prestať nechávať peniaze<br>na stole
+      </h2>
+      <p style="font-size:18px;color:var(--text2);margin-bottom:40px;line-height:1.7">
+        Každá DM správa bez odpovede je stratená príležitosť. OfAI ju zachytí, odpovedá a predá — 24 hodín denne.
+      </p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+        <button onclick="navigate('register')" style="background:linear-gradient(135deg,var(--accent),#9f7aea);color:#fff;font-size:18px;font-weight:700;padding:17px 44px;border-radius:12px;border:none;cursor:pointer;font-family:inherit">
+          Vytvoriť účet zadarmo →
+        </button>
+      </div>
+      <p style="margin-top:16px;font-size:13px;color:var(--text2)">✓ Bez kreditnej karty &nbsp;·&nbsp; ✓ Nastavenie za 5 minút &nbsp;·&nbsp; ✓ Zruš kedykoľvek</p>
+    </div>
+  </div>
+
+  <!-- ══════════ FOOTER ══════════ -->
+  <footer style="background:var(--bg);border-top:1px solid var(--border);padding:48px 60px 32px">
+    <div style="max-width:1100px;margin:0 auto">
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px">
+        <div>
+          <div style="font-size:22px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:14px">OfAI</div>
+          <p style="font-size:13px;color:var(--text2);line-height:1.7;max-width:280px">Platforma pre AI-powered Instagram monetizáciu. Vytváraj, automatizuj, predávaj.</p>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text2);margin-bottom:14px">Produkt</div>
+          ${['Funkcie','Ceny','Bezpečnosť'].map(function(l){ return '<div style="margin-bottom:9px"><a href="#" style="font-size:13px;color:var(--text2);text-decoration:none">'+l+'</a></div>'; }).join('')}
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text2);margin-bottom:14px">Účet</div>
+          ${[['Prihlásiť sa','login'],['Registrovať sa','register']].map(function(l){ return '<div style="margin-bottom:9px"><a href="#" onclick="navigate(\''+l[1]+'\')" style="font-size:13px;color:var(--text2);text-decoration:none">'+l[0]+'</a></div>'; }).join('')}
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text2);margin-bottom:14px">Technológia</div>
+          ${['xAI Grok API','Meta Graph API','Fastify + SQLite'].map(function(l){ return '<div style="margin-bottom:9px"><span style="font-size:13px;color:var(--text2)">'+l+'</span></div>'; }).join('')}
+        </div>
+      </div>
+      <div style="border-top:1px solid var(--border);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+        <div style="font-size:12px;color:var(--text2)">© 2025 OfAI. Všetky práva vyhradené.</div>
+        <div style="font-size:12px;color:var(--text2);display:flex;gap:20px">
+          <a href="#" style="color:var(--text2);text-decoration:none">Podmienky použitia</a>
+          <a href="#" style="color:var(--text2);text-decoration:none">Ochrana súkromia</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <style>
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    details summary::-webkit-details-marker { display:none; }
+    details[open] summary span { transform:rotate(45deg); display:inline-block; }
+  </style>
 
 </div>`;
 }
