@@ -65,7 +65,6 @@ export async function buildApp(): Promise<FastifyInstance> {
   await app.register(contentRoutes);
   await app.register(billingRoutes);
 
-  app.get('/', async (_req, reply) => reply.redirect('/admin-ui/'));
   app.get('/health', async () => ({ status: 'ok', ts: new Date().toISOString() }));
 
   app.setErrorHandler((error, _request, reply) => {
