@@ -1,114 +1,418 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sk">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mia DM Admin</title>
+  <title>Mia — Admin Panel</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0f0f13;
-      --surface: #1a1a23;
-      --surface2: #22222e;
+      --bg: #0c0c10;
+      --surface: #16161f;
+      --surface2: #1e1e2a;
+      --surface3: #252535;
       --accent: #c084fc;
       --accent2: #818cf8;
+      --accentg: linear-gradient(135deg,#c084fc,#818cf8);
       --text: #e2e8f0;
-      --muted: #94a3b8;
+      --muted: #64748b;
+      --muted2: #94a3b8;
       --danger: #f87171;
+      --warn: #fbbf24;
       --success: #4ade80;
-      --border: #2d2d3d;
-      --radius: 10px;
+      --border: #252535;
+      --radius: 12px;
+      --sidebar: 240px;
     }
-    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
-    header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem; }
-    header h1 { font-size: 1.25rem; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    header span { color: var(--muted); font-size: 0.875rem; }
-    #auth-bar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; max-width: 400px; margin: 4rem auto; }
-    #auth-bar h2 { margin-bottom: 1rem; font-size: 1rem; color: var(--muted); }
-    input { width: 100%; padding: 0.6rem 0.9rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.875rem; outline: none; }
-    input:focus { border-color: var(--accent); }
-    button { cursor: pointer; border: none; border-radius: 6px; padding: 0.6rem 1.2rem; font-size: 0.875rem; transition: opacity 0.15s; }
-    button:hover { opacity: 0.85; }
-    .btn-primary { background: var(--accent); color: #fff; }
-    .btn-danger { background: var(--danger); color: #fff; }
-    .btn-success { background: var(--success); color: #0f0f13; }
-    .btn-muted { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
-    .layout { display: grid; grid-template-columns: 320px 1fr; height: calc(100vh - 57px); }
-    .sidebar { background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
-    .sidebar-header { padding: 1rem; border-bottom: 1px solid var(--border); }
-    .sidebar-header input { margin-top: 0.5rem; }
-    .conv-list { flex: 1; overflow-y: auto; }
-    .conv-item { padding: 0.9rem 1rem; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s; display: flex; flex-direction: column; gap: 2px; }
-    .conv-item:hover, .conv-item.active { background: var(--surface2); }
-    .conv-item .name { font-weight: 600; font-size: 0.9rem; }
-    .conv-item .meta { color: var(--muted); font-size: 0.75rem; display: flex; gap: 0.5rem; }
-    .conv-item.blocked .name { color: var(--danger); }
-    .chat-panel { display: flex; flex-direction: column; overflow: hidden; }
-    .chat-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 1rem; background: var(--surface); }
-    .chat-header .user-info { flex: 1; }
-    .chat-header h2 { font-size: 1rem; }
-    .chat-header p { color: var(--muted); font-size: 0.8rem; }
-    .chat-actions { display: flex; gap: 0.5rem; }
-    .chat-messages { flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
-    .msg { max-width: 70%; padding: 0.6rem 0.9rem; border-radius: 12px; font-size: 0.875rem; line-height: 1.5; }
-    .msg.user { background: var(--surface2); border: 1px solid var(--border); align-self: flex-start; }
-    .msg.assistant { background: linear-gradient(135deg, #4c1d95, #312e81); align-self: flex-end; }
-    .msg .msg-meta { font-size: 0.7rem; color: var(--muted); margin-top: 4px; }
-    .send-bar { padding: 1rem 1.5rem; border-top: 1px solid var(--border); background: var(--surface); display: flex; gap: 0.75rem; }
-    .send-bar textarea { flex: 1; resize: none; padding: 0.6rem 0.9rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.875rem; min-height: 42px; max-height: 120px; outline: none; }
-    .send-bar textarea:focus { border-color: var(--accent); }
-    .stats-bar { display: flex; gap: 1rem; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); }
-    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.75rem 1.25rem; flex: 1; }
-    .stat-card .val { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
-    .stat-card .lbl { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
-    .empty { color: var(--muted); text-align: center; padding: 3rem; font-size: 0.875rem; }
-    .badge { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 0.7rem; background: var(--danger); color: #fff; }
-    ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; min-height:100vh; font-size:14px; }
+
+    /* ── Login ── */
+    #login-screen {
+      min-height:100vh; display:flex; align-items:center; justify-content:center;
+      background: radial-gradient(ellipse at 50% 0%, rgba(192,132,252,.12) 0%, transparent 70%);
+    }
+    .login-box { width:360px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:2.5rem; }
+    .login-logo { font-size:2rem; text-align:center; margin-bottom:.25rem; }
+    .login-box h1 { text-align:center; font-size:1.25rem; background:var(--accentg); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:.25rem; }
+    .login-box p { text-align:center; color:var(--muted2); font-size:.8rem; margin-bottom:1.5rem; }
+    .field { margin-bottom:1rem; }
+    .field label { display:block; font-size:.75rem; color:var(--muted2); margin-bottom:.4rem; text-transform:uppercase; letter-spacing:.05em; }
+    input, textarea, select { width:100%; padding:.6rem .85rem; background:var(--surface2); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:.875rem; outline:none; font-family:inherit; transition:border .15s; }
+    input:focus, textarea:focus { border-color:var(--accent); }
+    .btn { cursor:pointer; border:none; border-radius:8px; padding:.65rem 1.25rem; font-size:.875rem; font-weight:500; font-family:inherit; transition:opacity .15s,transform .1s; display:inline-flex; align-items:center; gap:.4rem; }
+    .btn:hover { opacity:.88; } .btn:active { transform:scale(.97); }
+    .btn-primary { background:var(--accentg); color:#fff; }
+    .btn-danger  { background:var(--danger); color:#fff; }
+    .btn-success { background:var(--success); color:#0c0c10; }
+    .btn-ghost   { background:transparent; color:var(--muted2); border:1px solid var(--border); }
+    .btn-full { width:100%; justify-content:center; }
+    .hint { font-size:.75rem; color:var(--muted); margin-top:.4rem; }
+
+    /* ── App shell ── */
+    #app { display:none; height:100vh; overflow:hidden; }
+    .shell { display:grid; grid-template-columns:var(--sidebar) 1fr; height:100%; }
+
+    /* ── Sidebar ── */
+    .sidebar { background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; overflow:hidden; }
+    .sidebar-brand { padding:1.25rem 1rem; border-bottom:1px solid var(--border); }
+    .sidebar-brand h2 { font-size:.95rem; background:var(--accentg); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-weight:700; }
+    .sidebar-brand p { font-size:.7rem; color:var(--muted); margin-top:1px; }
+    nav { flex:1; padding:.75rem .5rem; display:flex; flex-direction:column; gap:2px; overflow-y:auto; }
+    .nav-item { display:flex; align-items:center; gap:.6rem; padding:.6rem .85rem; border-radius:8px; cursor:pointer; color:var(--muted2); font-size:.85rem; transition:background .15s,color .15s; }
+    .nav-item:hover { background:var(--surface2); color:var(--text); }
+    .nav-item.active { background:var(--surface3); color:var(--accent); font-weight:600; }
+    .nav-item .icon { width:16px; text-align:center; font-style:normal; }
+    .nav-sep { height:1px; background:var(--border); margin:.4rem .5rem; }
+    .sidebar-footer { padding:.75rem 1rem; border-top:1px solid var(--border); }
+    .status-dot { width:8px; height:8px; border-radius:50%; display:inline-block; }
+    .dot-ok { background:var(--success); }
+    .dot-err { background:var(--danger); }
+    .dot-warn { background:var(--warn); }
+
+    /* ── Main content ── */
+    main { display:flex; flex-direction:column; overflow:hidden; }
+    .page { flex:1; overflow-y:auto; padding:1.75rem 2rem; display:none; }
+    .page.active { display:block; }
+
+    /* ── Page header ── */
+    .page-header { margin-bottom:1.5rem; }
+    .page-header h2 { font-size:1.15rem; font-weight:700; }
+    .page-header p { color:var(--muted2); font-size:.82rem; margin-top:.25rem; }
+
+    /* ── Cards ── */
+    .cards { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:1.5rem; }
+    .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.1rem 1.25rem; }
+    .card .val { font-size:1.75rem; font-weight:700; color:var(--accent); line-height:1; }
+    .card .lbl { font-size:.75rem; color:var(--muted2); margin-top:.35rem; }
+    .card .sub  { font-size:.7rem; color:var(--muted); margin-top:2px; }
+
+    /* ── Status cards ── */
+    .status-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1.5rem; }
+    .status-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1rem 1.25rem; display:flex; align-items:flex-start; gap:.75rem; }
+    .status-card .sc-icon { font-size:1.4rem; line-height:1; padding-top:.1rem; }
+    .status-card .sc-body { flex:1; min-width:0; }
+    .status-card .sc-title { font-weight:600; font-size:.875rem; }
+    .status-card .sc-detail { font-size:.75rem; color:var(--muted2); margin-top:.2rem; word-break:break-word; }
+    .status-card.ok  { border-color:rgba(74,222,128,.25); }
+    .status-card.err { border-color:rgba(248,113,113,.25); }
+    .status-card.loading { opacity:.6; }
+
+    /* ── Info box ── */
+    .info-box { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem 1.5rem; margin-bottom:1.25rem; }
+    .info-box h3 { font-size:.875rem; font-weight:600; margin-bottom:.6rem; display:flex; align-items:center; gap:.5rem; }
+    .info-box p, .info-box li { font-size:.82rem; color:var(--muted2); line-height:1.65; }
+    .info-box ol, .info-box ul { padding-left:1.25rem; margin-top:.4rem; }
+    .info-box li { margin-bottom:.2rem; }
+    .info-box code { background:var(--surface3); border-radius:4px; padding:1px 5px; font-size:.78rem; color:var(--accent); font-family:monospace; }
+    .info-box a { color:var(--accent2); }
+
+    /* ── Conversations ── */
+    .conv-layout { display:grid; grid-template-columns:280px 1fr; height:calc(100vh - 57px); gap:0; overflow:hidden; }
+    .conv-sidebar { background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; overflow:hidden; }
+    .conv-sidebar-head { padding:.85rem 1rem; border-bottom:1px solid var(--border); }
+    .conv-sidebar-head input { margin-top:.5rem; font-size:.8rem; }
+    .conv-list { flex:1; overflow-y:auto; }
+    .conv-item { padding:.85rem 1rem; border-bottom:1px solid var(--border); cursor:pointer; transition:background .1s; }
+    .conv-item:hover, .conv-item.active { background:var(--surface2); }
+    .conv-item .ci-name { font-weight:600; font-size:.875rem; display:flex; align-items:center; gap:.4rem; }
+    .conv-item .ci-meta { color:var(--muted); font-size:.72rem; margin-top:2px; display:flex; gap:.5rem; }
+    .badge { display:inline-block; padding:1px 6px; border-radius:4px; font-size:.68rem; font-weight:600; }
+    .badge-danger { background:rgba(248,113,113,.2); color:var(--danger); }
+    .badge-muted  { background:var(--surface3); color:var(--muted2); }
+
+    .conv-main { display:flex; flex-direction:column; overflow:hidden; }
+    .conv-head { padding:.85rem 1.25rem; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:.75rem; background:var(--surface); }
+    .conv-head-info { flex:1; min-width:0; }
+    .conv-head-info h3 { font-size:.9rem; font-weight:600; }
+    .conv-head-info p  { font-size:.72rem; color:var(--muted); margin-top:1px; }
+    .conv-head-actions { display:flex; gap:.5rem; }
+    .conv-messages { flex:1; overflow-y:auto; padding:1.25rem; display:flex; flex-direction:column; gap:.6rem; }
+    .msg { max-width:72%; }
+    .msg-bubble { padding:.6rem .9rem; border-radius:12px; font-size:.84rem; line-height:1.55; }
+    .msg.user { align-self:flex-start; }
+    .msg.user .msg-bubble { background:var(--surface2); border:1px solid var(--border); }
+    .msg.assistant { align-self:flex-end; }
+    .msg.assistant .msg-bubble { background:linear-gradient(135deg,rgba(76,29,149,.7),rgba(49,46,129,.7)); border:1px solid rgba(192,132,252,.2); }
+    .msg-time { font-size:.68rem; color:var(--muted); margin-top:3px; }
+    .msg.assistant .msg-time { text-align:right; }
+
+    .conv-send { padding:.85rem 1.25rem; border-top:1px solid var(--border); background:var(--surface); }
+    .send-tabs { display:flex; gap:.35rem; margin-bottom:.6rem; }
+    .send-tab { padding:.3rem .75rem; border-radius:6px; font-size:.75rem; cursor:pointer; background:var(--surface2); color:var(--muted2); border:1px solid var(--border); transition:.15s; }
+    .send-tab.active { background:var(--surface3); color:var(--text); border-color:var(--accent); }
+    .send-row { display:flex; gap:.6rem; }
+    .send-row textarea { flex:1; resize:none; min-height:40px; max-height:100px; font-size:.84rem; }
+    .send-hint { font-size:.72rem; color:var(--muted); margin-top:.4rem; }
+    .empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:.75rem; color:var(--muted); }
+    .empty-state .es-icon { font-size:2.5rem; }
+    .empty-state p { font-size:.84rem; }
+
+    /* ── Settings ── */
+    .settings-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; }
+    .setting-section { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem 1.5rem; }
+    .setting-section h3 { font-size:.875rem; font-weight:600; margin-bottom:1rem; display:flex; align-items:center; gap:.5rem; }
+    .setting-row { display:flex; justify-content:space-between; align-items:flex-start; padding:.55rem 0; border-bottom:1px solid var(--border); gap:1rem; }
+    .setting-row:last-child { border-bottom:none; padding-bottom:0; }
+    .sr-label { font-size:.8rem; color:var(--muted2); }
+    .sr-label small { display:block; font-size:.7rem; color:var(--muted); margin-top:1px; }
+    .sr-value { font-size:.8rem; font-weight:500; text-align:right; }
+    .sr-value.ok { color:var(--success); }
+    .sr-value.err { color:var(--danger); }
+    .sr-value.warn { color:var(--warn); }
+
+    /* ── Help ── */
+    .help-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; }
+    .help-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem 1.5rem; }
+    .help-card h3 { font-size:.875rem; font-weight:600; margin-bottom:.75rem; display:flex; align-items:center; gap:.5rem; }
+    .help-card p { font-size:.8rem; color:var(--muted2); line-height:1.65; }
+    .help-card ol, .help-card ul { padding-left:1.25rem; margin-top:.5rem; }
+    .help-card li { font-size:.8rem; color:var(--muted2); line-height:1.65; margin-bottom:.25rem; }
+    .help-card code { background:var(--surface3); border-radius:4px; padding:1px 5px; font-size:.75rem; color:var(--accent); font-family:monospace; }
+    .help-card a { color:var(--accent2); text-decoration:none; }
+    .help-card a:hover { text-decoration:underline; }
+    .flow-steps { display:flex; flex-direction:column; gap:.6rem; margin-top:.5rem; }
+    .flow-step { display:flex; align-items:flex-start; gap:.75rem; }
+    .flow-step .step-num { width:22px; height:22px; border-radius:50%; background:var(--accentg); color:#fff; font-size:.7rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .flow-step p { font-size:.8rem; color:var(--muted2); line-height:1.55; padding-top:2px; }
+
+    /* ── Toast ── */
+    #toast { position:fixed; bottom:1.5rem; right:1.5rem; background:var(--surface3); border:1px solid var(--border); border-radius:10px; padding:.7rem 1.1rem; font-size:.82rem; opacity:0; pointer-events:none; transition:opacity .25s; z-index:999; max-width:300px; }
+    #toast.show { opacity:1; }
+    #toast.ok  { border-color:var(--success); color:var(--success); }
+    #toast.err { border-color:var(--danger);  color:var(--danger); }
+
+    ::-webkit-scrollbar { width:5px; height:5px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
   </style>
 </head>
 <body>
 
-<div id="auth-bar">
-  <h2>Admin Login</h2>
-  <input type="password" id="secret-input" placeholder="Admin secret..." />
-  <button class="btn-primary" style="margin-top:0.75rem;width:100%" onclick="login()">Login</button>
-</div>
-
-<div id="main-app" style="display:none">
-  <header>
-    <h1>✨ Mia DM Admin</h1>
-    <span id="header-stats"></span>
-    <button class="btn-muted" style="margin-left:auto" onclick="logout()">Logout</button>
-  </header>
-
-  <div class="stats-bar" id="stats-bar"></div>
-
-  <div class="layout">
-    <div class="sidebar">
-      <div class="sidebar-header">
-        <strong style="font-size:0.875rem">Conversations</strong>
-        <input type="text" id="search-input" placeholder="Search by username / ID..." oninput="filterConvs()" />
-      </div>
-      <div class="conv-list" id="conv-list"></div>
+<!-- ═══════════════ LOGIN ═══════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">✨</div>
+    <h1>Mia Admin Panel</h1>
+    <p>Správa Instagram DM automatizácie</p>
+    <div class="field">
+      <label>Admin heslo</label>
+      <input type="password" id="secret-input" placeholder="Zadaj ADMIN_SECRET z .env..." onkeydown="if(event.key==='Enter')login()" autofocus />
+      <p class="hint">Nájdeš ho v súbore <code>.env</code> na serveri — položka <code>ADMIN_SECRET</code></p>
     </div>
-
-    <div class="chat-panel" id="chat-panel">
-      <div class="empty">← Select a conversation</div>
-    </div>
+    <button class="btn btn-primary btn-full" onclick="login()">Prihlásiť sa</button>
+    <p id="login-err" style="color:var(--danger);font-size:.78rem;margin-top:.75rem;text-align:center;display:none">Nesprávne heslo alebo server nedostupný.</p>
   </div>
 </div>
+
+<!-- ═══════════════ APP ═══════════════ -->
+<div id="app">
+  <div class="shell">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <h2>✨ Mia DM Bot</h2>
+        <p id="sb-account">Načítavam...</p>
+      </div>
+      <nav>
+        <div class="nav-item active" onclick="showPage('overview')" id="nav-overview">
+          <i class="icon">📊</i> Prehľad
+        </div>
+        <div class="nav-item" onclick="showPage('conversations')" id="nav-conversations">
+          <i class="icon">💬</i> Konverzácie
+        </div>
+        <div class="nav-sep"></div>
+        <div class="nav-item" onclick="showPage('settings')" id="nav-settings">
+          <i class="icon">⚙️</i> Nastavenia
+        </div>
+        <div class="nav-item" onclick="showPage('help')" id="nav-help">
+          <i class="icon">❓</i> Ako to funguje
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="btn btn-ghost btn-full" onclick="logout()" style="font-size:.78rem">Odhlásiť sa</button>
+      </div>
+    </div>
+
+    <!-- Main -->
+    <main>
+
+      <!-- ── OVERVIEW ── -->
+      <div class="page active" id="page-overview">
+        <div class="page-header">
+          <h2>Prehľad</h2>
+          <p>Stav systému a štatistiky za posledných 24 hodín</p>
+        </div>
+
+        <div class="cards" id="stats-cards">
+          <div class="card"><div class="val">—</div><div class="lbl">Celkovo followers</div><div class="sub">všetci čo písali</div></div>
+          <div class="card"><div class="val">—</div><div class="lbl">Správy dnes</div><div class="sub">za posledných 24h</div></div>
+          <div class="card"><div class="val">—</div><div class="lbl">Aktívni dnes</div><div class="sub">unikátni userovia</div></div>
+          <div class="card"><div class="val">—</div><div class="lbl">Blokovaní</div><div class="sub">ignorovaní useri</div></div>
+        </div>
+
+        <div style="margin-bottom:.75rem;display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:.8rem;font-weight:600">Stav pripojených služieb</span>
+          <button class="btn btn-ghost" style="font-size:.75rem;padding:.35rem .75rem" onclick="loadStatus()">↻ Otestovať</button>
+        </div>
+        <div class="status-grid" id="status-grid">
+          <div class="status-card loading"><div class="sc-icon">📸</div><div class="sc-body"><div class="sc-title">Instagram API</div><div class="sc-detail">Testujem...</div></div></div>
+          <div class="status-card loading"><div class="sc-icon">🤖</div><div class="sc-body"><div class="sc-title">Grok AI</div><div class="sc-detail">Testujem...</div></div></div>
+          <div class="status-card loading"><div class="sc-icon">🗄️</div><div class="sc-body"><div class="sc-title">Databáza</div><div class="sc-detail">Testujem...</div></div></div>
+        </div>
+
+        <div class="info-box">
+          <h3>💡 Čo Admin heslo chráni?</h3>
+          <p>Heslo <code>ADMIN_SECRET</code> chráni <strong>iba tento admin panel</strong>. Každé volanie na <code>/admin/*</code> endpointy vyžaduje <code>Authorization: Bearer &lt;heslo&gt;</code> hlavičku. Ak niekto toto heslo nemá, nemôže:</p>
+          <ul>
+            <li>Čítať konverzácie tvojich followerov</li>
+            <li>Blokovať / odblokovať userov</li>
+            <li>Manuálne odosielať správy</li>
+            <li>Vidieť nastavenia bota</li>
+          </ul>
+          <p style="margin-top:.6rem">Webhook na <code>/webhook</code> je chránený samostatne — <strong>Meta podpisuje každý request</strong> pomocou HMAC-SHA256 (tvoj <code>META_APP_SECRET</code>), takže falošné requesty sú odmietnuté.</p>
+        </div>
+      </div>
+
+      <!-- ── CONVERSATIONS ── -->
+      <div class="page" id="page-conversations" style="padding:0">
+        <div class="conv-layout">
+          <div class="conv-sidebar">
+            <div class="conv-sidebar-head">
+              <strong style="font-size:.82rem">Konverzácie</strong>
+              <input type="text" id="search-input" placeholder="Hľadaj username / ID..." oninput="filterConvs()" />
+            </div>
+            <div class="conv-list" id="conv-list">
+              <div class="empty-state" style="height:200px"><div class="es-icon">💬</div><p>Žiadne konverzácie</p></div>
+            </div>
+          </div>
+          <div class="conv-main" id="conv-main">
+            <div class="empty-state">
+              <div class="es-icon">👈</div>
+              <p>Vyber konverzáciu zo zoznamu</p>
+              <p style="font-size:.75rem;color:var(--muted)">Konverzácie sa objavia keď ti followerovia napíšu DM</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SETTINGS ── -->
+      <div class="page" id="page-settings">
+        <div class="page-header">
+          <h2>Nastavenia</h2>
+          <p>Aktuálna konfigurácia bota (read-only — meniť treba v <code>.env</code> na serveri)</p>
+        </div>
+        <div class="settings-grid" id="settings-grid">
+          <div style="color:var(--muted);font-size:.82rem">Načítavam...</div>
+        </div>
+      </div>
+
+      <!-- ── HELP ── -->
+      <div class="page" id="page-help">
+        <div class="page-header">
+          <h2>Ako to funguje</h2>
+          <p>Kompletný prehľad systému — čítaj ak niečomu nerozumieš</p>
+        </div>
+        <div class="help-grid">
+
+          <div class="help-card">
+            <h3>🔄 Tok správy od followera</h3>
+            <div class="flow-steps">
+              <div class="flow-step"><div class="step-num">1</div><p>Follower ti napíše DM na Instagrame</p></div>
+              <div class="flow-step"><div class="step-num">2</div><p>Meta pošle event na <code>/webhook</code> — overíme podpis (HMAC-SHA256)</p></div>
+              <div class="flow-step"><div class="step-num">3</div><p>Skontrolujeme spam, rate limit, či nie je user blokovaný</p></div>
+              <div class="flow-step"><div class="step-num">4</div><p>História konverzácie (posledných 10 správ) sa pošle Grouku ako kontext</p></div>
+              <div class="flow-step"><div class="step-num">5</div><p>Grok vygeneruje odpoveď v štýle Mie</p></div>
+              <div class="flow-step"><div class="step-num">6</div><p>Odpoveď sa odošle cez Instagram Graph API</p></div>
+              <div class="flow-step"><div class="step-num">7</div><p>Správa aj odpoveď sa uložia do SQLite databázy</p></div>
+            </div>
+          </div>
+
+          <div class="help-card">
+            <h3>📸 Ako pridať Instagram účet</h3>
+            <p>Instagram účet sa konfiguruje cez Meta Business API — nie tu v paneli. Postup:</p>
+            <ol>
+              <li>Vytvor <strong>Meta App</strong> na <a href="https://developers.facebook.com" target="_blank">developers.facebook.com</a></li>
+              <li>Pridaj produkt <strong>Messenger</strong> (funguje aj pre Instagram DM)</li>
+              <li>V Meta Business Suite pripoj <strong>Instagram Business/Creator účet</strong></li>
+              <li>Vygeneruj <strong>long-lived Access Token</strong> s oprávnením <code>instagram_manage_messages</code></li>
+              <li>Skopíruj <strong>Instagram Account ID</strong> (číselné ID z Meta)</li>
+              <li>Daj tieto hodnoty do <code>.env</code> na serveri a reštartuj bota</li>
+            </ol>
+            <p style="margin-top:.6rem">Podrobný návod je v <code>README.md</code> v repozitári.</p>
+          </div>
+
+          <div class="help-card">
+            <h3>⚙️ Webhook vs Polling</h3>
+            <p><strong>Webhook</strong> (odporúčané): Meta zavolá tvoj server hneď keď príde správa. Vyžaduje verejnú HTTPS doménu.</p>
+            <p style="margin-top:.5rem"><strong>Polling</strong>: Bot pravidelne sám skontroluje nové správy. Pomalšie, ale funguje aj bez webhookov. Nastav <code>ENABLE_POLLING=true</code> v <code>.env</code>.</p>
+            <p style="margin-top:.5rem">Aktuálny stav vidíš v sekcii <strong>Nastavenia</strong>.</p>
+          </div>
+
+          <div class="help-card">
+            <h3>✉️ Manuálne správy</h3>
+            <p>V záložke <strong>Konverzácie</strong> môžeš:</p>
+            <ul>
+              <li><strong>Odoslať teraz</strong> — správa ide ihneď ako keby ju napísala Mia</li>
+              <li><strong>Zaradiť do fronty</strong> — správa sa odošle namiesto AI odpovede keď ti follower nabudúce napíše</li>
+              <li><strong>Blokovať usera</strong> — bot prestane odpovedať tomuto followerovi</li>
+            </ul>
+          </div>
+
+          <div class="help-card">
+            <h3>🛡️ Ochrana proti spamu</h3>
+            <p>Každá prichádzajúca správa prechádza cez filtre:</p>
+            <ul>
+              <li><strong>Spam detekcia</strong> — linky, opakované znaky, typické spam frázky</li>
+              <li><strong>Nevhodné požiadavky</strong> — explicitný obsah, osobné údaje, hacking</li>
+              <li><strong>Rate limit</strong> — max <code>MAX_REPLIES_PER_USER_PER_HOUR</code> odpovedí na usera za hodinu</li>
+              <li><strong>Deduplikácia</strong> — každá Meta správa sa spracuje len raz (podľa ID)</li>
+            </ul>
+          </div>
+
+          <div class="help-card">
+            <h3>🤖 Osobnosť Mie</h3>
+            <p>Systémový prompt (osobnosť, tón, cenník) je v súbore:</p>
+            <p style="margin:.4rem 0"><code>src/prompts/systemPrompt.ts</code></p>
+            <p>Môžeš tam zmeniť:</p>
+            <ul>
+              <li>Meno, vek a popis osobnosti</li>
+              <li>Ceny balíčkov (Starter $15, Premium $35...)</li>
+              <li>Jazyk odpovedí (angličtina, slovenčina, oba...)</li>
+              <li>Pravidlá správania — čo Mia robí a čo nie</li>
+            </ul>
+            <p style="margin-top:.5rem">Po zmene: <code>npm run build && pm2 restart mia-dm</code></p>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div id="toast"></div>
 
 <script>
   let SECRET = '';
   let conversations = [];
   let activeUserId = null;
+  let sendMode = 'now'; // 'now' | 'queue'
 
-  function login() {
-    SECRET = document.getElementById('secret-input').value.trim();
-    if (!SECRET) return;
-    document.getElementById('auth-bar').style.display = 'none';
-    document.getElementById('main-app').style.display = 'block';
-    loadAll();
+  // ─── Auth ───────────────────────────────────────────────────────────────────
+  async function login() {
+    const val = document.getElementById('secret-input').value.trim();
+    if (!val) return;
+    SECRET = val;
+    try {
+      await api('/admin/stats');
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      loadAll();
+    } catch {
+      document.getElementById('login-err').style.display = 'block';
+      SECRET = '';
+    }
   }
 
   function logout() {
@@ -116,52 +420,159 @@
     location.reload();
   }
 
+  // ─── API helper ─────────────────────────────────────────────────────────────
   async function api(path, method = 'GET', body) {
     const res = await fetch(path, {
       method,
       headers: { Authorization: `Bearer ${SECRET}`, 'Content-Type': 'application/json' },
       body: body ? JSON.stringify(body) : undefined,
     });
-    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+    if (!res.ok) throw new Error(`${res.status}`);
     return res.json();
   }
 
-  async function loadAll() {
-    await Promise.all([loadStats(), loadConversations()]);
+  // ─── Navigation ─────────────────────────────────────────────────────────────
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    document.getElementById('nav-' + name).classList.add('active');
+    if (name === 'settings') loadSettings();
+    if (name === 'conversations') loadConversations();
   }
 
+  // ─── Load all ────────────────────────────────────────────────────────────────
+  async function loadAll() {
+    await Promise.all([loadStats(), loadStatus(), loadConversations(), loadConfigInfo()]);
+  }
+
+  // ─── Stats ───────────────────────────────────────────────────────────────────
   async function loadStats() {
     try {
       const s = await api('/admin/stats');
-      document.getElementById('stats-bar').innerHTML = `
-        <div class="stat-card"><div class="val">${s.totalUsers}</div><div class="lbl">Total Users</div></div>
-        <div class="stat-card"><div class="val">${s.messagesDay}</div><div class="lbl">Messages (24h)</div></div>
-        <div class="stat-card"><div class="val">${s.activeToday}</div><div class="lbl">Active Today</div></div>
-        <div class="stat-card"><div class="val">${s.blocked}</div><div class="lbl">Blocked</div></div>
+      document.getElementById('stats-cards').innerHTML = `
+        <div class="card"><div class="val">${s.totalUsers}</div><div class="lbl">Celkovo followers</div><div class="sub">všetci čo písali</div></div>
+        <div class="card"><div class="val">${s.messagesDay}</div><div class="lbl">Správy dnes</div><div class="sub">za posledných 24h</div></div>
+        <div class="card"><div class="val">${s.activeToday}</div><div class="lbl">Aktívni dnes</div><div class="sub">unikátni useri</div></div>
+        <div class="card"><div class="val">${s.blocked}</div><div class="lbl">Blokovaní</div><div class="sub">ignorovaní useri</div></div>
       `;
-    } catch (e) { console.error(e); }
+    } catch(e) { console.error(e); }
   }
 
+  // ─── API Status ──────────────────────────────────────────────────────────────
+  async function loadStatus() {
+    document.getElementById('status-grid').innerHTML = `
+      <div class="status-card loading"><div class="sc-icon">📸</div><div class="sc-body"><div class="sc-title">Instagram API</div><div class="sc-detail">Testujem...</div></div></div>
+      <div class="status-card loading"><div class="sc-icon">🤖</div><div class="sc-body"><div class="sc-title">Grok AI</div><div class="sc-detail">Testujem...</div></div></div>
+      <div class="status-card loading"><div class="sc-icon">🗄️</div><div class="sc-body"><div class="sc-title">Databáza</div><div class="sc-detail">Testujem...</div></div></div>
+    `;
+    try {
+      const s = await api('/admin/status');
+      const icons = { instagram: '📸', grok: '🤖', database: '🗄️' };
+      const titles = { instagram: 'Instagram API', grok: 'Grok AI', database: 'Databáza' };
+      document.getElementById('status-grid').innerHTML = Object.entries(s).map(([k,v]) => `
+        <div class="status-card ${v.ok ? 'ok' : 'err'}">
+          <div class="sc-icon">${icons[k] || '🔌'}</div>
+          <div class="sc-body">
+            <div class="sc-title">${titles[k] || k}</div>
+            <div class="sc-detail">${v.ok ? '✅ ' : '❌ '}${escHtml(v.detail)}</div>
+          </div>
+        </div>
+      `).join('');
+    } catch(e) { console.error(e); }
+  }
+
+  // ─── Config info ─────────────────────────────────────────────────────────────
+  let cfgInfo = {};
+  async function loadConfigInfo() {
+    try { cfgInfo = await api('/admin/config-info'); } catch(e) {}
+    if (cfgInfo.instagramAccountId) {
+      document.getElementById('sb-account').textContent = 'ID: ' + cfgInfo.instagramAccountId;
+    }
+  }
+
+  // ─── Settings page ───────────────────────────────────────────────────────────
+  function loadSettings() {
+    if (!cfgInfo.grokModel) { loadConfigInfo().then(renderSettings); return; }
+    renderSettings();
+  }
+
+  function renderSettings() {
+    const c = cfgInfo;
+    function row(label, hint, value, cls) {
+      return `<div class="setting-row">
+        <div class="sr-label">${label}<small>${hint}</small></div>
+        <div class="sr-value ${cls||''}">${value}</div>
+      </div>`;
+    }
+    document.getElementById('settings-grid').innerHTML = `
+      <div class="setting-section">
+        <h3>📸 Instagram / Meta API</h3>
+        ${row('Account ID', 'číselné ID tvojho IG účtu', c.instagramAccountId || '—', c.instagramAccountId ? '' : 'err')}
+        ${row('API verzia', 'verzia Graph API', c.metaApiVersion || '—')}
+        ${row('Access Token', 'long-lived token pre Graph API', c.accessTokenSet ? 'Nastavený ✅' : 'CHÝBA ❌', c.accessTokenSet ? 'ok' : 'err')}
+        ${row('Verify Token', 'secret pre webhook verifikáciu', c.webhookTokenSet ? 'Nastavený ✅' : 'CHÝBA ❌', c.webhookTokenSet ? 'ok' : 'err')}
+      </div>
+      <div class="setting-section">
+        <h3>🤖 Grok AI</h3>
+        ${row('Model', 'aktuálne použitý model', c.grokModel || '—')}
+        ${row('Teplota', 'kreatívnosť odpovedí (0-1)', '0.85 (pevné)')}
+        ${row('Max tokenov', 'maximálna dĺžka odpovede', '300 tokenov')}
+        ${row('Kontext', 'počet posledných správ ako kontext', '10 správ')}
+      </div>
+      <div class="setting-section">
+        <h3>⏱️ Polling / Webhook</h3>
+        ${row('Režim', 'spôsob prijímania správ', c.pollingEnabled ? 'Polling (aktívny)' : 'Webhook (odporúčané)', c.pollingEnabled ? 'warn' : 'ok')}
+        ${c.pollingEnabled ? row('Interval', 'ako často sa kontrolujú správy', c.pollIntervalSeconds + ' sekúnd') : ''}
+        ${row('Webhook URL', 'URL pre Meta nastavenia', 'https://mymia.xyz/webhook')}
+      </div>
+      <div class="setting-section">
+        <h3>🛡️ Limity</h3>
+        ${row('Max odpovedí / hodinu', 'na jedného usera', c.maxRepliesPerHour + '× / hodinu')}
+        ${row('Server rate limit', 'globálny limit všetkých requestov', '300 req / min / IP')}
+        ${row('Spam filter', 'detekcia spamu a nevhodných správ', 'Aktívny ✅', 'ok')}
+        ${row('HMAC overenie', 'overenie pravosti webhook requestov', 'Aktívne ✅', 'ok')}
+      </div>
+      <div class="setting-section" style="grid-column:1/-1">
+        <h3>🔧 Ako zmeniť nastavenia</h3>
+        <p style="font-size:.8rem;color:var(--muted2);line-height:1.65">
+          Nastavenia sa menia v súbore <code>.env</code> priamo na serveri. Po zmene musíš reštartovať bota:
+        </p>
+        <div style="background:var(--surface3);border-radius:8px;padding:.85rem 1rem;margin-top:.75rem;font-family:monospace;font-size:.78rem;color:var(--muted2);line-height:1.8">
+          ssh root@mymia.xyz<br>
+          nano /opt/mia-dm/.env<br>
+          <span style="color:var(--muted)"># uprav čo potrebuješ, ulož (Ctrl+X, Y, Enter)</span><br>
+          pm2 restart mia-dm<br>
+          pm2 logs mia-dm --lines 20
+        </div>
+      </div>
+    `;
+  }
+
+  // ─── Conversations ───────────────────────────────────────────────────────────
   async function loadConversations() {
     try {
       conversations = await api('/admin/conversations');
       renderConvList(conversations);
-    } catch (e) { console.error(e); }
+    } catch(e) { console.error(e); }
   }
 
   function renderConvList(list) {
     const el = document.getElementById('conv-list');
-    if (!list.length) { el.innerHTML = '<div class="empty">No conversations yet</div>'; return; }
+    if (!list.length) {
+      el.innerHTML = '<div class="empty-state" style="height:200px;padding:1rem"><div class="es-icon" style="font-size:1.5rem">💬</div><p>Zatiaľ žiadne konverzácie.<br>Čakaj kým ti niekto napíše DM.</p></div>';
+      return;
+    }
     el.innerHTML = list.map(u => `
-      <div class="conv-item ${u.is_blocked ? 'blocked' : ''} ${u.instagram_user_id === activeUserId ? 'active' : ''}"
-           onclick="openConv('${u.instagram_user_id}', '${u.username || u.instagram_user_id}', ${u.is_blocked})">
-        <div class="name">
-          ${u.username || u.instagram_user_id}
-          ${u.is_blocked ? '<span class="badge">blocked</span>' : ''}
+      <div class="conv-item ${u.instagram_user_id === activeUserId ? 'active' : ''}"
+           onclick="openConv('${u.instagram_user_id}','${escAttr(u.username||u.instagram_user_id)}',${u.is_blocked})">
+        <div class="ci-name">
+          ${escHtml(u.username || u.instagram_user_id)}
+          ${u.is_blocked ? '<span class="badge badge-danger">blokovaný</span>' : ''}
         </div>
-        <div class="meta">
-          <span>💬 ${u.message_count}</span>
-          <span>${timeAgo(u.last_activity)}</span>
+        <div class="ci-meta">
+          <span>💬 ${u.message_count} správ</span>
+          <span>· ${timeAgo(u.last_activity)}</span>
         </div>
       </div>
     `).join('');
@@ -170,90 +581,106 @@
   function filterConvs() {
     const q = document.getElementById('search-input').value.toLowerCase();
     renderConvList(conversations.filter(u =>
-      (u.username || '').toLowerCase().includes(q) || u.instagram_user_id.includes(q)
+      (u.username||'').toLowerCase().includes(q) || u.instagram_user_id.includes(q)
     ));
   }
 
   async function openConv(userId, username, isBlocked) {
     activeUserId = userId;
-    renderConvList(conversations.filter(u => {
-      const q = document.getElementById('search-input').value.toLowerCase();
-      return (u.username || '').toLowerCase().includes(q) || u.instagram_user_id.includes(q);
-    }));
+    filterConvs();
 
-    const messages = await api(`/admin/conversations/${userId}`);
+    let messages = [];
+    try { messages = await api(`/admin/conversations/${userId}`); } catch(e) {}
 
-    document.getElementById('chat-panel').innerHTML = `
-      <div class="chat-header">
-        <div class="user-info">
-          <h2>${username}</h2>
-          <p>${userId} ${isBlocked ? '· <span style="color:var(--danger)">BLOCKED</span>' : ''}</p>
+    document.getElementById('conv-main').innerHTML = `
+      <div class="conv-head">
+        <div class="conv-head-info">
+          <h3>${escHtml(username)} ${isBlocked ? '<span class="badge badge-danger">blokovaný</span>' : ''}</h3>
+          <p>ID: ${userId}</p>
         </div>
-        <div class="chat-actions">
+        <div class="conv-head-actions">
           ${isBlocked
-            ? `<button class="btn-success" onclick="toggleBlock('${userId}', false)">Unblock</button>`
-            : `<button class="btn-danger" onclick="toggleBlock('${userId}', true)">Block</button>`}
-          <button class="btn-muted" onclick="openConv('${userId}','${username}',${isBlocked})">↻ Refresh</button>
+            ? `<button class="btn btn-success" onclick="toggleBlock('${userId}',false)">✅ Odblokovať</button>`
+            : `<button class="btn btn-danger" onclick="toggleBlock('${userId}',true)">🚫 Blokovať</button>`}
+          <button class="btn btn-ghost" onclick="openConv('${userId}','${escAttr(username)}',${isBlocked})">↻</button>
         </div>
       </div>
-      <div class="chat-messages" id="chat-messages">
-        ${messages.length === 0 ? '<div class="empty">No messages</div>' :
-          messages.map(m => `
+      <div class="conv-messages" id="chat-msgs">
+        ${messages.length === 0
+          ? '<div class="empty-state" style="height:200px"><div class="es-icon">📭</div><p>Žiadne správy</p></div>'
+          : messages.map(m => `
             <div class="msg ${m.role}">
-              ${escHtml(m.content)}
-              <div class="msg-meta">${m.role === 'user' ? '👤' : '🤖'} ${timeAgo(m.created_at)}</div>
+              <div class="msg-bubble">${escHtml(m.content)}</div>
+              <div class="msg-time">${m.role === 'user' ? '👤 Follower' : '🤖 Mia'} · ${timeAgo(m.created_at)}</div>
             </div>
           `).join('')}
       </div>
-      <div class="send-bar">
-        <textarea id="manual-msg" placeholder="Type a manual message to send as Mia..." rows="2"></textarea>
-        <div style="display:flex;flex-direction:column;gap:0.5rem">
-          <button class="btn-primary" onclick="sendManual('${userId}')">Send</button>
-          <button class="btn-muted" onclick="queueOverride('${userId}')">Queue</button>
+      <div class="conv-send">
+        <div class="send-tabs">
+          <div class="send-tab active" id="tab-now" onclick="setSendMode('now')">✈️ Odoslať teraz</div>
+          <div class="send-tab" id="tab-queue" onclick="setSendMode('queue')">⏳ Zaradiť do fronty</div>
         </div>
+        <div class="send-row">
+          <textarea id="manual-msg" placeholder="Napíš správu ako Mia..." rows="2"></textarea>
+          <button class="btn btn-primary" onclick="sendMsg('${userId}','${escAttr(username)}',${isBlocked})">Odoslať</button>
+        </div>
+        <p class="send-hint" id="send-hint">Správa sa odošle ihneď followerovi.</p>
       </div>
     `;
 
-    const msgs = document.getElementById('chat-messages');
+    const msgs = document.getElementById('chat-msgs');
     if (msgs) msgs.scrollTop = msgs.scrollHeight;
   }
 
+  function setSendMode(mode) {
+    sendMode = mode;
+    document.getElementById('tab-now').classList.toggle('active', mode === 'now');
+    document.getElementById('tab-queue').classList.toggle('active', mode === 'queue');
+    document.getElementById('send-hint').textContent = mode === 'now'
+      ? 'Správa sa odošle ihneď followerovi.'
+      : 'Správa sa odošle nabudúce keď ti follower napíše — namiesto AI odpovede.';
+  }
+
+  async function sendMsg(userId, username, isBlocked) {
+    const msg = document.getElementById('manual-msg')?.value.trim();
+    if (!msg) return;
+    try {
+      const endpoint = sendMode === 'queue' ? 'override' : 'send';
+      await api(`/admin/conversations/${userId}/${endpoint}`, 'POST', { message: msg });
+      document.getElementById('manual-msg').value = '';
+      toast(sendMode === 'queue' ? '⏳ Zaradené do fronty' : '✅ Správa odoslaná', 'ok');
+      if (sendMode === 'now') openConv(userId, username, isBlocked);
+    } catch(e) {
+      toast('❌ Chyba pri odosielaní', 'err');
+    }
+  }
+
   async function toggleBlock(userId, block) {
-    const endpoint = block ? 'block' : 'unblock';
-    await api(`/admin/conversations/${userId}/${endpoint}`, 'POST');
+    await api(`/admin/conversations/${userId}/${block ? 'block' : 'unblock'}`, 'POST');
+    toast(block ? '🚫 User blokovaný' : '✅ User odblokovaný', 'ok');
     await loadConversations();
     const user = conversations.find(u => u.instagram_user_id === userId);
     if (user) openConv(userId, user.username || userId, block);
   }
 
-  async function sendManual(userId) {
-    const msg = document.getElementById('manual-msg').value.trim();
-    if (!msg) return;
-    await api(`/admin/conversations/${userId}/send`, 'POST', { message: msg });
-    document.getElementById('manual-msg').value = '';
-    const user = conversations.find(u => u.instagram_user_id === userId);
-    openConv(userId, user?.username || userId, user?.is_blocked || false);
-    loadAll();
-  }
-
-  async function queueOverride(userId) {
-    const msg = document.getElementById('manual-msg').value.trim();
-    if (!msg) return;
-    await api(`/admin/conversations/${userId}/override`, 'POST', { message: msg });
-    document.getElementById('manual-msg').value = '';
-    alert('Override queued — will be sent on next incoming message from this user.');
-  }
-
+  // ─── Utils ───────────────────────────────────────────────────────────────────
   function timeAgo(unix) {
-    const diff = Math.floor(Date.now() / 1000) - unix;
-    if (diff < 60) return `${diff}s ago`;
-    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-    return `${Math.floor(diff / 86400)}d ago`;
+    const d = Math.floor(Date.now()/1000) - unix;
+    if (d < 60) return d + 's';
+    if (d < 3600) return Math.floor(d/60) + 'm';
+    if (d < 86400) return Math.floor(d/3600) + 'h';
+    return Math.floor(d/86400) + 'd';
   }
+  function escHtml(s='') { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function escAttr(s='') { return String(s).replace(/'/g,"\\'"); }
 
-  function escHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  let toastTimer;
+  function toast(msg, type='ok') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'show ' + type;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.className = '', 3000);
   }
 </script>
 </body>
