@@ -67,9 +67,13 @@ export function runMigrations(): void {
       avatar_prompt        TEXT DEFAULT '',
       is_active            INTEGER NOT NULL DEFAULT 1,
       is_nsfw_enabled      INTEGER NOT NULL DEFAULT 0,
+      patreon_url          TEXT DEFAULT '',
+      unlockt_url          TEXT DEFAULT '',
+      custom_links         TEXT DEFAULT '',
       created_at           INTEGER NOT NULL DEFAULT (unixepoch()),
       FOREIGN KEY(user_id) REFERENCES saas_users(id)
     );
+
 
     CREATE TABLE IF NOT EXISTS products (
       id                   INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -120,6 +124,12 @@ export function runMigrations(): void {
       FOREIGN KEY(user_id) REFERENCES saas_users(id)
     );
   `);
+
+  // Idempotent column additions for existing DBs
+  const personaCols = (db.pragma('table_info(personas)') as Array<{ name: string }>).map((c) => c.name);
+  if (!personaCols.includes('patreon_url')) db.exec("ALTER TABLE personas ADD COLUMN patreon_url TEXT DEFAULT ''");
+  if (!personaCols.includes('unlockt_url')) db.exec("ALTER TABLE personas ADD COLUMN unlockt_url TEXT DEFAULT ''");
+  if (!personaCols.includes('custom_links')) db.exec("ALTER TABLE personas ADD COLUMN custom_links TEXT DEFAULT ''");
 
   logger.info('DB migrations complete.');
 }

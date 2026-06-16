@@ -12,6 +12,9 @@ export interface Persona {
   avatar_prompt: string;
   is_active: number;
   is_nsfw_enabled: number;
+  patreon_url: string;
+  unlockt_url: string;
+  custom_links: string;
   created_at: number;
 }
 
@@ -37,6 +40,9 @@ export interface PersonaData {
   avatar_prompt?: string;
   is_active?: number;
   is_nsfw_enabled?: number;
+  patreon_url?: string;
+  unlockt_url?: string;
+  custom_links?: string;
 }
 
 export interface ProductData {
@@ -51,8 +57,8 @@ export interface ProductData {
 export function createPersona(userId: number, data: PersonaData): Persona {
   const result = db
     .prepare(
-      `INSERT INTO personas (user_id, name, age, nationality, bio, personality, tone, avatar_prompt, is_nsfw_enabled)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      `INSERT INTO personas (user_id, name, age, nationality, bio, personality, tone, avatar_prompt, is_nsfw_enabled, patreon_url, unlockt_url, custom_links)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     )
     .run(
       userId,
@@ -63,7 +69,10 @@ export function createPersona(userId: number, data: PersonaData): Persona {
       data.personality ?? '',
       data.tone ?? '',
       data.avatar_prompt ?? '',
-      data.is_nsfw_enabled ?? 0
+      data.is_nsfw_enabled ?? 0,
+      data.patreon_url ?? '',
+      data.unlockt_url ?? '',
+      data.custom_links ?? ''
     );
 
   return db
@@ -78,7 +87,8 @@ export function updatePersona(id: number, userId: number, data: PersonaData): Pe
   db.prepare(
     `UPDATE personas SET
       name = ?, age = ?, nationality = ?, bio = ?, personality = ?,
-      tone = ?, avatar_prompt = ?, is_active = ?, is_nsfw_enabled = ?
+      tone = ?, avatar_prompt = ?, is_active = ?, is_nsfw_enabled = ?,
+      patreon_url = ?, unlockt_url = ?, custom_links = ?
      WHERE id = ? AND user_id = ?`
   ).run(
     data.name ?? persona.name,
@@ -90,6 +100,9 @@ export function updatePersona(id: number, userId: number, data: PersonaData): Pe
     data.avatar_prompt ?? persona.avatar_prompt,
     data.is_active ?? persona.is_active,
     data.is_nsfw_enabled ?? persona.is_nsfw_enabled,
+    data.patreon_url ?? persona.patreon_url ?? '',
+    data.unlockt_url ?? persona.unlockt_url ?? '',
+    data.custom_links ?? persona.custom_links ?? '',
     id,
     userId
   );
@@ -193,6 +206,17 @@ export function buildSystemPrompt(persona: Persona, products: Product[]): string
     )
     .join('\n');
 
+  const platformLinks: string[] = [];
+  if (persona.patreon_url) platformLinks.push(`Patreon: ${persona.patreon_url}`);
+  if (persona.unlockt_url) platformLinks.push(`Unlockt.me: ${persona.unlockt_url}`);
+  if (persona.custom_links) {
+    persona.custom_links.split('\n').filter(Boolean).forEach((l) => platformLinks.push(l.trim()));
+  }
+
+  const platformSection = platformLinks.length
+    ? `\nYour monetization platforms (send these links when fans ask about exclusive content, subscriptions, or want to support you):\n${platformLinks.map((l) => `- ${l}`).join('\n')}\n\nWhen the conversation naturally leads there (fan expresses interest, asks for more exclusive content, wants to support you), share the relevant link directly in your reply. Do not be pushy — but do share the link when the moment is right.`
+    : '';
+
   return `You are ${persona.name}, a ${persona.age}-year-old ${persona.nationality} content creator.
 
 Bio: ${persona.bio || 'A passionate content creator with a unique style.'}
@@ -206,6 +230,6 @@ ${
     ? `You have the following products/services to promote when relevant:\n${productList}\n\nNaturally mention these when the conversation is appropriate — never be pushy, but always be aware of opportunities to share your offers.`
     : ''
 }
-
+${platformSection}
 Always stay in character. Keep replies concise (1-3 sentences max). Be engaging, authentic, and true to your personality. Never break character or reveal you are an AI. If someone asks something inappropriate, deflect gracefully and redirect to your content.`;
 }

@@ -456,6 +456,64 @@ function renderLanding() {
     </p>
   </div>
 
+  <!-- ══════════ MONETIZATION PLATFORMS ══════════ -->
+  <div style="max-width:1100px;margin:90px auto;padding:0 40px">
+    <div style="text-align:center;margin-bottom:52px">
+      <div style="display:inline-block;background:rgba(124,106,247,.1);border:1px solid rgba(124,106,247,.25);border-radius:100px;padding:6px 16px;font-size:12px;color:var(--accent2);font-weight:600;margin-bottom:20px">
+        💸 Monetizácia na autopilote
+      </div>
+      <h2 style="font-size:40px;font-weight:900;margin-bottom:14px">Bot predáva tvoj obsah — automaticky</h2>
+      <p style="font-size:17px;color:var(--text2);max-width:620px;margin:0 auto;line-height:1.7">
+        Prepoj akúkoľvek platformu kde predávaš a AI pošle link presne vtedy, keď je follower pripravený kúpiť.
+      </p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-bottom:52px">
+      <div style="background:linear-gradient(135deg,rgba(249,76,34,.08),rgba(249,76,34,.02));border:1px solid rgba(249,76,34,.2);border-radius:20px;padding:36px;text-align:center">
+        <div style="font-size:44px;margin-bottom:16px">🅿️</div>
+        <div style="font-weight:800;font-size:18px;margin-bottom:10px">Patreon</div>
+        <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px">Mesačné subscripcie, tiers, exkluzívny obsah. Bot pošle link na tvoj Patreon keď follower prejaví záujem o členstvo.</p>
+        <div style="background:rgba(249,76,34,.1);border-radius:8px;padding:10px 14px;font-size:12px;font-weight:700;color:#f94c22">patreon.com/tvojeeno</div>
+      </div>
+      <div style="background:linear-gradient(135deg,rgba(124,106,247,.12),rgba(124,106,247,.04));border:2px solid rgba(124,106,247,.3);border-radius:20px;padding:36px;text-align:center;position:relative">
+        <div style="position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;padding:4px 16px;border-radius:100px;font-size:11px;font-weight:800;white-space:nowrap">ODPORÚČANÉ</div>
+        <div style="font-size:44px;margin-bottom:16px">🔓</div>
+        <div style="font-weight:800;font-size:18px;margin-bottom:10px">Unlockt.me</div>
+        <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px">Platforma špeciálne pre créatorov — predaj foto setov, videí, custom content. AI pošle priamy link na konkrétny produkt.</p>
+        <div style="background:rgba(124,106,247,.1);border-radius:8px;padding:10px 14px;font-size:12px;font-weight:700;color:var(--accent2)">unlockt.me/tvojeprofil</div>
+      </div>
+      <div style="background:linear-gradient(135deg,rgba(76,175,125,.08),rgba(76,175,125,.02));border:1px solid rgba(76,175,125,.2);border-radius:20px;padding:36px;text-align:center">
+        <div style="font-size:44px;margin-bottom:16px">🔗</div>
+        <div style="font-weight:800;font-size:18px;margin-bottom:10px">Vlastný odkaz</div>
+        <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px">OnlyFans, Fansly, Gumroad, vlastný eshop alebo akýkoľvek iný odkaz. Môžeš zadať viac linkov naraz — AI vyberie relevantný.</p>
+        <div style="background:rgba(76,175,125,.1);border-radius:8px;padding:10px 14px;font-size:12px;font-weight:700;color:var(--success)">shop.tvojastranka.com</div>
+      </div>
+    </div>
+
+    <!-- HOW THE LINK SENDING WORKS -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:40px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center">
+      <div>
+        <div style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent2);margin-bottom:12px">Ako to vyzerá v praxi</div>
+        <h3 style="font-size:24px;font-weight:800;margin-bottom:16px">Follower napíše — bot predá</h3>
+        <p style="font-size:14px;color:var(--text2);line-height:1.75;margin-bottom:20px">
+          Stačí raz zadať URL tvojho Patreon alebo Unlockt.me v nastaveniach persony. Od tej chvíle AI vie, kedy a komu link poslať — bez tvojej účasti.
+        </p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          ${["✓ Funguje 24/7 — aj keď spíš","✓ Follower dostane link do 2 sekúnd","✓ AI neposiela link nasilu — iba v správnom momente","✓ Funguje s ľubovoľnou platformou (URL)"].map(function(t){ return '<div style="display:flex;gap:10px;align-items:flex-start;font-size:13px"><span style="color:var(--success);flex-shrink:0">'+t.split(' ')[0]+'</span><span style="color:var(--text2)">'+t.slice(2)+'</span></div>'; }).join('')}
+        </div>
+      </div>
+      <div style="background:var(--bg3);border-radius:16px;padding:24px;font-family:monospace;font-size:13px">
+        <div style="margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.05em">DM KONVERZÁCIA — REÁLNY PRÍKLAD</div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;gap:10px"><span style="color:var(--text2);font-size:11px;white-space:nowrap;padding-top:2px">follower</span><div style="background:var(--bg2);border-radius:10px;padding:10px 14px;font-size:13px;line-height:1.5;flex:1">Mia si nádherná 😍 kde si môžem pozrieť viac tvojich fotiek?</div></div>
+          <div style="display:flex;gap:10px;flex-direction:row-reverse"><span style="color:var(--accent2);font-size:11px;white-space:nowrap;padding-top:2px">AI</span><div style="background:rgba(124,106,247,.15);border:1px solid rgba(124,106,247,.2);border-radius:10px;padding:10px 14px;font-size:13px;line-height:1.5;flex:1">Ďakujem, to mi urobilo deň! 🥰 Exkluzívny obsah mám na Patreon — tam postujem veci, ktoré nikde inde nenájdeš: <span style="color:var(--accent2)">patreon.com/mia</span></div></div>
+          <div style="display:flex;gap:10px"><span style="color:var(--text2);font-size:11px;white-space:nowrap;padding-top:2px">follower</span><div style="background:var(--bg2);border-radius:10px;padding:10px 14px;font-size:13px;line-height:1.5;flex:1">Chcem sa prihlásiť! Aký tier odporúčaš?</div></div>
+          <div style="display:flex;gap:10px;flex-direction:row-reverse"><span style="color:var(--accent2);font-size:11px;white-space:nowrap;padding-top:2px">AI</span><div style="background:rgba(124,106,247,.15);border:1px solid rgba(124,106,247,.2);border-radius:10px;padding:10px 14px;font-size:13px;line-height:1.5;flex:1">Creator tier je super štart — foto sety každý týždeň + moje behind-the-scenes. Budeš spokojný 😊</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ══════════ HOW IT WORKS ══════════ -->
   <div id="how" style="max-width:1100px;margin:90px auto;padding:0 40px">
     <div style="text-align:center;margin-bottom:60px">
@@ -465,7 +523,7 @@ function renderLanding() {
 
     ${[
       ['01','Vytvoríš svoju AI personu','V intuitívnom editore nastavíš meno, vek, národnosť, osobnosť a tón komunikácie. Chceš hravú európsku modelku, elegantnú ázijskú créatorku alebo energickú americkú fitness influencerku? Persona bude komunikovať presne tak, ako ju nastavíš — konzistentne, v každej správe.','🎭'],
-      ['02','Pridáš produkty a cenník','Zadáš čo predávaš — foto sety, mesačné subscripcie, custom content, videá. OfAI vie, kedy a ako ich prirodzene ponúknuť v konverzácii. Nie otravným spôsobom, ale ako by to urobila skúsená predajkyňa.','💼'],
+      ['02','Prepojíš Patreon, Unlockt.me alebo vlastný shop','Zadáš URL svojho Patreon profilu, Unlockt.me stránky alebo akéhokoľvek iného odkazu. Keď follower prejaví záujem o exkluzívny obsah, AI mu automaticky pošle priamy link — žiadne kopírovanie, žiadne omeškanie.','💼'],
       ['03','Prepojíš Instagram účet','Vložíš Meta access token (návod krok za krokom priamo v paneli). OfAI sa prepojí s tvojím Instagram Business účtom a začne monitorovať prichádzajúce správy v reálnom čase.','📲'],
       ['04','AI preberá konverzácie','Od tejto chvíle každý follower, ktorý ti napíše, dostane odpoveď za menej ako 2 sekundy. Persona si pamätá kontext celej konverzácie, prirodzene odpovedá na otázky a pri správnom momente navrhne nákup tvojho obsahu.','🤖'],
       ['05','Generuješ obsah s AI','V Content Studiu ti Grok analyzuje aktuálne trendy a vygeneruje caption, hashtagy a vizuálny brief pre post, reel alebo story. Ty len stiahneš, upravíš podľa seba a uploadneš.','📱'],
@@ -500,7 +558,7 @@ function renderLanding() {
           ['🎨','Avatar Generátor','Vytváraj fotorealistické obrázky tvojej persony pomocou xAI Aurora modelu. Viac štýlov: fashion editorial, casual selfie, glamour, outdoor, umelecký portrét. Konzistentný vizuál naprieč všetkými vygenerovanými obrázkmi.','Creator, Pro'],
           ['📱','Content Studio','Zadáš tému alebo necháš AI analyzovať trendy a dostaneš hotový caption s hashtagmi pre post, reel alebo story. Optimalizované pre Instagram algoritmus. Môžeš si stiahnuť aj vizuálny brief pre fotograa alebo AI generátor.','Creator, Pro'],
           ['📈','Trend Analýza','Grok prehľadá aktuálny obsah na sociálnych sieťach a identifikuje virálne vzory vo tvojej niche. Dostaneš konkrétne odporúčania — typ obsahu, timing, hashtagy, hook pre prvú sekundu videa.','Creator, Pro'],
-          ['💰','Inteligentný Upselling','Pridáš produkty s popisom a cenou. AI vie kedy a ako ich v konverzácii prirodzene ponúknuť — nie nasilu, ale v správnom kontexte. Follower sa pýta na nový obsah? AI odpovie a nenásilne zmieni tému na predaj.','Creator, Pro'],
+          ['💰','Automatické posielanie linkov','Prepojíš Patreon, Unlockt.me alebo vlastný odkaz priamo v nastaveniach persony. Keď follower napíše "kde si kúpim exkluzívny obsah?" — AI mu okamžite pošle tvoj link. Žiaden manuálny zásah.','Creator, Pro'],
           ['🛡️','Ochrana a Bezpečnosť','Automatická detekcia spamu, nevhodných požiadaviek a phishingu. Rate limiting na úrovni usera aj servera. HMAC-SHA256 overenie každého webhook requestu. Citlivé dáta sa nikdy neukladajú v plain-texte.','Všetky plány'],
           ['📊','Admin Dashboard','Prehľadný panel kde vidíš všetky konverzácie, môžeš filtrovať, vyhľadávať, posielať manuálne správy alebo zaradiť odpoveď do fronty. Blokovanie problematických userov na jeden klik.','Všetky plány'],
           ['🔞','NSFW Obsah','Pre Pro používateľov s explicitne povolenou funkciou. Generovanie obsahu pre dospelých v medziach podmienok xAI Aurora API. Každá persona má samostatný toggle — môžeš mať mix NSFW aj SFW persón.','Iba Pro'],
@@ -525,7 +583,7 @@ function renderLanding() {
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
       ${[
         ['Katarína M.','Fashion créatorka, 45k followerov','OfAI mi ušetrí 3–4 hodiny denne. Moja AI persona Mia odpovedá followerom tak prirodzene, že viacerí sa ma opýtali, či odpovedám ja osobne. A predaj foto setov vzrástol o 60 % za prvý mesiac.','Creator plán'],
-        ['Lucia T.','Content créatorka, 120k followerov','Najväčšia zmena? Predávam aj o polnoci. Doslova. Follower napíše o 2:00, AI mu odpovie a pošle link na kúpu. Ráno vidím notifikáciu o platbe. Toto sa mi predtým nestávalo.','Pro plán'],
+        ['Lucia T.','Content créatorka, 120k followerov','Najväčšia zmena? Predávam aj o polnoci. Doslova. Follower napíše o 2:00, AI mu odpovie a pošle môj Unlockt.me link. Ráno vidím notifikáciu o platbe. Toto sa mi predtým nestávalo.','Pro plán'],
         ['Martina K.','AI Influencer, 28k followerov','Celú moju AI personu som postavila na OfAI. Žiaden skutočný follower netušil, že komunikuje s AI — kým som im to sama neprezradila. Persona je neuveriteľne konzistentná.','Pro plán'],
       ].map(function(t){
         return '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px">'+
@@ -615,6 +673,7 @@ function renderLanding() {
             ['AI Persony','1','3','∞'],
             ['DM automatizácia','✓','✓','✓'],
             ['Konverzačná pamäť','30 dní','Neobmedzene','Neobmedzene'],
+            ['Patreon / Unlockt.me link','✓','✓','✓'],
             ['Avatar generátor','✗','50/mes','∞'],
             ['Content Studio','✗','✓','✓'],
             ['Trend analýza','✗','✓','Prioritná'],
@@ -838,8 +897,8 @@ function renderPersonaEdit() {
       '<div><h1>' + (isNew ? 'Nová persona' : escHtml(p.name)) + '</h1><p>' + (isNew ? 'Vytvor novú AI personu' : 'Upraviť personu') + '</p></div>' +
     '</div></div>' +
     '<div class="tabs">' +
-      ['profile','personality','products','avatar'].map(function(t) {
-        var labels = { profile: 'Profil', personality: 'Osobnosť', products: 'Produkty', avatar: 'Avatar prompt' };
+      ['profile','personality','products','monetize','avatar'].map(function(t) {
+        var labels = { profile: 'Profil', personality: 'Osobnosť', products: 'Produkty', monetize: '💰 Monetizácia', avatar: 'Avatar prompt' };
         return '<button class="tab ' + (state.activeTab === t ? 'active' : '') + '" onclick="setTab(\'' + t + '\')">' + labels[t] + '</button>';
       }).join('') +
     '</div>' +
@@ -875,6 +934,27 @@ function renderPersonaEdit() {
       '<div class="card">' +
         '<div class="section-header"><div class="section-title">Produkty &amp; ponuky</div><button class="btn btn-primary btn-sm" onclick="openProductModal(0)">+ Pridať produkt</button></div>' +
         '<div class="product-list">' + prodList + '</div>' +
+      '</div>' +
+    '</div>' +
+
+    // MONETIZE TAB
+    '<div class="tab-panel ' + (state.activeTab === 'monetize' ? 'active' : '') + '">' +
+      '<div class="card">' +
+        '<div style="background:rgba(124,106,247,.07);border:1px solid rgba(124,106,247,.2);border-radius:10px;padding:16px 20px;margin-bottom:24px;font-size:13px;color:var(--text2);line-height:1.65">' +
+          '💡 <strong style="color:var(--text)">Ako to funguje:</strong> Zadaj URL tvojich platforiem. Keď follower v DM prejaví záujem o exkluzívny obsah alebo chce teba podporiť, AI mu automaticky pošle správny link — presne v správnom momente.' +
+        '</div>' +
+        '<div class="field"><label>🅿️ Patreon URL</label>' +
+          '<input id="p-patreon-url" value="' + escHtml(p.patreon_url || '') + '" placeholder="https://patreon.com/tvojeeno">' +
+          '<div style="font-size:12px;color:var(--text2);margin-top:6px">Bot pošle tento link keď follower pýta mesačné subscripcie alebo exkluzívny obsah.</div>' +
+        '</div>' +
+        '<div class="field"><label>🔓 Unlockt.me URL</label>' +
+          '<input id="p-unlockt-url" value="' + escHtml(p.unlockt_url || '') + '" placeholder="https://unlockt.me/tvojeeno">' +
+          '<div style="font-size:12px;color:var(--text2);margin-top:6px">Bot pošle tento link keď follower pýta na kúpu foto setov alebo iného obsahu.</div>' +
+        '</div>' +
+        '<div class="field"><label>🔗 Ďalšie odkazy (jeden na riadok)</label>' +
+          '<textarea id="p-custom-links" rows="4" placeholder="OnlyFans: https://onlyfans.com/...\nFansly: https://fansly.com/...\nMôj shop: https://...">' + escHtml(p.custom_links || '') + '</textarea>' +
+          '<div style="font-size:12px;color:var(--text2);margin-top:6px">Formát: Popis: URL — AI použije popis na rozhodnutie, kedy ktorý link poslať.</div>' +
+        '</div>' +
       '</div>' +
     '</div>' +
 
@@ -1268,6 +1348,9 @@ function savePersona() {
     avatar_prompt: (document.getElementById('p-avatar-prompt') && document.getElementById('p-avatar-prompt').value.trim()) || '',
     is_active: document.getElementById('toggle-active') && document.getElementById('toggle-active').classList.contains('on') ? 1 : 0,
     is_nsfw_enabled: document.getElementById('toggle-nsfw') && document.getElementById('toggle-nsfw').classList.contains('on') ? 1 : 0,
+    patreon_url: (document.getElementById('p-patreon-url') && document.getElementById('p-patreon-url').value.trim()) || '',
+    unlockt_url: (document.getElementById('p-unlockt-url') && document.getElementById('p-unlockt-url').value.trim()) || '',
+    custom_links: (document.getElementById('p-custom-links') && document.getElementById('p-custom-links').value.trim()) || '',
   };
 
   if (!body.name) {
