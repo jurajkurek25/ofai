@@ -125,7 +125,7 @@ export async function billingRoutes(fastify: FastifyInstance): Promise<void> {
         return reply.code(400).send({ error: 'No billing account found. Please subscribe first.' });
       }
 
-      const returnUrl = request.query.return_url ?? 'http://localhost:3000/admin-ui/#billing';
+      const returnUrl = request.query.return_url ?? 'http://localhost:3000/#billing';
 
       try {
         const url = await createPortalSession(user.stripe_customer_id, returnUrl);

@@ -212,7 +212,7 @@ npm start
 ```
 
 Server beží na `http://localhost:8888`.
-Admin UI: `http://localhost:8888/admin-ui/`
+Admin UI: `http://localhost:8888/`
 
 ---
 
@@ -321,17 +321,17 @@ V Meta Developer Console → Webhooks:
 
 ## Admin Dashboard
 
-Prístupný na: `https://mymia.xyz/admin-ui/`
+Prístupný na: `https://mymia.xyz/`
 
-Funkcie:
-- **Stats** — celkový počet userov, správy za 24h, aktívni dnes, blokovaní
-- **Conversations** — zoznam konverzácií zoradených podľa aktivity
-- **Chat view** — história správ pre každého usera
-- **Block / Unblock** — manuálne blokovanie userov
-- **Send** — okamžité odoslanie manuálnej správy ako Mia
-- **Queue Override** — nasledujúca odpoveď namiesto AI odpovede použije tvoj text
+Funkcie (SaaS dashboard, prihlásenie cez e-mail/heslo, JWT):
+- **Dashboard** — prehľad účtu
+- **Personas** — vytváranie a úprava AI person
+- **Avatars** — generovanie AI avatarov
+- **Content** — generovanie obsahu
+- **Instagram** — pripojenie Instagram účtu
+- **Billing** — Stripe fakturácia a správa predplatného
 
-Autentifikácia: heslo = hodnota `ADMIN_SECRET` z `.env`
+Pôvodný samostatný admin panel chránený `ADMIN_SECRET` (Stats/Conversations/Block-Unblock/Queue Override) bol nahradený vyššie uvedeným SaaS rozhraním; jeho backend endpointy (`src/server/routes/admin.ts`) ostávajú dostupné len priamym HTTP volaním.
 
 ---
 

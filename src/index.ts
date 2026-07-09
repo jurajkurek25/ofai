@@ -12,7 +12,7 @@ async function main(): Promise<void> {
 
   await app.listen({ port: config.app.port, host: '0.0.0.0' });
   logger.info(`🚀 Server listening on port ${config.app.port}`);
-  logger.info(`📸 Webhook URL: https://mymia.xyz/webhook`);
+  logger.info(`📸 Webhook URL: http://localhost:${config.app.port}/webhook (za reverznou proxy: https://<tvoja-doména>/webhook)`);
 
   if (config.polling.enabled) {
     startPoller();
